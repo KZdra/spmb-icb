@@ -1,12 +1,22 @@
 <?php
 
+use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('landing');
 });
 
-
+Route::prefix('siswa')->group(function () {
+    Route::get('/register', function () {
+        return view('daftar');
+    })->name('siswa.daftar');
+    Route::post('/register', [SiswaController::class, 'register'])->name('siswa.daftar.post');
+    Route::get('/login', function () {
+        return view('masuk');
+    })->name('siswa.masuk');
+    Route::post('/login', [SiswaController::class, 'login'])->name('siswa.masuk.post');
+});
 
 Auth::routes();
 Route::prefix('admin')->middleware('auth')->group(function () {

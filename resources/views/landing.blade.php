@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Laravel') }}</title>
+    @include('sweetalert::alert')
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -25,7 +26,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow px-5">
+    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light shadow px-5">
         <a class="navbar-brand" href="#">SPMB ICB-Teknika</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
             aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,26 +37,32 @@
             <!-- Hapus <ul> dan <li> untuk menghilangkan menu -->
             <div class="ml-auto">
                 <!-- Tombol Daftar -->
-                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit"
-                    style="padding: 10px 20px;">Masuk</button>
+                <a class="btn btn-outline-primary my-2 my-sm-0" href="{{route('siswa.masuk')}}"
+                    style="padding: 10px 20px;">Masuk</a>
             </div>
         </div>
     </nav>
-    <section class="mx-auto p-3 ">
-        <div class="d-flex justify-content-center">
+    <section class="">
+        <div class="container d-flex justify-content-center">
             <div class="typo p-5 my-auto">
-                <h2 class="font-weight-bold">Raih masa depanmu di Portal SPMB-Teknika <br>
+                <h2 class="font-weight-bold">Raih masa depanmu di SMK ICB Cinta Teknika! <br>
                     <h3 class="font-weight-light"> Belum memiliki akun SPMB ? Daftar segera di sini.</h3>
-                    <a href="#" class="btn btn-primary">Daftar</a>
+                    <a href="{{route('siswa.daftar')}}" class="btn btn-primary">Daftar</a>
                     <hr>
                     <h3 class="font-weight-light"> Sudah punya akun SPMB ? Masuk di sini.</h3>
-                    <a href="#" class="btn btn-outline-primary">Masuk</a>
+                    <a href="{{route('siswa.masuk')}}" class="btn btn-outline-primary">Masuk</a>
             </div>
             <div class="ilustration">
                 <img src="{{ asset('images/1.svg') }}"width="500" height="500" alt="">
             </div>
         </div>
     </section>
+    <footer class=" shadow-lg bg-primary text-start text-lg-start mt-5  fixed-bottom">
+        <div class="text-start p-3 shadow-lg bg-white text-muted">
+            © {{ date('Y') }} Teknika-Dev. All rights reserved.
+        </div>
+    </footer>
+
 </body>
 @vite('resources/js/app.js')
 <!-- AdminLTE App -->

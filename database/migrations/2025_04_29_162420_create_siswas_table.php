@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('siswas', function (Blueprint $table) {
             $table->id();
-            $table->string('nis')->unique();
+            $table->string('nis')->nullable()->unique();
             $table->string('nama');
             $table->string('email')->unique();
             $table->string('password');
@@ -26,13 +26,15 @@ return new class extends Migration
             $table->enum('jalur_pendaftaran',['Reguler','RMP']);
             $table->string('jurusan');
             $table->string('no_hp',13);
-            $table->enum('abk',['Y','T'])->default('T');
+            $table->enum('abk',['Y','N'])->default('N');
             $table->string('nama_orang_tua');
             $table->text('alamat_orang_tua');
+            $table->string('pekerjaan_orang_tua');
             $table->string('no_hp_orang_tua',13);
             $table->enum('mgm',['Y','N'])->default('N');
-            $table->string('nama_mgm');
-            $table->string('keterangan_mgm');
+            $table->string('nama_mgm')->nullable();
+            $table->string('asal_mgm')->nullable();
+            $table->string('rawPass')->nullable();
             $table->enum('isAccepted',['Y','N'])->default('N');
             $table->rememberToken();
             $table->timestamps();

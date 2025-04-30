@@ -30,8 +30,9 @@ class Siswa extends Authenticatable
         'no_hp_orang_tua',
         'mgm',
         'nama_mgm',
-        'keterangan_mgm',
+        'asal_mgm',
         'isAccepted',
+        'rawPass'
     ];
 
     protected $hidden = [
