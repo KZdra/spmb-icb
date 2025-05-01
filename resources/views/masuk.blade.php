@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Daftar | {{ config('app.name', 'Laravel') }}</title>
+    <title>Masuk | {{ config('app.name', 'Laravel') }}</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -26,7 +26,7 @@
                 <img src="{{ asset('images/icb.png') }}" width="100" height="100" class="img-fluid mb-2">
                 <h2 class="font-weight-bold">Login Siswa</h2>
             </div>
-            <form action="{{route('siswa.masuk.post')}}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <form action="{{route('siswa.masuk.post')}}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group">
                     <label for="nis">NIS Siswa:</label>

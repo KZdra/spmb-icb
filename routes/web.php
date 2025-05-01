@@ -16,6 +16,7 @@ Route::prefix('siswa')->group(function () {
         return view('masuk');
     })->name('siswa.masuk');
     Route::post('/login', [SiswaController::class, 'login'])->name('siswa.masuk.post');
+    Route::get('/{id}/secret', [SiswaController::class, 'secret'])->name('siswa.secret.page');
 });
 
 Auth::routes();

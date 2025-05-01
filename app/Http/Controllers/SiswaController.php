@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
@@ -78,7 +79,7 @@ class SiswaController extends Controller
                 "nis" => $nis
             ]);
             Alert::success('success', 'Pendaftaran berhasil!');
-            return redirect()->intended('/siswa/login');
+            return redirect()->intended('/siswa/' . $latestId . '/secret');
         } catch (\Exception $ex) {
             Alert::error('Gagal', $ex->getMessage());
             return redirect()->back()->with('error', $ex->getMessage());
@@ -94,5 +95,14 @@ class SiswaController extends Controller
         }
 
         return back()->withErrors(['nis' => 'Login gagal']);
+    }
+    public function secret(Request $request, $id)
+    {
+        $dataSis = Siswa::findOrFail($id);
+        if ($dataSis) {
+            return view('secret', compact('dataSis'));
+        } else {
+            return redirect()->back();
+        }
     }
 }
