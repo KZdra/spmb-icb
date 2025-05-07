@@ -160,63 +160,65 @@
                 <div class="card-body">
                     <form action="#" id="target2" method="post">
                         @csrf
+
                         <!-- Data Siswa -->
                         <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label for="isAbk">Anak Berkebutuhan Khusus ?</label>
                                 <select class="form-control" id="isAbk" name="isAbk">
                                     <option value="">Pilih</option>
-                                    <option value="1"{{ old('isAbk', $dataTambahan->isAbk) == 1 ? 'selected' : '' }}>
-                                        Ya
-                                    </option>
-                                    <option value="0"
-                                        {{ old('isAbk', $dataTambahan->isAbk) == 0 ? 'selected' : '' }}>Tidak
-                                    </option>
+                                    <option value="1" {{ old('isAbk', $dataTambahan->isAbk ?? '') == 1 ? 'selected' : '' }}>Ya</option>
+                                    <option value="0" {{ old('isAbk', $dataTambahan->isAbk ?? '') == 0 ? 'selected' : '' }}>Tidak</option>
                                 </select>
                             </div>
                         </div>
+
                         <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label for="alamat">Alamat</label>
-                                <textarea class="form-control" name="alamat" id="alamat" cols="5" rows="3"> {{ old('alamat', $dataTambahan->alamat) }}</textarea>
+                                <textarea class="form-control" name="alamat" id="alamat" cols="5" rows="3">{{ old('alamat', $dataTambahan->alamat ?? '') }}</textarea>
                             </div>
                         </div>
+
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="tempat_lahir">Tempat Lahir</label>
-                                <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" value="{{old('tempat_lahir', $dataTambahan->tempat_lahir)}}">
+                                <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" value="{{ old('tempat_lahir', $dataTambahan->tempat_lahir ?? '') }}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="tanggal_lahir">Tanggal Lahir</label>
-                                <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control" value="{{old('tanggal_lahir', $dataTambahan->tanggal_lahir)}}">
+                                <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control" value="{{ old('tanggal_lahir', $dataTambahan->tanggal_lahir ?? '') }}">
                             </div>
                         </div>
+
                         <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label for="nama_orang_tua">Nama Orang Tua/Wali</label>
-                                <input type="text" name="nama_orang_tua" id="nama_orang_tua" class="form-control" value="{{old('nama_orang_tua', $dataTambahan->nama_orang_tua)}}">
+                                <input type="text" name="nama_orang_tua" id="nama_orang_tua" class="form-control" value="{{ old('nama_orang_tua', $dataTambahan->nama_orang_tua ?? '') }}">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label for="alamat_orang_tua">Alamat Orang Tua/Wali</label>
-                                <textarea class="form-control" name="alamat_orang_tua" id="alamat_orang_tua" cols="5" rows="3">{{old('alamat_orang_tua', $dataTambahan->alamat_orang_tua)}}</textarea>
+                                <textarea class="form-control" name="alamat_orang_tua" id="alamat_orang_tua" cols="5" rows="3">{{ old('alamat_orang_tua', $dataTambahan->alamat_orang_tua ?? '') }}</textarea>
                             </div>
                         </div>
+
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="no_hp_orang_tua">Nomor Hp Orang Tua/Wali</label>
-                                <input type="text" name="no_hp_orang_tua" id="no_hp_orang_tua" class="form-control" value="{{old('no_hp_orang_tua', $dataTambahan->no_hp_orang_tua)}}">
+                                <input type="text" name="no_hp_orang_tua" id="no_hp_orang_tua" class="form-control" value="{{ old('no_hp_orang_tua', $dataTambahan->no_hp_orang_tua ?? '') }}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="pekerjaan_orang_tua">Pekerjaan Orang Tua/Wali</label>
-                                <input type="text" name="pekerjaan_orang_tua" id="pekerjaan_orang_tua"
-                                    class="form-control" value="{{old('pekerjaan_orang_tua', $dataTambahan->pekerjaan_orang_tua)}}">
+                                <input type="text" name="pekerjaan_orang_tua" id="pekerjaan_orang_tua" class="form-control" value="{{ old('pekerjaan_orang_tua', $dataTambahan->pekerjaan_orang_tua ?? '') }}">
                             </div>
                         </div>
+
                         <button type="submit" class="btn btn-primary">Kirim</button>
                     </form>
+
                 </div>
             </div>
         </div>
