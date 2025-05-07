@@ -29,24 +29,29 @@ class SidebarServiceProvider extends ServiceProvider
                 ],
                 [
                     'route' => 'users.index',
-                    'icon' => 'fas fa-user',
-                    'label' => __('Users'),
+                    'icon' => 'fas fa-file-invoice-dollar',
+                    'label' => __('Verifikasi Pembayaran'),
                 ],
                 [
                     'route' => 'about',
                     'icon' => 'far fa-address-card',
-                    'label' => __('About Us'),
+                    'label' => __('Verifikasi Siswa'),
                 ],
             ];
             $collapseNavItems = [
                 [
                     'pIcon' => 'fas fa-th',
-                    'label' => __('Dashboard'),
+                    'label' => __('Data Master'),
                     'list' => [
                         [
                             'route' => 'home',
-                            'icon' => 'fas fa-th',
-                            'label' => __('Ree')
+                            'icon' => 'fas fa-medal',
+                            'label' => __('Jurusan')
+                        ],
+                        [
+                            'route' => 'home',
+                            'icon' => 'fas fa-users-cog',
+                            'label' => __('Manajemen User')
                         ]
                     ]
                 ],
