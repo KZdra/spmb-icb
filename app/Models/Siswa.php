@@ -35,14 +35,14 @@ class Siswa extends Authenticatable
 
     public function dataTambahan()
     {
-        return $this->hasOne(SDataTambahan::class);
+        return $this->hasOne(SDataTambahan::class,'id');
     }
     public function jurusan()
     {
-        return $this->belongsTo(MJurusan::class);
+        return $this->belongsTo(MJurusan::class,'id_jurusan');
     }
     public function buktiPembayaran()
     {
-        return $this->belongsTo(BuktiPembayaran::class);
+        return $this->belongsTo(BuktiPembayaran::class,'id');
     }
 }

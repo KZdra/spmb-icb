@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BuktiPembayaranController;
+use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +22,9 @@ Route::prefix('siswa')->group(function () {
         Route::get('/datadiri', [SiswaController::class, 'dataDiri'])->name('siswa.datadiri');
         Route::put('/datadiri/update', [SiswaController::class, 'updateData'])->name('siswa.data.update');
         Route::post('/datadiri/update2', [SiswaController::class, 'upsertDataTambahan'])->name('siswa.data.upsertDataTambahan');
+        Route::get('/pembayaran', [BuktiPembayaranController::class, 'index'])->name('siswa.pembayaran.index');
+        Route::post('/pembayaran', [BuktiPembayaranController::class, 'store'])->name('siswa.pembayaran.store');
+        Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('siswa.pendaftaran.index');
     });
 });
 

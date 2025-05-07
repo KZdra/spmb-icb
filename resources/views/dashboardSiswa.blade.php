@@ -17,7 +17,7 @@
                 </a>
             </div>
             <div class="col-md-4 mb-3">
-                <a href="#" class="text-decoration-none text-white">
+                <a href="{{route('siswa.pembayaran.index')}}" class="text-decoration-none text-white">
                     <div class="card bg-primary h-100">
                         <div class="card-body d-flex justify-content-center align-items-center">
                             <h4 class="card-title mb-0"><i class="fas fa-wallet"></i>&nbsp;Pembayaran</h4>
@@ -26,7 +26,7 @@
                 </a>
             </div>
             <div class="col-md-4 mb-3">
-                <a href="#" class="text-decoration-none text-white">
+                <a href="{{route('siswa.pendaftaran.index')}}" class="text-decoration-none text-white">
                     <div class="card bg-primary h-100">
                         <div class="card-body d-flex justify-content-center align-items-center">
                             <h4 class="card-title mb-0"><i class="fas fa-user-check"></i>&nbsp;Status Pendaftaran</h4>
