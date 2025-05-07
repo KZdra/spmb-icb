@@ -15,28 +15,34 @@ class Siswa extends Authenticatable
         'nama',
         'email',
         'password',
-        'alamat',
-        'tempat_lahir',
-        'tanggal_lahir',
         'jenis_kelamin',
         'agama',
         'asal_sekolah',
         'jalur_pendaftaran',
-        'jurusan',
+        'id_jurusan',
         'no_hp',
-        'abk',
-        'nama_orang_tua',
-        'alamat_orang_tua',
-        'no_hp_orang_tua',
         'mgm',
         'nama_mgm',
         'asal_mgm',
         'isAccepted',
-        'rawPass'
+        'status'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    public function dataTambahan()
+    {
+        return $this->hasOne(SDataTambahan::class);
+    }
+    public function jurusan()
+    {
+        return $this->belongsTo(MJurusan::class);
+    }
+    public function buktiPembayaran()
+    {
+        return $this->belongsTo(BuktiPembayaran::class);
+    }
 }

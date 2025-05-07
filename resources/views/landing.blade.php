@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Laravel') }}</title>
+
     @include('sweetalert::alert')
 
     <!-- Google Font: Source Sans Pro -->
@@ -42,7 +43,6 @@
             </div>
         </div>
     </nav>
-    <section class="">
         <div class="container d-flex justify-content-center">
             <div class="typo p-5 my-auto">
                 <h2 class="font-weight-bold">Raih masa depanmu di SMK ICB Cinta Teknika! <br>
@@ -56,7 +56,6 @@
                 <img src="{{ asset('images/1.svg') }}"width="500" height="500" alt="">
             </div>
         </div>
-    </section>
     <footer class=" shadow-lg bg-primary text-start text-lg-start mt-5  fixed-bottom">
         <div class="text-start p-3 shadow-lg bg-white text-muted">
             © {{ date('Y') }} Teknika-Dev. All rights reserved.
