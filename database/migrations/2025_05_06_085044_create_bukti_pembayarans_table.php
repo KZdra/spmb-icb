@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('file_path');
             $table->decimal('amount', 15, 2);
             $table->date('payment_date');
-            $table->enum('status', ['Diverifikasi', 'Ditolak', 'Pending']);
+            $table->enum('status', ['Diverifikasi', 'Ditolak', 'Pending'])->default('Pending');
             $table->timestamps();
             $table->foreign('siswa_id')->references('id')->on('siswas')->onDelete('cascade');
         });
