@@ -43,6 +43,6 @@ class Siswa extends Authenticatable
     }
     public function buktiPembayaran()
     {
-        return $this->belongsTo(BuktiPembayaran::class,'id');
+        return $this->hasOne(BuktiPembayaran::class);
     }
 }

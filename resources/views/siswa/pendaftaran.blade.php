@@ -23,7 +23,7 @@
                     <h5><i class="fas fa-file"></i>&nbsp; Status</h5>
                 </div>
                 <div class="card-body">
-                    <h5 class="font-weight-bold">Pembayaran:</h5>
+                    <h5 class="font-weight-bold">Pembayaran: </h5>
                     @if ($dataSis->buktiPembayaran)
                         @switch($dataSis->buktiPembayaran->status)
                             @case('Diverifikasi')

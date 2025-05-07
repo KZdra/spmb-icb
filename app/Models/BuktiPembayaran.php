@@ -21,6 +21,6 @@ class BuktiPembayaran extends Model
 
     public function siswa()
     {
-        $this->hasMany(Siswa::class);
+        $this->belongsTo(Siswa::class);
     }
 }
