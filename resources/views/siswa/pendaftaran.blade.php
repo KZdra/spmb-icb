@@ -60,7 +60,7 @@
                                 <i class="fa fa-sad-tear"></i>&nbsp;&nbsp;Belum Melakukan Verifikasi Pembayaran
                             </h5>
                             <h5 class="mt-1 mb-0">Silahkan Verifikasi Di <br></h5>
-                            <a href="" class="btn btn-success text-decoration-none">Halaman Verifikasi Pembayaran</a>
+                            <a href="{{route('siswa.pembayaran.index')}}" class="btn btn-success text-decoration-none">Halaman Verifikasi Pembayaran</a>
                         </div>
                     @endif
                     <h5 class="font-weight-bold">Pendaftaran: </h5>

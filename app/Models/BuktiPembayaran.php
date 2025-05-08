@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Siswa;
 class BuktiPembayaran extends Model
 {
     protected $table = 'bukti_pembayarans';
@@ -17,6 +17,7 @@ class BuktiPembayaran extends Model
         'payment_date',
         'created_at',
         'updated_at',
+        'alasan'
     ];
 
     public function siswa()

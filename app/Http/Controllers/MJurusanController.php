@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\MJurusan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class MJurusanController extends Controller
 {
@@ -12,54 +15,50 @@ class MJurusanController extends Controller
      */
     public function index()
     {
-        //
+        $jurusans = MJurusan::all();
+        return view('jurusan.index', compact('jurusans'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $kont = $request->validate([
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(MJurusan $mJurusan)
-    {
-        //
+            'nama' => 'required|string',
+        ]);
+        try {
+            DB::table('m_jurusans')->insert([
+                'nama_jurusan' => $kont['nama'],
+                'created_at' => Carbon::now(),
+            ]);
+            return response()->json(['message' => 'Jurusan berhasil ditambahkan!'], 201);
+        } catch (\Exception $e) {
+            // return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(MJurusan $mJurusan)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+
+            $data = [
+                'nama_jurusan' => $request->nama,
+                'updated_at' => Carbon::now(),
+            ];
+            DB::table('m_jurusans')->where('id', $id)->update($data);
+            return response()->json(['message' => 'Jurusan berhasil diUpdate!'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
+            // return response()->json(['message' => $e->getMessages()], 500);
+        }
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, MJurusan $mJurusan)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(MJurusan $mJurusan)
-    {
-        //
+        try {
+            DB::table('m_jurusans')->where('id', $id)->delete();
+            return response()->json(['message' => 'Jurusan berhasil Di Hapus!'], 201);
+        } catch (\Exception $e) {
+            // return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 }

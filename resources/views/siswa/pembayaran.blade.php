@@ -61,7 +61,8 @@
                                         <i class="fas fa-check"></i>&nbsp;&nbsp;Pembayaran Diverifikasi!
                                     </h5>
                                     <h5 class="mt-1 mb-0">Silahkan Tunggu Status Pendaftaran Di <br>Halaman Status Pendaftaran</h5>
-                                    <a href="#" class="btn btn-primary text-decoration-none">Lihat Status Pendaftaran</a>
+                                    <a href="{{ route('siswa.pendaftaran.index') }}"
+                                        class="btn btn-primary text-decoration-none">Lihat Status Pendaftaran</a>
                                 </div>
                             @break
 
@@ -69,7 +70,7 @@
                                 <div class="alert alert-danger" role="alert">
                                     <h5 class="mb-0 font-weight-bold">
                                         <i class="fas fa-times"></i>&nbsp;&nbsp;Pembayaran DiTolak! <br>
-                                        Karena : Tidak Valid!
+                                        Karena : {{ $dataBukti->alasan }}
                                     </h5>
                                     <h5 class="mt-1 mb-0">Silahkan Hubungi No Dibawah Ini <br>Untuk Input Ulang Bukti Pembayaran
                                     </h5>

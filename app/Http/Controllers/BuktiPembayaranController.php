@@ -15,7 +15,7 @@ class BuktiPembayaranController extends Controller
     {
         $siswa_id = auth_user()->id;
         $buktiIsExist = false;
-        $dataBukti = DB::table('bukti_pembayarans')->select('id', 'siswa_id', 'status')->where('siswa_id', '=', $siswa_id)->first();
+        $dataBukti = DB::table('bukti_pembayarans')->select('id', 'siswa_id', 'status','alasan')->where('siswa_id', '=', $siswa_id)->first();
         if ($dataBukti) {
             $buktiIsExist = true;
         }
@@ -62,37 +62,5 @@ class BuktiPembayaranController extends Controller
             // return response()->json(['message' => 'Error Sistem!'], 500);
             return response()->json(['message' => $e->getMessage()], 500);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(BuktiPembayaran $buktiPembayaran)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(BuktiPembayaran $buktiPembayaran)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, BuktiPembayaran $buktiPembayaran)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(BuktiPembayaran $buktiPembayaran)
-    {
-        //
     }
 }
