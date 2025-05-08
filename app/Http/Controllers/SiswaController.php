@@ -13,37 +13,7 @@ use Illuminate\Support\Facades\Hash;
 
 class SiswaController extends Controller
 {
-    public function generateNIS($siswaId)
-    {
-        DB::beginTransaction();
 
-        try {
-            // Lock baris agar tidak race condition
-            $counter = DB::table('nis_counters')->lockForUpdate()->first();
-
-            // Jika belum ada baris (misalnya pertama kali)
-            if (!$counter) {
-                DB::table('nis_counters')->insert(['last_number' => 1]);
-                $nisNumber = 1;
-            } else {
-                $nisNumber = $counter->last_number + 1;
-                DB::table('nis_counters')->update(['last_number' => $nisNumber]);
-            }
-
-            $formattedNis = '125' . str_pad($nisNumber, 4, '0', STR_PAD_LEFT);
-
-            DB::table('siswas')->where('id', $siswaId)->update([
-                'nis' => $formattedNis,
-                'updated_at' => now()
-            ]);
-
-            DB::commit();
-            return $formattedNis;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-    }
     public function register(Request $request)
     {
         DB::beginTransaction();

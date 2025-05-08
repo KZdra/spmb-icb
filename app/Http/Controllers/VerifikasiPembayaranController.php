@@ -22,14 +22,19 @@ class VerifikasiPembayaranController extends Controller
         $data = $request->validate([
             'bukti_id' => 'required'
         ]);
+        DB::beginTransaction();
 
         try {
             DB::table('bukti_pembayarans')->where('id', $data['bukti_id'])->update([
                 'status' => 'Diverifikasi',
                 'updated_at' => now()
             ]);
+            DB::commit();
+
             return response()->json(['message' => 'Pembayaran Diverifikasi!'], 201);
         } catch (\Exception $e) {
+            DB::rollBack();
+
             // return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
             return response()->json(['message' => $e->getMessage()], 500);
         }
@@ -40,6 +45,7 @@ class VerifikasiPembayaranController extends Controller
             'bukti_id' => 'required',
             'alasan' => 'required|string'
         ]);
+        DB::beginTransaction();
 
         try {
             DB::table('bukti_pembayarans')->where('id', $data['bukti_id'])->update([
@@ -48,7 +54,10 @@ class VerifikasiPembayaranController extends Controller
                 'updated_at' => now()
             ]);
             return response()->json(['message' => 'Pembayaran DiTolak!'], 201);
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollBack();
+
             // return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
             return response()->json(['message' => $e->getMessage()], 500);
         }
@@ -64,11 +73,13 @@ class VerifikasiPembayaranController extends Controller
         if ($bp->file_path) {
             Storage::disk('public')->delete($bp->file_path);
         }
-
+        DB::beginTransaction();
         try {
             DB::table('bukti_pembayarans')->where('id', $id)->delete();
+            DB::commit();
             return response()->json(['message' => 'Berhasil Request Input Ulang!'], 201);
         } catch (\Exception $e) {
+            DB::rollBack();
             // return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
             return response()->json(['message' => $e->getMessage()], 500);
         }

@@ -35,7 +35,7 @@ class Siswa extends Authenticatable
 
     public function dataTambahan()
     {
-        return $this->hasOne(SDataTambahan::class,'id');
+        return $this->hasOne(SDataTambahan::class);
     }
     public function jurusan()
     {
