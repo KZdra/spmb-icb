@@ -6,7 +6,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ __('Verifikasi Pembayaran') }}</h1>
+                    <h1 class="m-0">{{ __('Verifikasi Siswa') }}</h1>
                     {{-- <button class="btn btn-success mt-2" id="inputUserBtn">Tambah User</button> --}}
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -31,25 +31,40 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Nis</th>
                                         <th>Nama Siswa</th>
-                                        <th>Nominal Bayar</th>
-                                        <th>Tanggal Bayar</th>
+                                        <th>Tempat Lahir</th>
+                                        <th>Tanggal Lahir</th>
+                                        <th>Asal Sekolah</th>
+                                        <th>Jurusan Yang Dipilih</th>
+                                        <th>Jalur Pendaftaran</th>
+                                        <th>MGM</th>
+                                        <th>Nama MGM</th>
+                                        <th>Keterangan MGM</th>
+                                        <th>Tanggal Daftar</th>
                                         <th>Status</th>
-                                        <th>foto Bukti Pembayaran</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($users as $user)
+                                    @foreach ($datasis as $user)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $user->nama_siswa }}</td>
-                                            <td>{{ rupiah($user->amount) }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($user->payment_date)->locale('id')->translatedFormat('d F Y') }}
+                                            <td>{{ $user->nis ?? 'Belum Ada' }}</td>
+                                            <td>{{ $user->nama }}</td>
+                                            <td>{{ ucwords($user->dataTambahan->tempat_lahir ?? 'Belum Diisi') }}</td>
+                                            <td>{{ $user->dataTambahan->tanggal_lahir ?? 'belum Diisi' }}</td>
+                                            <td>{{ $user->asal_sekolah }}</td>
+                                            <td>{{ $user->jurusan->nama_jurusan }}</td>
+                                            <td>{{ $user->jalur_pendaftaran }}</td>
+                                            <td>{{ $user->mgm ? ' Ya' : 'Tidak' }}</td>
+                                            <td>{{ $user->nama_mgm ?? 'Tidak Ada' }}</td>
+                                            <td>{{ $user->asal_mgm ?? 'Tidak Ada' }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($user->created_at)->locale('id')->translatedFormat('d F Y') }}
                                             <td>
                                                 <p
                                                     class="@switch($user->status)
-                                                        @case('Diverifikasi')
+                                                        @case('Diterima')
                                                                 badge
                                                                 bg-success
                                                                 @break
@@ -68,31 +83,37 @@
                                                     {{ $user->status }}</p>
                                             </td>
                                             </td>
-                                            <td id="viewer-container">
-                                                <img src="{{ asset('storage/' . $user->file_path) }}"
-                                                    id="{{ 'foto' . $user->id }}" class="img-thumbnail viewer-item"
-                                                    width="200" height="200"
-                                                    onclick="MakeViewer('{{ 'foto' . $user->id }}')">
-                                            </td>
                                             <td>
-                                                @switch($user->status)
-                                                    @case('Diverifikasi')
-                                                        <p class="font-weight-bold badge bg-success">Telah DiVerifikasi!</p>
-                                                    @break
+                                                <div>
+                                                    @switch($user->status)
+                                                        @case('Diterima')
+                                                        @break
 
-                                                    @case('Ditolak')
-                                                        <p class="font-weight-bold badge bg-danger">Telah Ditolak!</p>
-                                                        <button class="btn btn-success inputUlangBtn" data-id="{{ $user->id }}">
-                                                            Input Ulang</button>
-                                                    @break
+                                                        @case('Ditolak')
+                                                            <button class="btn btn-danger btn-md delUserBtn"
+                                                                data-id="{{ $user->id }}">
+                                                                Hapus Semua Data Siswa!
+                                                            </button>
+                                                        @break
 
-                                                    @default
-                                                        <button class="btn btn-success editUserBtn" data-id="{{ $user->id }}">
-                                                            Terima</button>
-                                                        <button class="btn btn-danger delUserBtn"
-                                                            data-id="{{ $user->id }}">Tolak</button>
-                                                @endswitch
+                                                        @default
+                                                            <button class="btn btn-success btn-md editUserBtn"
+                                                                data-id="{{ $user->id }}">
+                                                                Terima
+                                                            </button>
+                                                            <button class="btn btn-danger btn-md delUserBtn"
+                                                                data-id="{{ $user->id }}">
+                                                                Tolak
+                                                            </button>
+                                                    @endswitch
+
+                                                    <button class="btn btn-info btn-md seeDetailBtn"
+                                                        data-id="{{ $user->id }}">
+                                                        Lihat Data Lengkap
+                                                    </button>
+                                                </div>
                                             </td>
+
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -100,38 +121,63 @@
                         </div>
                         <!-- /.card-body -->
                     </div>
-                    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="userModalLabel">Alasan Di Tolak?</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form id="userForm">
-                                    <div class="modal-body">
-                                        <input type="hidden" id="user_id">
-                                        <div class="form-group">
-                                            <label for="alasan">Alasan</label>
-                                            <input type="text" class="form-control" id="alasan" name="alasan"
-                                                required>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                                        <button type="submit" class="btn btn-primary">Simpan</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
+    <!-- Modal Detail Siswa -->
+    <div class="modal fade" id="detailSiswaModal" tabindex="-1" aria-labelledby="detailSiswaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailSiswaModalLabel">Detail Siswa</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>Nama</th>
+                                <td id="detail-nama"></td>
+                            </tr>
+                            <tr>
+                                <th>Tempat Lahir</th>
+                                <td id="detail-tempat-lahir"></td>
+                            </tr>
+                            <tr>
+                                <th>Tanggal Lahir</th>
+                                <td id="detail-tanggal-lahir"></td>
+                            </tr>
+                            <tr>
+                                <th>Alamat</th>
+                                <td id="detail-alamat"></td>
+                            </tr>
+                            <tr>
+                                <th>Nama Orang Tua</th>
+                                <td id="detail-nama-ortu"></td>
+                            </tr>
+                            <tr>
+                                <th>Pekerjaan Orang Tua</th>
+                                <td id="detail-pekerjaan-ortu"></td>
+                            </tr>
+                            <tr>
+                                <th>No HP Orang Tua</th>
+                                <td id="detail-nohp-ortu"></td>
+                            </tr>
+                            <tr>
+                                <th>Alamat Orang Tua</th>
+                                <td id="detail-alamat-ortu"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- /.content -->
 @endsection
 @section('scripts')
@@ -141,7 +187,34 @@
                 responsive: true
             });
 
+            $(document).on('click', '.seeDetailBtn', function() {
+                const id = $(this).data('id');
+                $.ajax({
+                    url: 'verifsiswa/detail/' + id,
+                    method: 'GET',
+                    success: function(res) {
+                        $('#detail-nama').text(res.nama);
+                        $('#detail-tempat-lahir').text(res.data_tambahan?.tempat_lahir ??
+                            'Belum Diisi');
+                        $('#detail-tanggal-lahir').text(res.data_tambahan?.tanggal_lahir ??
+                            'Belum Diisi');
+                        $('#detail-alamat').text(res.data_tambahan?.alamat ?? 'Belum Diisi');
+                        $('#detail-nama-ortu').text(res.data_tambahan?.nama_orang_tua ??
+                            'Belum Diisi');
+                        $('#detail-pekerjaan-ortu').text(res.data_tambahan
+                            ?.pekerjaan_orang_tua ?? 'Belum Diisi');
+                        $('#detail-nohp-ortu').text(res.data_tambahan?.no_hp_orang_tua ??
+                            'Belum Diisi');
+                        $('#detail-alamat-ortu').text(res.data_tambahan?.alamat_orang_tua ??
+                            'Belum Diisi');
 
+                        $('#detailSiswaModal').modal('show');
+                    },
+                    error: function() {
+                        alert('Gagal mengambil data siswa.');
+                    }
+                });
+            });
             // Tampilkan Modal Edit Kelas
             $(document).on('click', '.editUserBtn', function() {
                 let id = $(this).data('id');
@@ -149,10 +222,10 @@
                     .then((res) => {
                         if (res.isConfirmed) {
                             $.ajax({
-                                url: "{{ route('verifPembayaran.approveStatus') }}",
+                                url: "{{ route('verifSiswa.approveStatus') }}",
                                 method: "POST",
                                 data: {
-                                    bukti_id: id,
+                                    siswa_id: id,
                                     _token: "{{ csrf_token() }}"
                                 },
                                 success: function(response) {
@@ -183,7 +256,7 @@
                     .then((res) => {
                         if (res.isConfirmed) {
                             $.ajax({
-                                url: `verifbayar/${id}`,
+                                url: `verifsiswa/${id}`,
                                 method: "DELETE",
                                 data: {
                                     _token: "{{ csrf_token() }}"
@@ -214,16 +287,7 @@
             // Delete Action
             $(document).on('click', '.delUserBtn', function() {
                 let id = $(this).data('id');
-                $('#userModal').modal('show');
-                $('#user_id').val(id);
-                $('#alasan').val('');
-
-            })
-
-            $('#userForm').submit(function(e) {
-                e.preventDefault();
-                let id = $('#user_id').val();
-                let url = "{{ route('verifPembayaran.notApproveStatus') }}";
+                let url = "{{ route('verifSiswa.notApproveStatus') }}";
                 let method = "POST";
                 SwalHelper.showConfirm('Apakah Anda Yakin? Data Tidak Bisa Diubah Lagi')
                     .then((res) => {
@@ -232,8 +296,7 @@
                                 url: url,
                                 method: method,
                                 data: {
-                                    bukti_id: id,
-                                    alasan: $('#alasan').val(),
+                                    siswa_id: id,
                                     _token: "{{ csrf_token() }}"
                                 },
                                 success: function(response) {
@@ -258,7 +321,9 @@
                             });
                         }
                     })
-            });
+            })
+
+
         })
     </script>
 @endsection

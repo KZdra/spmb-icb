@@ -33,7 +33,7 @@ class SidebarServiceProvider extends ServiceProvider
                     'label' => __('Verifikasi Pembayaran'),
                 ],
                 [
-                    'route' => 'about',
+                    'route' => 'verifSiswa.index',
                     'icon' => 'far fa-address-card',
                     'label' => __('Verifikasi Siswa'),
                 ],

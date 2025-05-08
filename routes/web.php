@@ -5,6 +5,7 @@ use App\Http\Controllers\MJurusanController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\VerifikasiPembayaranController;
+use App\Http\Controllers\VerifikasiSiswaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -53,6 +54,11 @@ Route::prefix('admin')->middleware('auth:web')->group(function () {
         Route::post('verifbayar/accept', [VerifikasiPembayaranController::class, 'approveStatus'])->name('verifPembayaran.approveStatus');
         Route::post('verifbayar/reject', [VerifikasiPembayaranController::class, 'notApproveStatus'])->name('verifPembayaran.notApproveStatus');
         Route::delete('verifbayar/{id}', [VerifikasiPembayaranController::class, 'inputUlang'])->name('verifPembayaran.inputUlang');
+        //Verif Siswa
+        Route::get('verifsiswa', [VerifikasiSiswaController::class, 'index'])->name('verifSiswa.index');
+        Route::get('verifsiswa/detail/{id}', [VerifikasiSiswaController::class, 'getDataTambahan'])->name('verifSiswa.getDataTambahan');
+        Route::post('verifsiswa/accept', [VerifikasiSiswaController::class, 'approveStatus'])->name('verifSiswa.approveStatus');
+        Route::post('verifsiswa/reject', [VerifikasiSiswaController::class, 'notApproveStatus'])->name('verifSiswa.notApproveStatus');
         //Profile Solo
         Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
         Route::put('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');

@@ -31,7 +31,6 @@
                                     <h5 class="mb-0 font-weight-bold">
                                         <i class="fas fa-check"></i>&nbsp;&nbsp;Pembayaran Diverifikasi!
                                     </h5>
-                                    <h5 class="mt-1 mb-0">Silahkan Tunggu Status Pendaftaran Di <br>Halaman Status Pendaftaran</h5>
                                 </div>
                             @break
 
@@ -39,7 +38,7 @@
                                 <div class="alert alert-danger" role="alert">
                                     <h5 class="mb-0 font-weight-bold">
                                         <i class="fas fa-times"></i>&nbsp;&nbsp;Pembayaran DiTolak! <br>
-                                        Karena : Tidak Valid!
+                                        Karena : {{ $dataSis->buktiPembayaran->alasan ?? 'Tidak Ada Alasan.' }}
                                     </h5>
                                     <h5 class="mt-1 mb-0">Silahkan Hubungi No Dibawah Ini <br>Untuk Input Ulang Bukti Pembayaran
                                     </h5>
@@ -60,7 +59,8 @@
                                 <i class="fa fa-sad-tear"></i>&nbsp;&nbsp;Belum Melakukan Verifikasi Pembayaran
                             </h5>
                             <h5 class="mt-1 mb-0">Silahkan Verifikasi Di <br></h5>
-                            <a href="{{route('siswa.pembayaran.index')}}" class="btn btn-success text-decoration-none">Halaman Verifikasi Pembayaran</a>
+                            <a href="{{ route('siswa.pembayaran.index') }}"
+                                class="btn btn-success text-decoration-none">Halaman Verifikasi Pembayaran</a>
                         </div>
                     @endif
                     <h5 class="font-weight-bold">Pendaftaran: </h5>
@@ -72,7 +72,7 @@
                                         <i class="fas fa-check"></i>&nbsp;&nbsp;Selamat Anda Diterima!
                                     </h5>
                                     <h5 class="mt-1 mb-0">Berikut Ini Adalah NIS anda : <br></h5>
-                                    <h5 class="font-weight-bold">1500001</h5>
+                                    <h5 class="font-weight-bold">{{ $dataSis->nis }}</h5>
                                 </div>
                             @break
 
@@ -80,7 +80,7 @@
                                 <div class="alert alert-danger" role="alert">
                                     <h5 class="mb-0 font-weight-bold">
                                         <i class="fas fa-times"></i>&nbsp;&nbsp;Pendaftaran DITOLAK ! <br>
-                                        Karena : Tidak Valid!
+
                                     </h5>
                                     <h5 class="mt-1 mb-0">Silahkan Hubungi No Dibawah Ini <br>Untuk Bantuan
                                     </h5>
