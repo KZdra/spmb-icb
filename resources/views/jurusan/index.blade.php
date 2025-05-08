@@ -6,8 +6,8 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ __('Manajemen User') }}</h1>
-                    <button class="btn btn-success mt-2" id="inputUserBtn">Tambah User</button>
+                    <h1 class="m-0">{{ __('Manajemen Jurusan') }}</h1>
+                    <button class="btn btn-success mt-2" id="inputUserBtn">Tambah Jurusan</button>
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -30,24 +30,19 @@
                             <table class="table" id="usersTable">
                                 <thead>
                                     <tr>
-                                        <th>Nama</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
+                                        <th>Nama Jurusan</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($users as $user)
+                                    @foreach ($jurusans as $j)
                                         <tr>
-                                            <td>{{ $user->name }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <td>{{ ucwords($user->role->name) }}</td>
-                                            <td><button class="btn btn-primary editUserBtn" data-id="{{ $user->id }}"
-                                                    data-role_id="{{ $user->role_id }}" data-nama="{{ $user->name }}"
-                                                    data-email="{{ $user->email }}">
+                                            <td>{{ $j->nama_jurusan }}</td>
+                                            <td><button class="btn btn-primary editUserBtn" data-id="{{ $j->id }}"
+                                                    data-nama="{{ $j->nama_jurusan }}">
                                                     Edit</button>
                                                 <button class="btn btn-danger delUserBtn"
-                                                    data-id="{{ $user->id }}">Delete</button>
+                                                    data-id="{{ $j->id }}">Delete</button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -61,7 +56,7 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="userModalLabel">Tambah User</h5>
+                                    <h5 class="modal-title" id="userModalLabel">Tambah Jurusan</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -70,27 +65,9 @@
                                     <div class="modal-body">
                                         <input type="hidden" id="user_id">
                                         <div class="form-group">
-                                            <label for="nama">Nama</label>
+                                            <label for="nama">Nama Jurusan</label>
                                             <input type="text" class="form-control" id="nama" name="nama"
                                                 required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="role_id">Role</label>
-                                            <select name="role_id" id="role_id" class="form-control">
-                                                <option value="" disabled selected> Pilih Role</option>
-                                                @foreach ($rolesList as $role)
-                                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="email">Email</label>
-                                            <input type="email" class="form-control" id="email" name="email"
-                                                required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="password">Password</label>
-                                            <input type="password" class="form-control" id="password" name="password">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -117,11 +94,8 @@
             // Tampilkan Modal Tambah Kelas
             $('#inputUserBtn').click(function() {
                 $('#user_id').val('');
-                $('#role_id').val('');
                 $('#nama').val('');
-                $('#email').val('');
-                $('#password').val('');
-                $('#userModalLabel').text('Tambah User');
+                $('#userModalLabel').text('Tambah Jurusan');
                 $('#userModal').modal('show');
             });
 
@@ -129,18 +103,14 @@
             $('#userForm').submit(function(e) {
                 e.preventDefault();
                 let id = $('#user_id').val();
-                let url = id ? `verifbayar/${id}` : "{{ route('users.store') }}";
+                let url = id ? `jurusan/${id}` : "{{ route('jurusan.store') }}";
                 let method = id ? "PUT" : "POST";
 
                 $.ajax({
                     url: url,
                     method: method,
                     data: {
-                        class_id: $('#class_id').val(),
-                        role_id: $('#role_id').val(),
                         nama: $('#nama').val(),
-                        email: $('#email').val(),
-                        password: $('#password').val(),
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
@@ -166,16 +136,12 @@
             // Tampilkan Modal Edit Kelas
             $(document).on('click', '.editUserBtn', function() {
                 let id = $(this).data('id');
-                let role_id = $(this).data('role_id');
                 let nama = $(this).data('nama');
-                let email = $(this).data('email');
+
 
                 $('#user_id').val(id);
-                $('#role_id').val(role_id);
                 $('#nama').val(nama);
-                $('#email').val(email);
-                $('#password').val('');
-                $('#userModalLabel').text('Edit User');
+                $('#userModalLabel').text('Edit Jurusan');
                 $('#userModal').modal('show');
             });
 
@@ -193,7 +159,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: `users/${id}`,
+                            url: `jurusan/${id}`,
                             method: "DELETE",
                             data: {
                                 _token: "{{ csrf_token() }}"

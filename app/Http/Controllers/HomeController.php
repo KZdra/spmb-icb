@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -13,7 +14,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth:web');
     }
 
     /**
@@ -23,6 +24,19 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+
+        $chartData = DB::table('siswas')
+            ->join('m_jurusans', 'siswas.id_jurusan', '=', 'm_jurusans.id')
+            ->select(
+                'm_jurusans.nama_jurusan as jurusan',
+                DB::raw("
+                COUNT(CASE WHEN jenis_kelamin = 'Laki-laki' THEN 1 END) AS total_male,
+                COUNT(CASE WHEN jenis_kelamin = 'Perempuan' THEN 1 END) AS total_female
+            ")
+            )
+            ->groupBy('m_jurusans.nama_jurusan')
+            ->get()
+            ->toArray();
+        return view('home', compact('chartData'));
     }
 }

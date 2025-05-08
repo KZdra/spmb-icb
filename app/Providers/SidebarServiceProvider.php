@@ -28,7 +28,7 @@ class SidebarServiceProvider extends ServiceProvider
                     'label' => __('Dashboard'),
                 ],
                 [
-                    'route' => 'users.index',
+                    'route' => 'verifPembayaran.index',
                     'icon' => 'fas fa-file-invoice-dollar',
                     'label' => __('Verifikasi Pembayaran'),
                 ],
@@ -44,12 +44,12 @@ class SidebarServiceProvider extends ServiceProvider
                     'label' => __('Data Master'),
                     'list' => [
                         [
-                            'route' => 'home',
+                            'route' => 'jurusan.index',
                             'icon' => 'fas fa-medal',
                             'label' => __('Jurusan')
                         ],
                         [
-                            'route' => 'home',
+                            'route' => 'users.index',
                             'icon' => 'fas fa-users-cog',
                             'label' => __('Manajemen User')
                         ]
