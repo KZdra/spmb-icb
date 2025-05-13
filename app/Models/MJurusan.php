@@ -10,7 +10,10 @@ class MJurusan extends Model
     protected $table = 'm_jurusans';
 
     protected $fillable = [
-        'nama_jurusan'
+        'nama_jurusan',
+        'spp',
+        'dsp'
+
     ];
 
     public function siswa()

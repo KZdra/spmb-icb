@@ -44,7 +44,32 @@ class SiswaController extends Controller
                 'mgm' => $validated['mgm'],
                 'created_at' => Carbon::now(),
             ];
+            if ($pendaftaranData['jalur_pendaftaran'] === 'RMP') {
+                if ($request->hasFile('dtks')) {
+                    $student_name = str_replace(' ', '-', strtolower(auth_user()->nama)); // Format nama
+                    $folder = "pendaftar/{$student_name}/berkas_tambahan"; // Path penyimpanan
 
+                    $file = $request->file('dtks');
+                    $dtks = $student_name . '_' . 'DTKS'  . '_' . $file->getClientOriginalName(); // Buat nama unik
+                    $dtks_path = $file->storeAs($folder, $dtks, 'public'); // Simpan di storage
+
+                } else {
+                    $dtks = null;
+                    $dtks_path = null;
+                }
+                if ($request->hasFile('kip')) {
+                    $student_name = str_replace(' ', '-', strtolower(auth_user()->nama)); // Format nama
+                    $folder = "pendaftar/{$student_name}/berkas_tambahan"; // Path penyimpanan
+
+                    $file = $request->file('kip');
+                    $kip = $student_name . '_' . 'KIP'  . '_' . $file->getClientOriginalName(); // Buat nama unik
+                    $kip_path = $file->storeAs($folder, $kip, 'public'); // Simpan di storage
+
+                } else {
+                    $kip = null;
+                    $kip_path = null;
+                }
+            }
             // Jika mgm adalah 'Y', tambahkan nama_mgm dan asal_mgm
             if ($validated['mgm'] == true || $validated['mgm'] == 1) {
                 $pendaftaranData['nama_mgm'] = $request->nama_mgm;
@@ -54,7 +79,41 @@ class SiswaController extends Controller
                 $pendaftaranData['asal_mgm'] = null;
             }
             // Menyimpan data menggunakan query builder
-            DB::table('siswas')->insert($pendaftaranData);
+            $s_id = DB::table('siswas')->insertGetId($pendaftaranData);
+
+            if ($pendaftaranData['jalur_pendaftaran'] === 'RMP') {
+                if ($request->hasFile('dtks')) {
+                    $student_name = str_replace(' ', '-', strtolower(auth_user()->nama)); // Format nama
+                    $folder = "pendaftar/{$student_name}/berkas_tambahan"; // Path penyimpanan
+
+                    $file = $request->file('dtks');
+                    $dtks = $student_name . '_' . 'DTKS'  . '_' . $file->getClientOriginalName(); // Buat nama unik
+                    $dtks_path = $file->storeAs($folder, $dtks, 'public'); // Simpan di storage
+
+                } else {
+                    $dtks = null;
+                    $dtks_path = null;
+                }
+                if ($request->hasFile('kip')) {
+                    $student_name = str_replace(' ', '-', strtolower(auth_user()->nama)); // Format nama
+                    $folder = "pendaftar/{$student_name}/berkas_tambahan"; // Path penyimpanan
+
+                    $file = $request->file('kip');
+                    $kip = $student_name . '_' . 'KIP'  . '_' . $file->getClientOriginalName(); // Buat nama unik
+                    $kip_path = $file->storeAs($folder, $kip, 'public'); // Simpan di storage
+
+                } else {
+                    $kip = null;
+                    $kip_path = null;
+                }
+                DB::table('berkas_tambahans')->insert([
+                    'siswa_id' => $s_id,
+                    'dtks' => $dtks,
+                    'kip' => $kip,
+                    'kip_path' => $kip_path,
+                    'created_at' => Carbon::now()
+                ]);
+            }
             DB::commit();
             Alert::success('success', 'Pendaftaran berhasil!');
             return redirect()->route('siswa.masuk');
@@ -99,8 +158,8 @@ class SiswaController extends Controller
     public function dataDiri(Request $request)
     {
         $listJurusan = DB::table('m_jurusans')->select('id', 'nama_jurusan')->orderBy('nama_jurusan', 'ASC')->get();
-        $dataTambahan = Sdatatambahan::where('siswa_id',auth_user()->id)->first();
-        return view('siswa.datadiri', compact('listJurusan','dataTambahan'));
+        $dataTambahan = Sdatatambahan::where('siswa_id', auth_user()->id)->first();
+        return view('siswa.datadiri', compact('listJurusan', 'dataTambahan'));
     }
     public function UpdateData(Request $request)
     {
@@ -147,6 +206,38 @@ class SiswaController extends Controller
                     $pendaftaranData['asal_mgm'] = null;
                 }
                 // Menyimpan data menggunakan query builder
+                if ($pendaftaranData['jalur_pendaftaran'] === 'RMP') {
+                    if ($request->hasFile('dtks')) {
+                        $student_name = str_replace(' ', '-', strtolower(auth_user()->nama)); // Format nama
+                        $folder = "pendaftar/{$student_name}/berkas_tambahan"; // Path penyimpanan
+
+                        $file = $request->file('dtks');
+                        $dtks = $student_name . '_' . 'DTKS'  . '_' . $file->getClientOriginalName(); // Buat nama unik
+                        $dtks_path = $file->storeAs($folder, $dtks, 'public'); // Simpan di storage
+
+                    } else {
+                        $dtks = null;
+                        $dtks_path = null;
+                    }
+                    if ($request->hasFile('kip')) {
+                        $student_name = str_replace(' ', '-', strtolower(auth_user()->nama)); // Format nama
+                        $folder = "pendaftar/{$student_name}/berkas_tambahan"; // Path penyimpanan
+
+                        $file = $request->file('kip');
+                        $kip = $student_name . '_' . 'KIP'  . '_' . $file->getClientOriginalName(); // Buat nama unik
+                        $kip_path = $file->storeAs($folder, $kip, 'public'); // Simpan di storage
+
+                    } else {
+                        $kip = null;
+                        $kip_path = null;
+                    }
+                    DB::table('berkas_tambahans')->where('siswa_id', $id)->update([
+                        'dtks' => $dtks,
+                        'kip' => $kip,
+                        'kip_path' => $kip_path,
+                        'created_at' => Carbon::now()
+                    ]);
+                }
                 DB::table('siswas')->where('id', $id)->update($pendaftaranData);
                 DB::commit();
                 return response()->json(['message' => 'Data berhasil diUpdate!'], 201);

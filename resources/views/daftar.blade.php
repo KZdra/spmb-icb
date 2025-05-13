@@ -9,8 +9,7 @@
                 <h1 class="mt-4 font-bold text-blue-700">Formulir Pendaftaran</h1>
 
 
-                <form action="{{ route('siswa.daftar.post') }}" method="POST" enctype="multipart/form-data"
-                    class="needs-validation" novalidate>
+                <form action="#" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                     @csrf
 
                     <!-- Data Siswa -->
@@ -74,11 +73,31 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
+                            <label for="payment_type">Pembayaran</label>
+                            <select class="form-control" id="payment_type" name="payment_type" required>
+                                <option value="">Pilih Pembayaran</option>
+                                <option value="cash">Bayar Di Sekolah</option>
+                                <option value="transfer">Bayar Mandiri (Transfer)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row" style="display: none" id="berkas_tambahan">
+                        <div class="form-group ">
+                            <label for="dtks">Upload Berkas DTKS</label>
+                            <input type="file" name="dtks" accept="image/*" id="dtks" class="form-control">
+                        </div>
+                        <div class="form-group ">
+                            <label for="kip">Upload Kartu Indonesia Pintar (KIP)</label>
+                            <input type="file" name="kip" accept="image/*" id="kip" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
                             <label for="id_jurusan">Jurusan</label>
                             <select class="form-control" id="id_jurusan" name="id_jurusan" required>
                                 <option value="">Pilih Jurusan</option>
                                 @foreach ($listJurusan as $j)
-                                <option value="{{$j->id}}">{{$j->nama_jurusan}}</option>
+                                    <option value="{{ $j->id }}">{{ $j->nama_jurusan }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -160,6 +179,20 @@
                 asalMgmGroup.style.display = 'block';
             }
         });
+        document.getElementById('jalur_pendaftaran').addEventListener('change', function() {
+            var v = this.value;
+            var btbhn = document.getElementById('berkas_tambahan');
+            var dtks = document.getElementById('dtks');
+            var kip = document.getElementById('kip');
+            if (v === "RMP") {
+                btbhn.style.display = 'block';
+                kip.required = true
+                dtks.required = true
+            } else {
+                btbhn.style.display = 'none';
+                kip.required = false
+                dtks.required = false
+            }
+        });
     </script>
 @endsection
-

@@ -24,10 +24,14 @@ class MJurusanController extends Controller
         $kont = $request->validate([
 
             'nama' => 'required|string',
+            'spp' => 'required',
+            'dsp' => 'required',
         ]);
         try {
             DB::table('m_jurusans')->insert([
                 'nama_jurusan' => $kont['nama'],
+                'spp' => $kont['spp'],
+                'dsp' => $kont['dsp'],
                 'created_at' => Carbon::now(),
             ]);
             return response()->json(['message' => 'Jurusan berhasil ditambahkan!'], 201);
@@ -42,6 +46,8 @@ class MJurusanController extends Controller
 
             $data = [
                 'nama_jurusan' => $request->nama,
+                'spp' => $request->spp,
+                'dsp' => $request->dsp,
                 'updated_at' => Carbon::now(),
             ];
             DB::table('m_jurusans')->where('id', $id)->update($data);

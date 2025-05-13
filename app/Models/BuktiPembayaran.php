@@ -13,8 +13,10 @@ class BuktiPembayaran extends Model
         'file_name',
         'file_path',
         'status',
+        'account_name',
         'amount',
         'payment_date',
+        'payment_type',
         'created_at',
         'updated_at',
         'alasan'

@@ -31,11 +31,11 @@ class BuktiPembayaranController extends Controller
         $request->validate([
             'bukti_pembayaran' => 'required|mimes:png,jpg',
             'amount' => 'required',
-            'payment_date' => 'required'
+            'payment_date' => 'required',
         ]);
         if ($request->hasFile('bukti_pembayaran')) {
             $student_name = str_replace(' ', '-', strtolower(auth_user()->nama)); // Format nama
-            $folder = "bukti-pembayaran/{$student_name}"; // Path penyimpanan
+            $folder = "pendaftar/{$student_name}/bukti_pembayaran"; // Path penyimpanan
 
             $file = $request->file('bukti_pembayaran');
             $file_name = $student_name . '_' . $request->payment_date  . '_' . $file->getClientOriginalName(); // Buat nama unik
