@@ -9,7 +9,7 @@
                 <h1 class="mt-4 font-bold text-blue-700">Formulir Pendaftaran</h1>
 
 
-                <form action="#" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                <form action="{{route('siswa.daftar.post')}}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                     @csrf
 
                     <!-- Data Siswa -->

@@ -15,11 +15,22 @@ class BuktiPembayaranController extends Controller
     {
         $siswa_id = auth_user()->id;
         $buktiIsExist = false;
-        $dataBukti = DB::table('bukti_pembayarans')->select('id', 'siswa_id', 'status','alasan')->where('siswa_id', '=', $siswa_id)->first();
-        if ($dataBukti) {
+        $dataBukti = DB::table('bukti_pembayarans')->select('id', 'siswa_id','file_name', 'status', 'alasan', 'payment_type')->where('siswa_id', '=', $siswa_id)->first();
+        $amountFinal = DB::table('m_jurusans')
+            ->select(
+                'nama_jurusan',
+                'dsp',
+                'spp',
+                DB::raw('150000 AS biaya_formulir'),
+                DB::raw('(dsp + spp + 150000) AS total_biaya_pendaftaran')
+            )
+            ->where('id', auth_user()->id_jurusan)
+            ->first();
+
+        if ($dataBukti->payment_type == 'transfer' && $dataBukti->file_name !== null) {
             $buktiIsExist = true;
         }
-        return view('siswa.pembayaran', compact('buktiIsExist', 'dataBukti'));
+        return view('siswa.pembayaran', compact('buktiIsExist', 'dataBukti', 'amountFinal'));
     }
 
 
@@ -30,7 +41,7 @@ class BuktiPembayaranController extends Controller
     {
         $request->validate([
             'bukti_pembayaran' => 'required|mimes:png,jpg',
-            'amount' => 'required',
+            'account_name' => 'required',
             'payment_date' => 'required',
         ]);
         if ($request->hasFile('bukti_pembayaran')) {
@@ -47,11 +58,10 @@ class BuktiPembayaranController extends Controller
         }
         DB::beginTransaction();
         try {
-            DB::table('bukti_pembayarans')->insert([
-                'siswa_id' => auth_user()->id,
+            DB::table('bukti_pembayarans')->where('siswa_id',auth_user()->id)->update([
                 'file_name' => $file_name,
                 'file_path'  => $file_path,
-                'amount' => $request->amount,
+                'account_name' => $request->payment_date,
                 'payment_date' => $request->payment_date,
                 'created_at' => now()
             ]);

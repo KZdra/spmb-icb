@@ -49,7 +49,11 @@
                             @default
                                 <div class="alert alert-info" role="alert">
                                     <h5 class="mb-0 font-weight-bold">
-                                        <i class="fas fa-info"></i>&nbsp;&nbsp;Pembayaran Sedang Dalam Proses Verifikasi!
+                                        @if ($dataSis->buktiPembayaran->payment_type == 'cash')
+                                            <i class="fas fa-info"></i>&nbsp;&nbsp;Silahkan Melakukan Pembayaran Terlebih Dahulu!
+                                        @else
+                                            <i class="fas fa-info"></i>&nbsp;&nbsp;Pembayaran Sedang Dalam Proses Verifikasi!
+                                        @endif
                                     </h5>
                                 </div>
                         @endswitch

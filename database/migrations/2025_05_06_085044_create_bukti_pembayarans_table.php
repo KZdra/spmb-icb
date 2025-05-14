@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('file_path')->nullable();
             $table->enum('payment_type',['cash','transfer'])->nullable();
             $table->string('account_name')->nullable();
-            $table->decimal('amount', 15, 2);
+            $table->decimal('amount', 15, 2)->nullable();
             $table->date('payment_date')->nullable();
             $table->enum('status', ['Diverifikasi', 'Ditolak', 'Pending'])->default('Pending');
             $table->string('alasan')->nullable();
