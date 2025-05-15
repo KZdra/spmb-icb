@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('m_jurusans', function (Blueprint $table) {
             $table->id();
             $table->string('nama_jurusan');
+            $table->decimal('spp', 15, 2);
+            $table->decimal('dsp', 15, 2);
             $table->timestamps();
         });
     }

@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('bukti_pembayarans', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('siswa_id');
-            $table->string('file_name');
-            $table->string('file_path');
-            $table->decimal('amount', 15, 2);
-            $table->date('payment_date');
+            $table->string('file_name')->nullable();
+            $table->string('file_path')->nullable();
+            $table->enum('payment_type',['cash','transfer'])->nullable();
+            $table->string('account_name')->nullable();
+            $table->decimal('amount', 15, 2)->nullable();
+            $table->date('payment_date')->nullable();
             $table->enum('status', ['Diverifikasi', 'Ditolak', 'Pending'])->default('Pending');
             $table->string('alasan')->nullable();
             $table->timestamps();

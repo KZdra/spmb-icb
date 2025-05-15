@@ -31,6 +31,8 @@
                                 <thead>
                                     <tr>
                                         <th>Nama Jurusan</th>
+                                        <th>SPP</th>
+                                        <th>DSP</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -38,8 +40,11 @@
                                     @foreach ($jurusans as $j)
                                         <tr>
                                             <td>{{ $j->nama_jurusan }}</td>
+                                            <td>{{ rupiah($j->spp) }}</td>
+                                            <td>{{ rupiah($j->dsp) }}</td>
                                             <td><button class="btn btn-primary editUserBtn" data-id="{{ $j->id }}"
-                                                    data-nama="{{ $j->nama_jurusan }}">
+                                                    data-nama="{{ $j->nama_jurusan }}" data-spp="{{ $j->spp }}"
+                                                    data-dsp="{{ $j->dsp }}">
                                                     Edit</button>
                                                 <button class="btn btn-danger delUserBtn"
                                                     data-id="{{ $j->id }}">Delete</button>
@@ -69,6 +74,26 @@
                                             <input type="text" class="form-control" id="nama" name="nama"
                                                 required>
                                         </div>
+                                        <div class="form-group">
+                                            <label for="spp">SPP</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="basic-addon1">Rp.</span>
+                                                </div>
+                                                <input type="text"inputmode="numeric" class="form-control" id="spp"
+                                                    name="spp" required>
+                                            </div>
+
+                                        </div>
+                                         <div class="form-group">
+                                            <label for="dsp">DSP</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="basic-addon1">Rp.</span>
+                                                </div>
+                                                <input type="text"inputmode="numeric" class="form-control" id="dsp"
+                                                    name="dsp" required>
+                                            </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -95,6 +120,8 @@
             $('#inputUserBtn').click(function() {
                 $('#user_id').val('');
                 $('#nama').val('');
+                $('#spp').val('');
+                $('#dsp').val('');
                 $('#userModalLabel').text('Tambah Jurusan');
                 $('#userModal').modal('show');
             });
@@ -111,6 +138,8 @@
                     method: method,
                     data: {
                         nama: $('#nama').val(),
+                        spp: $('#spp').val(),
+                        dsp: $('#dsp').val(),
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
@@ -137,10 +166,14 @@
             $(document).on('click', '.editUserBtn', function() {
                 let id = $(this).data('id');
                 let nama = $(this).data('nama');
+                let spp = $(this).data('spp');
+                let dsp = $(this).data('dsp');
 
 
                 $('#user_id').val(id);
                 $('#nama').val(nama);
+                $('#spp').val(Math.round(spp));
+                $('#dsp').val(Math.round(dsp));
                 $('#userModalLabel').text('Edit Jurusan');
                 $('#userModal').modal('show');
             });

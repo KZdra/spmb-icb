@@ -51,6 +51,7 @@ Route::prefix('admin')->middleware('auth:web')->group(function () {
         Route::delete('jurusan/{id}', [MJurusanController::class, 'destroy'])->name('jurusan.destroy');
         //Verif Pembayaran
         Route::get('verifbayar', [VerifikasiPembayaranController::class, 'index'])->name('verifPembayaran.index');
+        Route::post('verifbayar/upload', [VerifikasiPembayaranController::class, 'inputBukti'])->name('verifPembayaran.inputBukti');
         Route::post('verifbayar/accept', [VerifikasiPembayaranController::class, 'approveStatus'])->name('verifPembayaran.approveStatus');
         Route::post('verifbayar/reject', [VerifikasiPembayaranController::class, 'notApproveStatus'])->name('verifPembayaran.notApproveStatus');
         Route::delete('verifbayar/{id}', [VerifikasiPembayaranController::class, 'inputUlang'])->name('verifPembayaran.inputUlang');
