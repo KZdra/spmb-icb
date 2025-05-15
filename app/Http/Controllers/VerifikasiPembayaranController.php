@@ -54,8 +54,8 @@ class VerifikasiPembayaranController extends Controller
                 'alasan' => $data['alasan'],
                 'updated_at' => now()
             ]);
-            return response()->json(['message' => 'Pembayaran DiTolak!'], 201);
             DB::commit();
+            return response()->json(['message' => 'Pembayaran DiTolak!'], 201);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -76,13 +76,20 @@ class VerifikasiPembayaranController extends Controller
         }
         DB::beginTransaction();
         try {
-            DB::table('bukti_pembayarans')->where('id', $id)->delete();
+            DB::table('bukti_pembayarans')->where('id', $id)->update([
+                'file_name' => null,
+                'file_path'  => null,
+                'payment_date' => null,
+                'account_name' => null,
+                'status'=> 'Pending',
+                'alasan'=> null
+            ]);
             DB::commit();
             return response()->json(['message' => 'Berhasil Request Input Ulang!'], 201);
         } catch (\Exception $e) {
             DB::rollBack();
-            // return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
+            // return response()->json(['message' => $e->getMessage()], 500);
         }
     }
     public function inputBukti(Request $request)
@@ -109,7 +116,6 @@ class VerifikasiPembayaranController extends Controller
             DB::table('bukti_pembayarans')->where('siswa_id', $request->siswa_id)->update([
                 'file_name' => $file_name,
                 'file_path'  => $file_path,
-                'account_name' => $request->payment_date,
                 'payment_date' => $request->payment_date,
                 'created_at' => now()
             ]);

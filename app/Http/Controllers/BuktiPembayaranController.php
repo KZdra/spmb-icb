@@ -61,7 +61,7 @@ class BuktiPembayaranController extends Controller
             DB::table('bukti_pembayarans')->where('siswa_id',auth_user()->id)->update([
                 'file_name' => $file_name,
                 'file_path'  => $file_path,
-                'account_name' => $request->payment_date,
+                'account_name' => $request->account_name,
                 'payment_date' => $request->payment_date,
                 'created_at' => now()
             ]);

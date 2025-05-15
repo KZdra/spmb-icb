@@ -97,9 +97,11 @@
                                                     @break
 
                                                     @default
-                                                        <button class="btn btn-success uploadUserBtn"
-                                                            data-id="{{ $user->id }}">
-                                                            Input Bukti Pembayaran</button>
+                                                        @if ($user->file_path == null && $user->payment_type == 'cash')
+                                                            <button class="btn btn-success uploadUserBtn"
+                                                                data-id="{{ $user->id }}">
+                                                                Input Bukti Pembayaran</button>
+                                                        @endif
                                                         <button class="btn btn-success editUserBtn" data-id="{{ $user->id }}">
                                                             Terima</button>
                                                         <button class="btn btn-danger delUserBtn"

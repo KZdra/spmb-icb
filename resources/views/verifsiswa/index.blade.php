@@ -171,6 +171,14 @@
                                 <th>Alamat Orang Tua</th>
                                 <td id="detail-alamat-ortu"></td>
                             </tr>
+                            {{-- <tr>
+                                <th>DTKS</th>
+                                <td id="detail-alamat-ortu"></td>
+                            </tr>
+                            <tr>
+                                <th>Kip</th>
+                                <td id="detail-alamat-ortu"></td>
+                            </tr> --}}
                         </tbody>
                     </table>
                 </div>
