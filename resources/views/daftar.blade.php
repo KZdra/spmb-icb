@@ -5,11 +5,14 @@
     <main class="container mx-auto my-2">
         <div class="main-content p-3 bg-white rounded shadow-lg w-full">
             <div class="container mt-5">
-                <img src="{{ asset('images/icb.png') }}"width="100" height="100" class="img-fluid">
+                @if ($setting?->logo_path)
+                    <img src="{{ asset('storage/' . $setting->logo_path) }}"width="100" height="100" class="img-fluid">
+                @endif
                 <h1 class="mt-4 font-bold text-blue-700">Formulir Pendaftaran</h1>
 
 
-                <form action="{{route('siswa.daftar.post')}}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                <form action="{{ route('siswa.daftar.post') }}" method="POST" enctype="multipart/form-data"
+                    class="needs-validation" novalidate>
                     @csrf
 
                     <!-- Data Siswa -->

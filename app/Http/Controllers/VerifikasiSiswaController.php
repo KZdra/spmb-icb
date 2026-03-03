@@ -43,7 +43,7 @@ class VerifikasiSiswaController extends Controller
     {
         $datasis = Siswa::with(['dataTambahan', 'jurusan', 'buktiPembayaran'])
             ->whereHas('buktiPembayaran', function ($query) {
-                $query->where('status', 'Diverifikasi');
+                $query->where('status', 'verified');
             })
             ->get();
         return view('verifsiswa.index', compact('datasis'));

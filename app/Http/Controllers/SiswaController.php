@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MJurusan;
 use App\Models\Sdatatambahan;
-use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
@@ -98,11 +96,15 @@ class SiswaController extends Controller
                 )
                 ->where('id', $validated['id_jurusan'])
                 ->first();
+            $statusAwal = $validated['payment_type'] == 'transfer'
+                ? 'waiting_upload'
+                : 'waiting_cash';
 
             DB::table('bukti_pembayarans')->insert([
                 'siswa_id' => $s_id,
                 'payment_type' => $validated['payment_type'],
                 'amount' => $amountFinal->total_biaya_pendaftaran,
+                'status' => $statusAwal,
                 'created_at' => Carbon::now()
             ]);
             DB::commit();

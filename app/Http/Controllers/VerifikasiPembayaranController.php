@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BuktiPembayaran;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +26,7 @@ class VerifikasiPembayaranController extends Controller
 
         try {
             DB::table('bukti_pembayarans')->where('id', $data['bukti_id'])->update([
-                'status' => 'Diverifikasi',
+                'status' => 'verified',
                 'updated_at' => now()
             ]);
             DB::commit();
@@ -50,7 +49,7 @@ class VerifikasiPembayaranController extends Controller
 
         try {
             DB::table('bukti_pembayarans')->where('id', $data['bukti_id'])->update([
-                'status' => 'Ditolak',
+                'status' => 'rejected',
                 'alasan' => $data['alasan'],
                 'updated_at' => now()
             ]);
@@ -81,8 +80,8 @@ class VerifikasiPembayaranController extends Controller
                 'file_path'  => null,
                 'payment_date' => null,
                 'account_name' => null,
-                'status'=> 'Pending',
-                'alasan'=> null
+                'status' => 'waiting_upload',
+                'alasan' => null
             ]);
             DB::commit();
             return response()->json(['message' => 'Berhasil Request Input Ulang!'], 201);
@@ -117,6 +116,7 @@ class VerifikasiPembayaranController extends Controller
                 'file_name' => $file_name,
                 'file_path'  => $file_path,
                 'payment_date' => $request->payment_date,
+                'status' => 'verified',
                 'created_at' => now()
             ]);
             DB::commit();

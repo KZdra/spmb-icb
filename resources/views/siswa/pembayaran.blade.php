@@ -57,7 +57,7 @@
                     <h5 class="card-header bg-primary"><i class="fas fa-wallet"></i>&nbsp;Status Pembayaran</h5>
                     <div class="card-body">
                         @switch($dataBukti->status)
-                            @case('Diverifikasi')
+                            @case('verified')
                                 <div class="alert alert-success" role="alert">
                                     <h5 class="mb-0 font-weight-bold">
                                         <i class="fas fa-check"></i>&nbsp;&nbsp;Pembayaran Diverifikasi!
@@ -68,7 +68,7 @@
                                 </div>
                             @break
 
-                            @case('Ditolak')
+                            @case('rejected')
                                 <div class="alert alert-danger" role="alert">
                                     <h5 class="mb-0 font-weight-bold">
                                         <i class="fas fa-times"></i>&nbsp;&nbsp;Pembayaran DiTolak! <br>

@@ -16,6 +16,68 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
+            <div class="row mb-2 justify-content-center">
+                <div class="col-md-2">
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>{{ $paymentStats->pending }}</h3>
+                            <p>Pending</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>{{ $paymentStats->verified }}</h3>
+                            <p>Verified</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3>{{ $paymentStats->rejected }}</h3>
+                            <p>Rejected</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="small-box bg-secondary">
+                        <div class="inner">
+                            <h3>{{ $paymentStats->waiting_upload }}</h3>
+                            <p>Waiting Upload</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>{{ $paymentStats->waiting_cash }}</h3>
+                            <p>Waiting Cash</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">

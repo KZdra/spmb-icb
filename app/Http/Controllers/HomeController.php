@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -24,7 +23,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-
         $chartData = DB::table('siswas')
             ->join('m_jurusans', 'siswas.id_jurusan', '=', 'm_jurusans.id')
             ->select(
@@ -37,6 +35,18 @@ class HomeController extends Controller
             ->groupBy('m_jurusans.nama_jurusan')
             ->get()
             ->toArray();
-        return view('home', compact('chartData'));
+
+        $paymentStats = DB::table('bukti_pembayarans')
+            ->selectRaw("
+            COUNT(*) as total,
+            SUM(status = 'pending') as pending,
+            SUM(status = 'verified') as verified,
+            SUM(status = 'rejected') as rejected,
+            SUM(status = 'waiting_upload') as waiting_upload,
+            SUM(status = 'waiting_cash') as waiting_cash
+        ")
+            ->first();
+
+        return view('home', compact('chartData', 'paymentStats'));
     }
 }

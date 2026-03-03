@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BuktiPembayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +14,7 @@ class BuktiPembayaranController extends Controller
     {
         $siswa_id = auth_user()->id;
         $buktiIsExist = false;
-        $dataBukti = DB::table('bukti_pembayarans')->select('id', 'siswa_id','file_name', 'status', 'alasan', 'payment_type')->where('siswa_id', '=', $siswa_id)->first();
+        $dataBukti = DB::table('bukti_pembayarans')->select('id', 'siswa_id', 'file_name', 'status', 'alasan', 'payment_type')->where('siswa_id', '=', $siswa_id)->first();
         $amountFinal = DB::table('m_jurusans')
             ->select(
                 'nama_jurusan',
@@ -58,11 +57,12 @@ class BuktiPembayaranController extends Controller
         }
         DB::beginTransaction();
         try {
-            DB::table('bukti_pembayarans')->where('siswa_id',auth_user()->id)->update([
+            DB::table('bukti_pembayarans')->where('siswa_id', auth_user()->id)->update([
                 'file_name' => $file_name,
                 'file_path'  => $file_path,
                 'account_name' => $request->account_name,
                 'payment_date' => $request->payment_date,
+                'status' => $request->status ?? 'pending',
                 'created_at' => now()
             ]);
             DB::commit();

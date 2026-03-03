@@ -14,19 +14,32 @@
     <link rel="stylesheet" href="{{ asset('css/fontawesome.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.min.css') }}">
-    <link rel="shortcut icon" href="{{ asset('images/icb.png') }}" type="image/x-icon">
-
+    @if ($setting?->logo_path)
+        <link rel="shortcut icon" href="{{ asset('storage/' . $setting->logo_path) }}" type="image/x-icon">
+    @endif
 </head>
 
 <body>
     @include('sweetalert::alert')
     <nav class="navbar sticky-top  navbar-expand-lg navbar-light bg-light shadow px-5">
         @auth
-            <a class="navbar-brand" href="{{ route('siswa.dashboard') }}">SPMB ICB-Teknika</a>
+            <a class="navbar-brand" href="{{ route('siswa.dashboard') }}">
+                @if ($setting?->logo_path)
+                    <img src="{{ asset('storage/' . $setting->logo_path) }}" alt="" height="30"
+                        class="d-inline-block align-text-top">
+                @endif
+                {{ $setting->app_name ?? config('app.name', 'Laravel') }}
+            </a>
         @endauth
 
         @guest
-            <a class="navbar-brand" href="/">SPMB ICB-Teknika</a>
+            <a class="navbar-brand" href="{{ route('siswa.dashboard') }}">
+                @if ($setting?->logo_path)
+                    <img src="{{ asset('storage/' . $setting->logo_path) }}" alt="" height="30"
+                        class="d-inline-block align-text-top">
+                @endif
+                {{ $setting->app_name ?? config('app.name', 'Laravel') }}
+            </a>
         @endguest
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
@@ -35,7 +48,6 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-            <!-- Hapus <ul> dan <li> untuk menghilangkan menu -->
             <div class="ml-auto">
                 @guest
                     @if (request()->is('siswa/login'))

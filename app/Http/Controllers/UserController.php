@@ -35,8 +35,8 @@ class UserController extends Controller
             ]);
             return response()->json(['message' => 'User berhasil ditambahkan!'], 201);
         } catch (\Exception $e) {
-            // return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
+            // return response()->json(['message' => $e->getMessage()], 500);
         }
     }
     public function update(Request $request, $id)
@@ -66,8 +66,8 @@ class UserController extends Controller
             DB::table('users')->where('id', $id)->delete();
             return response()->json(['message' => 'User berhasil diUpdate!'], 201);
         } catch (\Exception $e) {
-            // return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
+            // return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 }

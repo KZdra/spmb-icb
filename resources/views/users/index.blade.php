@@ -129,14 +129,13 @@
             $('#userForm').submit(function(e) {
                 e.preventDefault();
                 let id = $('#user_id').val();
-                let url = id ? `verifbayar/${id}` : "{{ route('users.store') }}";
+                let url = id ? `users/${id}` : "{{ route('users.store') }}";
                 let method = id ? "PUT" : "POST";
 
                 $.ajax({
                     url: url,
                     method: method,
                     data: {
-                        class_id: $('#class_id').val(),
                         role_id: $('#role_id').val(),
                         nama: $('#nama').val(),
                         email: $('#email').val(),

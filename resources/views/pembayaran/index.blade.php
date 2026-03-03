@@ -26,7 +26,16 @@
 
                     <div class="card">
                         <div class="card-body p-2">
-
+                            <div class="mb-3">
+                                <select id="statusFilter" class="form-control w-25">
+                                    <option value="">-- Semua Status --</option>
+                                    <option value="Verified">Diverifikasi</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Rejected">Ditolak</option>
+                                    <option value="Waiting Upload">Pembayaran Transfer</option>
+                                    <option value="Waiting Cash">Pembayaran Cash</option>
+                                </select>
+                            </div>
                             <table class="table" id="usersTable">
                                 <thead>
                                     <tr>
@@ -51,25 +60,37 @@
                                             <td>{{ \Carbon\Carbon::parse($user->payment_date)->locale('id')->translatedFormat('d F Y') }}
                                             <td>{{ $user->payment_type == 'cash' ? 'Bayar Di Sekolah' : 'Bayar Mandiri (transfer bank)' }}
                                             <td>
-                                                <p
-                                                    class="@switch($user->status)
-                                                        @case('Diverifikasi')
-                                                                badge
-                                                                bg-success
-                                                                @break
-                                                            @case('Pending')
-                                                                badge
-                                                                bg-warning
-                                                                @break
-                                                            @case('Ditolak')
-                                                                badge
-                                                                bg-danger
-                                                                @break
-                                                            @default
-                                                                badge
-                                                                bg-muted
-                                                        @endswitch">
-                                                    {{ $user->status }}</p>
+                                                @switch($user->status)
+                                                    @case('verified')
+                                                        <p class="badge bg-success">
+                                                            <i class="fas fa-check-circle"></i> Verified
+                                                        </p>
+                                                    @break
+
+                                                    @case('pending')
+                                                        <p class="badge bg-warning text-dark">
+                                                            <i class="fas fa-clock"></i> Pending
+                                                        </p>
+                                                    @break
+
+                                                    @case('rejected')
+                                                        <p class="badge bg-danger">
+                                                            <i class="fas fa-times-circle"></i> Rejected
+                                                        </p>
+                                                    @break
+
+                                                    @case('waiting_upload')
+                                                        <p class="badge bg-secondary">
+                                                            <i class="fas fa-upload"></i> Waiting Upload
+                                                        </p>
+                                                    @break
+
+                                                    @case('waiting_cash')
+                                                        <p class="badge bg-info">
+                                                            <i class="fas fa-hand-holding-usd"></i> Waiting Cash
+                                                        </p>
+                                                    @break
+                                                @endswitch
                                             </td>
                                             </td>
                                             <td id="viewer-container">
@@ -85,23 +106,28 @@
                                             </td>
                                             <td>
                                                 @switch($user->status)
-                                                    @case('Diverifikasi')
+                                                    @case('verified')
                                                         <p class="font-weight-bold badge bg-success">Telah DiVerifikasi!</p>
                                                     @break
 
-                                                    @case('Ditolak')
+                                                    @case('rejected')
                                                         <p class="font-weight-bold badge bg-danger">Telah Ditolak!</p>
                                                         <button class="btn btn-success inputUlangBtn"
                                                             data-id="{{ $user->id }}">
                                                             Input Ulang</button>
                                                     @break
 
+                                                    @case('waiting_cash')
+                                                        <button class="btn btn-success mb-1 uploadUserBtn"
+                                                            data-id="{{ $user->id }}">
+                                                            Input Bukti Pembayaran</button>
+                                                    @break
+
+                                                    @case('waiting_upload')
+                                                        <p class="font-weight-bold badge bg-success">Bukti Belum Di Upload!</p>
+                                                    @break
+
                                                     @default
-                                                        @if ($user->file_path == null && $user->payment_type == 'cash')
-                                                            <button class="btn btn-success uploadUserBtn"
-                                                                data-id="{{ $user->id }}">
-                                                                Input Bukti Pembayaran</button>
-                                                        @endif
                                                         <button class="btn btn-success editUserBtn" data-id="{{ $user->id }}">
                                                             Terima</button>
                                                         <button class="btn btn-danger delUserBtn"
@@ -157,8 +183,8 @@
                                         <input type="hidden" id="user_id">
                                         <div class="form-group">
                                             <label for="payment_date">Tanggal Pembayaran</label>
-                                            <input type="date" class="form-control" id="payment_date" name="payment_date"
-                                                required>
+                                            <input type="date" class="form-control" id="payment_date"
+                                                name="payment_date" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="bukti_pembayaran">Bukti Pembayaran</label>
@@ -188,7 +214,9 @@
             let table = $('#usersTable').DataTable({
                 responsive: true
             });
-
+            $('#statusFilter').on('change', function() {
+                table.column(6).search(this.value).draw();
+            });
 
             // Tampilkan Modal Edit Kelas
             $(document).on('click', '.editUserBtn', function() {

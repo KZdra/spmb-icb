@@ -4,7 +4,10 @@
     <main class="container min-vh-100 d-flex justify-content-center align-items-center">
         <div class="p-4 bg-white rounded shadow-lg w-100" style="max-width: 500px;">
             <div class="header text-center mb-4">
-                <img src="{{ asset('images/icb.png') }}" width="100" height="100" class="img-fluid mb-2">
+                @if ($setting?->logo_path)
+                    <img src="{{ asset('storage/' . $setting->logo_path) }}" width="100" height="100"
+                        class="img-fluid mb-2">
+                @endif
                 <h2 class="font-weight-bold">Login Siswa</h2>
             </div>
             <form action="{{ route('siswa.masuk.post') }}" method="POST">
@@ -24,4 +27,3 @@
         </div>
     </main>
 @endsection
-

@@ -37,6 +37,7 @@ class SidebarServiceProvider extends ServiceProvider
                     'icon' => 'far fa-address-card',
                     'label' => __('Verifikasi Siswa'),
                 ],
+
             ];
             $collapseNavItems = [
                 [
@@ -52,14 +53,21 @@ class SidebarServiceProvider extends ServiceProvider
                             'route' => 'users.index',
                             'icon' => 'fas fa-users-cog',
                             'label' => __('Manajemen User')
+                        ],
+                        [
+                            'route' => 'appconfig.index',
+                            'icon' => 'fas fa-cogs',
+                            'label' => __('Pengaturan Aplikasi')
                         ]
                     ]
                 ],
             ];
 
+
             $view->with([
                 'navItems' => $navItems,
                 'collapseNavItems' => $collapseNavItems
+
             ]);
         });
     }

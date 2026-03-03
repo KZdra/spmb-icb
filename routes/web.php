@@ -3,9 +3,11 @@
 use App\Http\Controllers\BuktiPembayaranController;
 use App\Http\Controllers\MJurusanController;
 use App\Http\Controllers\PendaftaranController;
+use App\Http\Controllers\PengaturanAplikasiController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\VerifikasiPembayaranController;
 use App\Http\Controllers\VerifikasiSiswaController;
+use App\Models\PengaturanAplikasi;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -63,5 +65,8 @@ Route::prefix('admin')->middleware('auth:web')->group(function () {
         //Profile Solo
         Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
         Route::put('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+        // Settings
+        Route::get('settings', [PengaturanAplikasiController::class, 'index'])->name('appconfig.index');
+        Route::post('settings', [PengaturanAplikasiController::class, 'store'])->name('appconfig.store');
     });
 });
