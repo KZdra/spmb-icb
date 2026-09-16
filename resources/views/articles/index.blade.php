@@ -68,7 +68,7 @@
                                             {{ $art->judul }}
                                         </div>
                                         <small class="text-muted d-block" style="max-width: 450px;">
-                                            {{ Str::limit($art->ringkasan, 100) }}
+                                            {{ Str::limit(strip_tags($art->ringkasan ?: $art->konten), 100) }}
                                         </small>
                                         <small class="text-secondary">
                                             <i class="far fa-calendar-alt mr-1"></i> {{ $art->created_at->format('d M Y, H:i') }}

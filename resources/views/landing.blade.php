@@ -1127,7 +1127,7 @@
                                     </a>
                                 </h5>
                                 <p class="text-muted mb-4" style="font-size: 0.92rem; line-height: 1.6;">
-                                    {{ Str::limit($art->ringkasan, 110) }}
+                                    {{ Str::limit(strip_tags($art->ringkasan ?: $art->konten), 110) }}
                                 </p>
                                 <div class="mt-auto">
                                     <a href="{{ route('artikel.show', $art->slug) }}" class="btn btn-outline-primary btn-sm font-weight-bold" style="border-radius: 8px;">

@@ -99,7 +99,7 @@
                                 <div id="word-count">0 kata</div>
 
                                 {{-- Hidden textarea synced with Quill --}}
-                                <textarea id="konten" name="konten" style="display:none;" required>{{ old('konten') }}</textarea>
+                                <textarea id="konten" name="konten" style="display:none;" required>{!! old('konten') !!}</textarea>
                             </div>
                         </div>
 

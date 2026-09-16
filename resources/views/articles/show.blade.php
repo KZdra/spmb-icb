@@ -54,8 +54,61 @@
                     </div>
                 @endif
 
-                <div class="article-body text-dark" style="font-size: 1.05rem; line-height: 1.8;">
-                    {!! nl2br(e($article->konten)) !!}
+                <style>
+                    .article-body {
+                        font-size: 1.05rem;
+                        line-height: 1.85;
+                        color: #2D3748;
+                    }
+                    .article-body p {
+                        margin-bottom: 1.25rem;
+                    }
+                    .article-body h1, .article-body h2, .article-body h3, .article-body h4, .article-body h5, .article-body h6 {
+                        font-weight: 700;
+                        color: #1A202C;
+                        margin-top: 1.75rem;
+                        margin-bottom: 0.75rem;
+                    }
+                    .article-body ul, .article-body ol {
+                        margin-bottom: 1.25rem;
+                        padding-left: 1.75rem;
+                    }
+                    .article-body li {
+                        margin-bottom: 0.5rem;
+                    }
+                    .article-body img {
+                        max-width: 100%;
+                        height: auto !important;
+                        border-radius: 10px;
+                        margin: 1.5rem 0;
+                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                    }
+                    .article-body blockquote {
+                        border-left: 4px solid #1A56DB;
+                        padding: 0.75rem 1.25rem;
+                        background: #F8FAFC;
+                        border-radius: 0 8px 8px 0;
+                        margin: 1.5rem 0;
+                        font-style: italic;
+                        color: #4A5568;
+                    }
+                    .article-body table {
+                        width: 100%;
+                        margin-bottom: 1.5rem;
+                        border-collapse: collapse;
+                    }
+                    .article-body table th, .article-body table td {
+                        border: 1px solid #E2E8F0;
+                        padding: 0.75rem;
+                    }
+                    .article-body table th {
+                        background: #F1F5F9;
+                        font-weight: 600;
+                    }
+                </style>
+
+                <div class="article-body text-dark">
+                    {!! $article->konten !!}
                 </div>
 
                 <!-- Bagikan Artikel -->
