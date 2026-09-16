@@ -217,7 +217,7 @@
     <footer class="site-footer-slim">
         <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between text-center text-md-left gap-2">
             <div>
-                &copy; {{ date('Y') }} <strong>{{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }}</strong>. All rights reserved.
+                &copy; {{ date('Y') }} <strong>{{ $setting->atas_nama ?? ($setting->app_name ?? 'SMK ICB Cinta Teknika') }}</strong>. All rights reserved. Developed by <strong>InDev</strong>
             </div>
             <div class="mt-2 mt-md-0">
                 <a href="{{ url('/') }}" class="mr-3"><i class="fas fa-arrow-left mr-1"></i> Kembali ke Beranda</a>

@@ -338,9 +338,13 @@
     </div>
 
     <!-- Security Badge & Footer -->
-    <div class="text-center mt-3 text-muted small" style="font-size: 0.8rem;">
-        <span class="mr-2"><i class="fas fa-shield-alt text-success mr-1"></i> Sistem Terenkripsi & Terverifikasi</span>
-        <span>• &copy; {{ date('Y') }} {{ $appName }}</span>
+    <div class="text-center mt-3 text-muted small" style="font-size: 0.82rem; line-height: 1.6;">
+        <div class="mb-1">
+            <i class="fas fa-shield-alt text-success mr-1"></i> Sistem Terenkripsi & Terverifikasi
+        </div>
+        <div>
+            &copy; {{ date('Y') }} <strong>{{ $schoolName }}</strong>. Developed by <strong class="text-dark">InDev</strong>
+        </div>
     </div>
 </div>
 @endsection

@@ -1675,7 +1675,7 @@
             </div>
 
             <div class="footer-bottom text-center text-muted">
-                <p class="mb-0">&copy; {{ date('Y') }} {{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }}. All rights reserved. Developed for SPMB Portal.</p>
+                <p class="mb-0">&copy; {{ date('Y') }} <strong>{{ $setting->atas_nama ?? ($setting->app_name ?? 'SMK ICB Cinta Teknika') }}</strong>. All rights reserved. Developed by <strong>InDev</strong>.</p>
             </div>
         </div>
     </footer>

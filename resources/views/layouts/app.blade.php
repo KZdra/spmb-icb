@@ -106,7 +106,7 @@
                 {{ date('Y') }}
             </div>
             <!-- Default to the left -->
-            © {{ date('Y') }} Teknika-Dev. All rights reserved.
+            &copy; {{ date('Y') }} <strong>{{ $setting->atas_nama ?? ($setting->app_name ?? 'SMK ICB Cinta Teknika') }}</strong>. All rights reserved. Developed by <strong>InDev</strong>.
 
         </footer>
     </div>
