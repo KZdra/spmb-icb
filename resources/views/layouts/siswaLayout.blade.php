@@ -1,10 +1,49 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" prefix="og: https://ogp.me/ns#">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', config('app.name', 'Laravel'))</title>
+
+    <!-- SEO & Social Media Preview Cards (Open Graph & Twitter) -->
+    @if(View::hasSection('meta'))
+        @yield('meta')
+    @else
+        @php
+            $defaultTitle = ($setting->app_name ?? 'SPMB') . ' ' . ($setting->atas_nama ?? 'SMK ICB Cinta Teknika') . ' - TA ' . ($setting->tahun_ajaran ?? '2027/2028');
+            $defaultDesc = 'Portal Resmi Sistem Penerimaan Murid Baru (SPMB) ' . ($setting->atas_nama ?? 'SMK ICB Cinta Teknika') . ' Tahun Ajaran ' . ($setting->tahun_ajaran ?? '2027/2028') . '. Pendaftaran online cepat, transparan, dan akurat.';
+            $defaultImage = !empty($setting?->logo_path) ? asset('storage/' . $setting->logo_path) : asset('images/icb.png');
+        @endphp
+        <meta name="description" content="{{ $defaultDesc }}">
+        <meta name="keywords" content="SPMB, PPDB, {{ $setting->atas_nama ?? 'SMK ICB Cinta Teknika' }}, Pendaftaran Siswa Baru, Sekolah Kejuruan, Bandung">
+        <meta name="author" content="{{ $setting->atas_nama ?? 'SMK ICB Cinta Teknika' }}">
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="{{ url()->current() }}">
+
+        <!-- Open Graph / Facebook / WhatsApp -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:title" content="{{ $defaultTitle }}">
+        <meta property="og:description" content="{{ $defaultDesc }}">
+        <meta property="og:image" content="{{ $defaultImage }}">
+        <meta property="og:image:secure_url" content="{{ $defaultImage }}">
+        <meta property="og:image:type" content="image/jpeg">
+        <meta property="og:site_name" content="{{ $setting->atas_nama ?? ($setting->app_name ?? 'SPMB Online') }}">
+        <meta property="og:locale" content="id_ID">
+
+        <!-- Schema.org Microdata -->
+        <meta itemprop="name" content="{{ $defaultTitle }}">
+        <meta itemprop="description" content="{{ $defaultDesc }}">
+        <meta itemprop="image" content="{{ $defaultImage }}">
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:url" content="{{ url()->current() }}">
+        <meta name="twitter:title" content="{{ $defaultTitle }}">
+        <meta name="twitter:description" content="{{ $defaultDesc }}">
+        <meta name="twitter:image" content="{{ $defaultImage }}">
+    @endif
 
     <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -217,7 +256,7 @@
     <footer class="site-footer-slim">
         <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between text-center text-md-left gap-2">
             <div>
-                &copy; {{ date('Y') }} <strong>{{ $setting->atas_nama ?? ($setting->app_name ?? 'SMK ICB Cinta Teknika') }}</strong>. All rights reserved. Developed by <strong>InDev</strong>
+                &copy; {{ date('Y') }} <strong>{{ $setting->atas_nama ?? ($setting->app_name ?? 'SMK ICB Cinta Teknika') }}</strong>. All rights reserved. Developed by <a href="https://kzdra.github.io/" target="_blank" rel="noopener noreferrer" class="text-white font-weight-bold" style="text-decoration: underline;">InDev</a>
             </div>
             <div class="mt-2 mt-md-0">
                 <a href="{{ url('/') }}" class="mr-3"><i class="fas fa-arrow-left mr-1"></i> Kembali ke Beranda</a>

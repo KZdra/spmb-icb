@@ -1,14 +1,49 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" prefix="og: https://ogp.me/ns#">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SPMB {{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }} - Pendaftaran Siswa Baru {{ $setting->tahun_ajaran ?? '2027/2028' }}</title>
+    @php
+        $siteTitle = 'SPMB ' . ($setting->app_name ?? 'SMK ICB Cinta Teknika') . ' - Pendaftaran Siswa Baru TA ' . ($setting->tahun_ajaran ?? '2027/2028');
+        $siteDesc = 'Portal Resmi Penerimaan Peserta Didik Baru (SPMB) ' . ($setting->atas_nama ?? 'SMK ICB Cinta Teknika') . ' Tahun Ajaran ' . ($setting->tahun_ajaran ?? '2027/2028') . '. Terakreditasi A (Unggul). Daftar online 24 jam cepat & mudah!';
+        $siteImage = !empty($setting?->logo_path) ? asset('storage/' . $setting->logo_path) : asset('images/icb.png');
+        $siteUrl = url('/');
+    @endphp
 
-    <meta name="description"
-        content="Penerimaan Peserta Didik Baru (SPMB) SMK ICB Cinta Teknika Tahun Ajaran {{ $setting->tahun_ajaran ?? '2027/2028' }}. Terakreditasi A (Unggul). Siap Kerja, Siap Kuliah, Siap Berprestasi.">
-    <meta name="keywords" content="SPMB, PPDB, SMK ICB Cinta Teknika, SMK ICB, Bandung, Pendaftaran Siswa Baru">
+    <title>{{ $siteTitle }}</title>
+
+    <meta name="description" content="{{ $siteDesc }}">
+    <meta name="keywords" content="SPMB, PPDB, {{ $setting->atas_nama ?? 'SMK ICB Cinta Teknika' }}, SMK ICB, Bandung, Pendaftaran Siswa Baru, Sekolah Kejuruan, Penerimaan Murid Baru">
+    <meta name="author" content="{{ $setting->atas_nama ?? 'SMK ICB Cinta Teknika' }}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ $siteUrl }}">
+
+    <!-- Open Graph / Facebook / WhatsApp Preview Card -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ $siteUrl }}">
+    <meta property="og:title" content="{{ $siteTitle }}">
+    <meta property="og:description" content="{{ $siteDesc }}">
+    <meta property="og:image" content="{{ $siteImage }}">
+    <meta property="og:image:secure_url" content="{{ $siteImage }}">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Logo {{ $setting->atas_nama ?? 'SMK ICB Cinta Teknika' }}">
+    <meta property="og:site_name" content="{{ $setting->atas_nama ?? ($setting->app_name ?? 'SMK ICB Cinta Teknika') }}">
+    <meta property="og:locale" content="id_ID">
+
+    <!-- Schema.org Microdata (WhatsApp / Google Fallback) -->
+    <meta itemprop="name" content="{{ $siteTitle }}">
+    <meta itemprop="description" content="{{ $siteDesc }}">
+    <meta itemprop="image" content="{{ $siteImage }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ $siteUrl }}">
+    <meta name="twitter:title" content="{{ $siteTitle }}">
+    <meta name="twitter:description" content="{{ $siteDesc }}">
+    <meta name="twitter:image" content="{{ $siteImage }}">
 
     @include('sweetalert::alert')
 
@@ -1675,7 +1710,7 @@
             </div>
 
             <div class="footer-bottom text-center text-muted">
-                <p class="mb-0">&copy; {{ date('Y') }} <strong>{{ $setting->atas_nama ?? ($setting->app_name ?? 'SMK ICB Cinta Teknika') }}</strong>. All rights reserved. Developed by <strong>InDev</strong>.</p>
+                <p class="mb-0">&copy; {{ date('Y') }} <strong>{{ $setting->atas_nama ?? ($setting->app_name ?? 'SMK ICB Cinta Teknika') }}</strong>. All rights reserved. Developed by <a href="https://kzdra.github.io/" target="_blank" rel="noopener noreferrer" class="text-white font-weight-bold" style="text-decoration: underline;">InDev</a>.</p>
             </div>
         </div>
     </footer>

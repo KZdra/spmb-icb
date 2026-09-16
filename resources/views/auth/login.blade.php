@@ -343,7 +343,7 @@
             <i class="fas fa-shield-alt text-success mr-1"></i> Sistem Terenkripsi & Terverifikasi
         </div>
         <div>
-            &copy; {{ date('Y') }} <strong>{{ $schoolName }}</strong>. Developed by <strong class="text-dark">InDev</strong>
+            &copy; {{ date('Y') }} <strong>{{ $schoolName }}</strong>. Developed by <a href="https://kzdra.github.io/" target="_blank" rel="noopener noreferrer" class="font-weight-bold text-primary" style="text-decoration: underline;">InDev</a>
         </div>
     </div>
 </div>

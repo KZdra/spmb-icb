@@ -1,6 +1,46 @@
 @extends('layouts.siswaLayout')
 
-@section('title', $article->judul . ' - SMK ICB Cinta Teknika')
+@section('title', $article->judul . ' - ' . ($setting->atas_nama ?? 'SMK ICB Cinta Teknika'))
+
+@section('meta')
+    @php
+        $seoTitle = $article->judul . ' - ' . ($setting->atas_nama ?? 'SMK ICB Cinta Teknika');
+        $seoDesc = Str::limit(strip_tags($article->ringkasan ?: $article->konten), 160);
+        $seoImage = $article->gambar 
+            ? asset('storage/' . $article->gambar) 
+            : (!empty($setting?->logo_path) ? asset('storage/' . $setting->logo_path) : asset('images/icb.png'));
+    @endphp
+    <meta name="description" content="{{ $seoDesc }}">
+    <meta name="keywords" content="{{ $article->kategori }}, SPMB, Berita, Informasi, {{ $setting->atas_nama ?? 'SMK ICB' }}">
+    <meta name="author" content="{{ $article->penulis ?? 'Panitia SPMB' }}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ route('artikel.show', $article->slug) }}">
+
+    <!-- Open Graph / Facebook / WhatsApp Card -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ route('artikel.show', $article->slug) }}">
+    <meta property="og:title" content="{{ $seoTitle }}">
+    <meta property="og:description" content="{{ $seoDesc }}">
+    <meta property="og:image" content="{{ $seoImage }}">
+    <meta property="og:image:secure_url" content="{{ $seoImage }}">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:site_name" content="{{ ($setting->app_name ?? 'SPMB') . ' ' . ($setting->atas_nama ?? 'SMK ICB Cinta Teknika') }}">
+    <meta property="og:locale" content="id_ID">
+    <meta property="article:published_time" content="{{ $article->created_at->toIso8601String() }}">
+    <meta property="article:section" content="{{ $article->kategori }}">
+
+    <!-- Schema.org Microdata -->
+    <meta itemprop="name" content="{{ $seoTitle }}">
+    <meta itemprop="description" content="{{ $seoDesc }}">
+    <meta itemprop="image" content="{{ $seoImage }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ route('artikel.show', $article->slug) }}">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
+    <meta name="twitter:description" content="{{ $seoDesc }}">
+    <meta name="twitter:image" content="{{ $seoImage }}">
+@endsection
 
 @section('content')
 <div class="bg-light py-4 border-bottom">

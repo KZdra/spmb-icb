@@ -106,7 +106,7 @@
                 {{ date('Y') }}
             </div>
             <!-- Default to the left -->
-            &copy; {{ date('Y') }} <strong>{{ $setting->atas_nama ?? ($setting->app_name ?? 'SMK ICB Cinta Teknika') }}</strong>. All rights reserved. Developed by <strong>InDev</strong>.
+            &copy; {{ date('Y') }} <strong>{{ $setting->atas_nama ?? ($setting->app_name ?? 'SMK ICB Cinta Teknika') }}</strong>. All rights reserved. Developed by <a href="https://kzdra.github.io/" target="_blank" rel="noopener noreferrer" class="font-weight-bold" style="text-decoration: underline;">InDev</a>.
 
         </footer>
     </div>
