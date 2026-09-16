@@ -11,6 +11,7 @@ class Siswa extends Authenticatable
     protected $table = 'siswas';
 
     protected $fillable = [
+        'kode_pendaftaran',
         'nis',
         'nama',
         'email',
@@ -18,6 +19,8 @@ class Siswa extends Authenticatable
         'jenis_kelamin',
         'agama',
         'asal_sekolah',
+        'nisn',
+        'tahun_lulus',
         'jalur_pendaftaran',
         'id_jurusan',
         'no_hp',

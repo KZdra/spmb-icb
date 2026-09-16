@@ -10,6 +10,7 @@
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
+        "phpoffice/phpspreadsheet": "^5.9",
         "realrashid/sweet-alert": "^7.3"
     },
     "require-dev": {

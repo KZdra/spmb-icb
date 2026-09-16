@@ -28,16 +28,15 @@ class SidebarServiceProvider extends ServiceProvider
                     'label' => __('Dashboard'),
                 ],
                 [
-                    'route' => 'verifPembayaran.index',
-                    'icon' => 'fas fa-file-invoice-dollar',
-                    'label' => __('Verifikasi Pembayaran'),
+                    'route' => 'verifSiswa.index',
+                    'icon' => 'fas fa-user-check',
+                    'label' => __('Verifikasi Pendaftaran'),
                 ],
                 [
-                    'route' => 'verifSiswa.index',
-                    'icon' => 'far fa-address-card',
-                    'label' => __('Verifikasi Siswa'),
+                    'route' => 'articles.index',
+                    'icon' => 'fas fa-newspaper',
+                    'label' => __('CMS Berita & Artikel'),
                 ],
-
             ];
             $collapseNavItems = [
                 [

@@ -85,3 +85,21 @@ if (!function_exists('penyebut')) {
         return ucwords($temp);
     }
 }
+
+if (!function_exists('wa_link')) {
+    function wa_link($phone = null, $text = '')
+    {
+        if (empty($phone)) {
+            $phone = '6281222223333';
+        }
+        $clean = preg_replace('/[^0-9]/', '', (string)$phone);
+        if (str_starts_with($clean, '0')) {
+            $clean = '62' . substr($clean, 1);
+        }
+        $url = "https://wa.me/" . $clean;
+        if (!empty($text)) {
+            $url .= "?text=" . urlencode($text);
+        }
+        return $url;
+    }
+}

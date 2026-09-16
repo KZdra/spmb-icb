@@ -1,46 +1,48 @@
 <?php
 
-use App\Http\Controllers\BuktiPembayaranController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\MJurusanController;
-use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\PengaturanAplikasiController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\VerifikasiPembayaranController;
 use App\Http\Controllers\VerifikasiSiswaController;
+use App\Models\Article;
+use App\Models\MJurusan;
 use App\Models\PengaturanAplikasi;
 use Illuminate\Support\Facades\Route;
 
+// Public Landing Page
 Route::get('/', function () {
-    return view('landing');
-});
+    $jurusans = MJurusan::all();
+    $articles = Article::where('is_published', true)->latest()->take(6)->get();
+    $setting = PengaturanAplikasi::first();
+    return view('landing', compact('jurusans', 'articles', 'setting'));
+})->name('landing');
 
+// Public Article Detail
+Route::get('/artikel/{slug}', [ArticleController::class, 'show'])->name('artikel.show');
+
+// Public Status Pendaftaran
+Route::get('/cek-status', [SiswaController::class, 'cekStatusPage'])->name('pendaftaran.cekStatus');
+Route::post('/cek-status', [SiswaController::class, 'cekStatusPost'])->name('pendaftaran.cekStatus.post');
+
+// Public Pendaftaran Sukses / Tanda Terima
+Route::get('/pendaftaran/sukses', [SiswaController::class, 'pendaftaranSukses'])->name('pendaftaran.sukses');
+
+// Pendaftaran Siswa Baru (tanpa portal/login)
 Route::prefix('siswa')->group(function () {
     Route::get('/register', [SiswaController::class, 'registerPage'])->name('siswa.daftar');
     Route::post('/register', [SiswaController::class, 'register'])->name('siswa.daftar.post');
-    Route::get('/login', function () {
-        return view('masuk');
-    })->name('siswa.masuk');
-    Route::post('/login', [SiswaController::class, 'login'])->name('siswa.masuk.post');
-    Route::post('/logout', [SiswaController::class, 'logout'])->name('siswa.logout');
-    Route::middleware(['auth:siswa', 'siswa'])->group(function () {
-        Route::get('/dashboard', [SiswaController::class, 'dashboard'])->name('siswa.dashboard');
-        Route::get('/datadiri', [SiswaController::class, 'dataDiri'])->name('siswa.datadiri');
-        Route::put('/datadiri/update', [SiswaController::class, 'updateData'])->name('siswa.data.update');
-        Route::post('/datadiri/update2', [SiswaController::class, 'upsertDataTambahan'])->name('siswa.data.upsertDataTambahan');
-        Route::get('/pembayaran', [BuktiPembayaranController::class, 'index'])->name('siswa.pembayaran.index');
-        Route::post('/pembayaran', [BuktiPembayaranController::class, 'store'])->name('siswa.pembayaran.store');
-        Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('siswa.pendaftaran.index');
-    });
 });
 
 Auth::routes([
     'register' => false,
 ]);
+
 Route::prefix('admin')->middleware('auth:web')->group(function () {
     Route::middleware('auth:web')->group(function () {
         //Homepageeeeee
         Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-        Route::view('about', 'about')->name('about');
         //User Management Brooo
         Route::get('users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
         Route::post('users', [\App\Http\Controllers\UserController::class, 'store'])->name('users.store');
@@ -51,22 +53,29 @@ Route::prefix('admin')->middleware('auth:web')->group(function () {
         Route::post('jurusan', [MJurusanController::class, 'store'])->name('jurusan.store');
         Route::put('jurusan/{id}', [MJurusanController::class, 'update'])->name('jurusan.update');
         Route::delete('jurusan/{id}', [MJurusanController::class, 'destroy'])->name('jurusan.destroy');
-        //Verif Pembayaran
-        Route::get('verifbayar', [VerifikasiPembayaranController::class, 'index'])->name('verifPembayaran.index');
+        //Verif Pembayaran (Legacy / Direct Route)
+        Route::get('verifbayar', fn() => redirect()->route('verifSiswa.index'))->name('verifPembayaran.index');
         Route::post('verifbayar/upload', [VerifikasiPembayaranController::class, 'inputBukti'])->name('verifPembayaran.inputBukti');
         Route::post('verifbayar/accept', [VerifikasiPembayaranController::class, 'approveStatus'])->name('verifPembayaran.approveStatus');
         Route::post('verifbayar/reject', [VerifikasiPembayaranController::class, 'notApproveStatus'])->name('verifPembayaran.notApproveStatus');
         Route::delete('verifbayar/{id}', [VerifikasiPembayaranController::class, 'inputUlang'])->name('verifPembayaran.inputUlang');
-        //Verif Siswa
+
+        //Verifikasi Terpadu (1 Pintu)
         Route::get('verifsiswa', [VerifikasiSiswaController::class, 'index'])->name('verifSiswa.index');
+        Route::get('verifsiswa/export/xlsx', [VerifikasiSiswaController::class, 'exportXlsx'])->name('verifSiswa.exportXlsx');
         Route::get('verifsiswa/detail/{id}', [VerifikasiSiswaController::class, 'getDataTambahan'])->name('verifSiswa.getDataTambahan');
         Route::post('verifsiswa/accept', [VerifikasiSiswaController::class, 'approveStatus'])->name('verifSiswa.approveStatus');
+        Route::post('verifsiswa/accept-all', [VerifikasiSiswaController::class, 'approveAll'])->name('verifSiswa.approveAll');
         Route::post('verifsiswa/reject', [VerifikasiSiswaController::class, 'notApproveStatus'])->name('verifSiswa.notApproveStatus');
+        Route::post('verifsiswa/verif-bayar', [VerifikasiSiswaController::class, 'verifBayarDirect'])->name('verifSiswa.verifBayarDirect');
+        Route::post('verifsiswa/tolak-bayar', [VerifikasiSiswaController::class, 'tolakBayarDirect'])->name('verifSiswa.tolakBayarDirect');
         //Profile Solo
         Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
         Route::put('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
         // Settings
         Route::get('settings', [PengaturanAplikasiController::class, 'index'])->name('appconfig.index');
         Route::post('settings', [PengaturanAplikasiController::class, 'store'])->name('appconfig.store');
+        // CMS Artikel
+        Route::resource('articles', ArticleController::class);
     });
 });

@@ -40,6 +40,8 @@ return [
 
         'public' => [
             'driver' => 'local',
+            // 'root' => env('SPMB_PUBLIC_PATH', storage_path('app/public')),
+            // 'url' => env('SPMB_PUBLIC_URL', env('APP_URL').'/storage'),
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',

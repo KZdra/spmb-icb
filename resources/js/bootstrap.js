@@ -1,8 +1,8 @@
-import Popper from '@popperjs/core/dist/umd/popper.js';
-import jQuery from 'jquery';
-import axios from 'axios';
-import 'bootstrap';
-import Swal from 'sweetalert2';
+import Popper from "@popperjs/core/dist/umd/popper.js";
+import jQuery from "jquery";
+import axios from "axios";
+import "bootstrap";
+import Swal from "sweetalert2";
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -11,8 +11,12 @@ import Swal from 'sweetalert2';
  */
 
 window.Popper = Popper;
-window.$ = window.jQuery = jQuery;
-window.Swal = Swal;
+if (typeof window.jQuery === 'undefined') {
+    window.$ = window.jQuery = jQuery;
+} else {
+    window.$ = window.jQuery;
+}
+window.Swal = window.Swal || Swal;
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -22,4 +26,4 @@ window.Swal = Swal;
 
 window.axios = axios;
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";

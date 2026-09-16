@@ -13,20 +13,24 @@ return new class extends Migration
     {
         Schema::create('siswas', function (Blueprint $table) {
             $table->id();
-            $table->string('nis')->nullable()->unique();
+            $table->string('kode_pendaftaran')->nullable()->unique();
+            $table->string('nis', 50)->nullable()->unique();
             $table->string('nama');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('jenis_kelamin', ['Laki-Laki', 'Perempuan']);
-            $table->enum('agama', ['Islam', 'Kristen Protestan', 'Katolik', 'Hindu', 'Buddha', 'Konghucu']);
+            $table->foreignId('id_jurusan')->constrained('m_jurusans')->onDelete('restrict');
+            $table->string('jenis_kelamin', 50);
+            $table->string('agama', 50);
             $table->string('asal_sekolah');
-            $table->enum('jalur_pendaftaran', ['Reguler', 'RMP']);
-            $table->string('no_hp', 13);
+            $table->string('nisn')->nullable();
+            $table->string('tahun_lulus')->nullable();
+            $table->string('jalur_pendaftaran')->default('Reguler (Umum)');
+            $table->string('no_hp', 50);
             $table->boolean('mgm')->default(false);
             $table->string('nama_mgm')->nullable();
             $table->string('asal_mgm')->nullable();
             $table->boolean('isAccepted')->default(false);
-            $table->enum('status', ['Diterima', 'Ditolak', 'Pending'])->default('Pending');
+            $table->string('status', 50)->default('pending');
             $table->rememberToken();
             $table->timestamps();
         });

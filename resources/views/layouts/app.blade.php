@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="{{ asset('css/adminlte.min.css') }}">
     @if ($setting?->logo_path)
         <link rel="shortcut icon" href="{{ asset('storage/' . $setting->logo_path) }}" type="image/x-icon">
+    @else
+        <link rel="shortcut icon" href="{{ asset('images/icb.png') }}" type="image/x-icon">
     @endif
     @yield('styles')
     <style>
@@ -70,6 +72,9 @@
                 @if ($setting?->logo_path)
                     <img src="{{ asset('storage/' . $setting->logo_path) }}"
                         alt="{{ $setting->app_name ?? config('app.name') }} Logo" class="brand-image">
+                @else
+                    <img src="{{ asset('images/icb.png') }}"
+                        alt="Logo" class="brand-image" style="opacity: .8">
                 @endif
                 <span class="brand-text">{{ substr($setting->app_name ?? 'pmb', 0, 13) ?? config('app.name') }}</span>
             </a>
@@ -79,6 +84,7 @@
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
+            @include('layouts.admin_tips_banner')
             @yield('content')
         </div>
         <!-- /.content-wrapper -->

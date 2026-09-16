@@ -2,320 +2,214 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sdatatambahan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
-use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class SiswaController extends Controller
 {
+    /**
+     * Halaman Form Pendaftaran Siswa Baru
+     */
+    public function registerPage(Request $request)
+    {
+        $listJurusan = DB::table('m_jurusans')
+            ->select('id', 'nama_jurusan')
+            ->orderBy('nama_jurusan', 'ASC')
+            ->get();
+        $setting = DB::table('pengaturan_aplikasis')->first();
+        return view('daftar', compact('listJurusan', 'setting'));
+    }
 
+    /**
+     * Proses Submit Formulir Pendaftaran
+     */
     public function register(Request $request)
     {
         DB::beginTransaction();
         try {
             $validated = $request->validate([
-                'nama_siswa' => 'required|string|max:255',
-                'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-                'agama' => 'required|in:Islam,Kristen Protestan,Katolik,Hindu,Buddha,Konghucu',
-                'email' => 'required|email|unique:siswas',
-                'asal_sekolah' => 'required|string|max:255',
-                'jalur_pendaftaran' => 'required|in:Reguler,RMP',
-                'id_jurusan' => 'required',
-                'payment_type' => 'required',
-                'no_hp' => 'required|string|max:20',
-                'mgm' => 'required',
-                'password' => 'required|confirmed|min:6'
+                'jalur_pendaftaran'   => 'required|string|max:255',
+                'id_jurusan'          => 'required|exists:m_jurusans,id',
+                'nama_siswa'          => 'required|string|max:255',
+                'jenis_kelamin'       => 'required|string|max:50',
+                'tempat_lahir'        => 'required|string|max:100',
+                'tanggal_lahir'       => 'required|date',
+                'agama'               => 'required|string|max:50',
+                'alamat'              => 'required|string|max:500',
+                'rt'                  => 'required|string|max:10',
+                'rw'                  => 'required|string|max:10',
+                'kelurahan'           => 'required|string|max:100',
+                'kecamatan'           => 'required|string|max:100',
+                'kota'                => 'required|string|max:100',
+                'provinsi'            => 'required|string|max:100',
+                'no_hp'               => 'required|string|max:25',
+                'email'               => 'required|email|unique:siswas,email',
+                'asal_sekolah'        => 'required|string|max:255',
+                'alamat_sekolah_asal' => 'required|string|max:500',
+                'nisn'                => 'required|string|max:20',
+                'tahun_lulus'         => 'required|string|max:10',
+                'nama_ayah'           => 'required|string|max:100',
+                'telepon_ayah'        => 'required|string|max:25',
+                'nama_ibu'            => 'required|string|max:100',
+                'telepon_ibu'         => 'required|string|max:25',
+                'tinggi_badan'        => 'nullable|numeric|min:100|max:250',
+                'berat_badan'         => 'nullable|numeric|min:20|max:200',
+                'bukti_pembayaran'    => 'required|file|mimes:jpeg,jpg,png,pdf|max:10240',
+                'mgm'                 => 'nullable|in:0,1',
+                'nama_mgm'            => 'nullable|string|max:100',
+                'asal_mgm'            => 'nullable|string|max:100',
             ]);
-            $pendaftaranData = [
-                'nis' => null,
-                'nama' => $validated['nama_siswa'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
-                'jenis_kelamin' => $validated['jenis_kelamin'],
-                'agama' => $validated['agama'],
-                'asal_sekolah' => $validated['asal_sekolah'],
-                'jalur_pendaftaran' => $validated['jalur_pendaftaran'],
-                'id_jurusan' => $validated['id_jurusan'],
-                'no_hp' => $validated['no_hp'],
-                'mgm' => $validated['mgm'],
-                'created_at' => Carbon::now(),
-            ];
-            // Jika mgm adalah 'Y', tambahkan nama_mgm dan asal_mgm
-            if ($validated['mgm'] == true || $validated['mgm'] == 1) {
-                $pendaftaranData['nama_mgm'] = $request->nama_mgm;
-                $pendaftaranData['asal_mgm'] = $request->asal_mgm;
-            } else {
-                $pendaftaranData['nama_mgm'] = null;
-                $pendaftaranData['asal_mgm'] = null;
-            }
-            // dd($pendaftaranData,$validated);
-            // Menyimpan data menggunakan query builder
-            $s_id = DB::table('siswas')->insertGetId($pendaftaranData);
 
-            if ($pendaftaranData['jalur_pendaftaran'] === 'RMP') {
-                if ($request->hasFile('dtks')) {
-                    $student_name = str_replace(' ', '-', strtolower($validated['nama_siswa'])); // Format nama
-                    $folder = "pendaftar/{$student_name}/berkas_tambahan"; // Path penyimpanan
+            // ── Generate Kode Pendaftaran Unik ──────────────────────
+            $tahun = date('Y');
+            $urutan = DB::table('siswas')->whereYear('created_at', $tahun)->count() + 1;
+            $kodePendaftaran = 'ICB-' . $tahun . '-' . str_pad($urutan, 4, '0', STR_PAD_LEFT);
 
-                    $file = $request->file('dtks');
-                    $dtks = $student_name . '_' . 'DTKS'  . '_' . $file->getClientOriginalName(); // Buat nama unik
-                    $dtks_path = $file->storeAs($folder, $dtks, 'public'); // Simpan di storage
+            // ── 1. Simpan Data Pokok Siswa ───────────────────────────
+            $s_id = DB::table('siswas')->insertGetId([
+                'nis'                => null,
+                'kode_pendaftaran'   => $kodePendaftaran,
+                'nama'               => $validated['nama_siswa'],
+                'email'              => $validated['email'],
+                'password'           => Hash::make(Str::random(24)), // internal only, tidak untuk login
+                'jenis_kelamin'      => $validated['jenis_kelamin'],
+                'agama'              => $validated['agama'],
+                'asal_sekolah'       => $validated['asal_sekolah'],
+                'nisn'               => $validated['nisn'],
+                'tahun_lulus'        => $validated['tahun_lulus'],
+                'jalur_pendaftaran'  => $validated['jalur_pendaftaran'],
+                'id_jurusan'         => $validated['id_jurusan'],
+                'no_hp'              => $validated['no_hp'],
+                'mgm'                => $request->mgm ?? 0,
+                'nama_mgm'           => $request->nama_mgm ?? null,
+                'asal_mgm'           => $request->asal_mgm ?? null,
+                'status'             => 'pending',
+                'isAccepted'         => 0,
+                'created_at'         => Carbon::now(),
+                'updated_at'         => Carbon::now(),
+            ]);
 
-                } else {
-                    $dtks = null;
-                    $dtks_path = null;
-                }
-                if ($request->hasFile('kip')) {
-                    $student_name = str_replace(' ', '-', strtolower($validated['nama_siswa'])); // Format nama
-                    $folder = "pendaftar/{$student_name}/berkas_tambahan"; // Path penyimpanan
+            // ── 2. Simpan Data Tambahan ──────────────────────────────
+            DB::table('s_data_tambahans')->insert([
+                'siswa_id'            => $s_id,
+                'tempat_lahir'        => $validated['tempat_lahir'],
+                'tanggal_lahir'       => $validated['tanggal_lahir'],
+                'alamat'              => $validated['alamat'],
+                'rt'                  => $validated['rt'],
+                'rw'                  => $validated['rw'],
+                'kelurahan'           => $validated['kelurahan'],
+                'kecamatan'           => $validated['kecamatan'],
+                'kota'                => $validated['kota'],
+                'provinsi'            => $validated['provinsi'],
+                'alamat_sekolah_asal' => $validated['alamat_sekolah_asal'],
+                'nama_ayah'           => $validated['nama_ayah'],
+                'telepon_ayah'        => $validated['telepon_ayah'],
+                'nama_ibu'            => $validated['nama_ibu'],
+                'telepon_ibu'         => $validated['telepon_ibu'],
+                'tinggi_badan'        => $validated['tinggi_badan'] ?? null,
+                'berat_badan'         => $validated['berat_badan'] ?? null,
+                'nama_orang_tua'      => $validated['nama_ayah'] ?: $validated['nama_ibu'],
+                'no_hp_orang_tua'     => $validated['telepon_ayah'] ?: $validated['telepon_ibu'],
+                'alamat_orang_tua'    => $validated['alamat'],
+                'created_at'          => Carbon::now(),
+                'updated_at'          => Carbon::now(),
+            ]);
 
-                    $file = $request->file('kip');
-                    $kip = $student_name . '_' . 'KIP'  . '_' . $file->getClientOriginalName(); // Buat nama unik
-                    $kip_path = $file->storeAs($folder, $kip, 'public'); // Simpan di storage
+            // ── 3. Upload & Simpan Bukti Pembayaran ─────────────────
+            $file         = $request->file('bukti_pembayaran');
+            $studentClean = preg_replace('/[^a-zA-Z0-9_-]/', '_', strtolower($validated['nama_siswa']));
+            $folder       = "pendaftar/{$studentClean}/bukti_bayar";
+            $fileName     = time() . '_' . $file->getClientOriginalName();
+            $filePath     = $file->storeAs($folder, $fileName, 'public');
 
-                } else {
-                    $kip = null;
-                    $kip_path = null;
-                }
-                DB::table('berkas_tambahans')->insert([
-                    'siswa_id' => $s_id,
-                    'dtks' => $dtks,
-                    'dtks_path' => $dtks_path,
-                    'kip' => $kip,
-                    'kip_path' => $kip_path,
-                    'created_at' => Carbon::now()
-                ]);
-            }
-            $amountFinal = DB::table('m_jurusans')
-                ->select(
-                    DB::raw('(dsp + spp + 150000) AS total_biaya_pendaftaran')
-                )
-                ->where('id', $validated['id_jurusan'])
-                ->first();
-            $statusAwal = $validated['payment_type'] == 'transfer'
-                ? 'waiting_upload'
-                : 'waiting_cash';
+            $setting = DB::table('pengaturan_aplikasis')->first();
+            $amount  = $setting->biaya_pendaftaran ?? 200000;
 
             DB::table('bukti_pembayarans')->insert([
-                'siswa_id' => $s_id,
-                'payment_type' => $validated['payment_type'],
-                'amount' => $amountFinal->total_biaya_pendaftaran,
-                'status' => $statusAwal,
-                'created_at' => Carbon::now()
+                'siswa_id'     => $s_id,
+                'file_name'    => $fileName,
+                'file_path'    => $filePath,
+                'payment_type' => 'transfer',
+                'account_name' => $validated['nama_siswa'],
+                'amount'       => $amount,
+                'payment_date' => Carbon::now()->toDateString(),
+                'status'       => 'pending',
+                'created_at'   => Carbon::now(),
+                'updated_at'   => Carbon::now(),
             ]);
+
             DB::commit();
-            Alert::success('success', 'Pendaftaran berhasil!');
-            return redirect()->route('siswa.masuk');
+
+            // Flash data untuk halaman sukses
+            session()->flash('pendaftaran_baru', [
+                'id'               => $s_id,
+                'kode_pendaftaran' => $kodePendaftaran,
+                'nama'             => $validated['nama_siswa'],
+                'nisn'             => $validated['nisn'],
+                'email'            => $validated['email'],
+                'no_hp'            => $validated['no_hp'],
+                'asal_sekolah'     => $validated['asal_sekolah'],
+                'jalur_pendaftaran'=> $validated['jalur_pendaftaran'],
+                'id_jurusan'       => $validated['id_jurusan'],
+            ]);
+
+            return redirect()->route('pendaftaran.sukses', ['kode' => $kodePendaftaran]);
+
         } catch (\Exception $ex) {
             DB::rollBack();
-            // dd($ex->getMessage());
-            Alert::error('Gagal', $ex->getMessage());
-            return redirect()->back()->with('error', $ex->getMessage());
+            Alert::error('Gagal Mendaftar', $ex->getMessage());
+            return redirect()->back()->withInput()->with('error', $ex->getMessage());
         }
     }
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
 
-        if (Auth::guard('siswa')->attempt($credentials)) {
-            return redirect()->route('siswa.dashboard');
-            // dd('Login As Siswa', auth_user());
+    /**
+     * Halaman Konfirmasi Tanda Terima Pendaftaran Sukses
+     */
+    public function pendaftaranSukses(Request $request)
+    {
+        $kode  = $request->query('kode');
+        $siswa = null;
+
+        if ($kode) {
+            $siswa = DB::table('siswas')
+                ->leftJoin('m_jurusans', 'siswas.id_jurusan', '=', 'm_jurusans.id')
+                ->select('siswas.*', 'm_jurusans.nama_jurusan')
+                ->where('siswas.kode_pendaftaran', $kode)
+                ->first();
         }
-        Alert::error('Login Gagal', 'Email atau password salah');
-        return back();
-    }
-    public function logout(Request $request)
-    {
-        Auth::logout();
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/siswa/login');
+        $setting = DB::table('pengaturan_aplikasis')->first();
+        return view('pendaftaran-sukses', compact('siswa', 'setting', 'kode'));
     }
 
-    public function registerPage(Request $request)
+    /**
+     * Halaman Cek Status Pendaftaran (publik, tanpa login)
+     */
+    public function cekStatusPage()
     {
-        $listJurusan = DB::table('m_jurusans')->select('id', 'nama_jurusan')->orderBy('nama_jurusan', 'ASC')->get();
-        return view('daftar', compact('listJurusan'));
+        $setting = DB::table('pengaturan_aplikasis')->first();
+        return view('cek-status', compact('setting'));
     }
 
-    public function dashboard(Request $request)
+    public function cekStatusPost(Request $request)
     {
-        return view('dashboardSiswa');
-    }
-    public function dataDiri(Request $request)
-    {
-        $listJurusan = DB::table('m_jurusans')->select('id', 'nama_jurusan')->orderBy('nama_jurusan', 'ASC')->get();
-        $dataTambahan = Sdatatambahan::where('siswa_id', auth_user()->id)->first();
-        return view('siswa.datadiri', compact('listJurusan', 'dataTambahan'));
-    }
-    public function UpdateData(Request $request)
-    {
-        $id = auth_user()->id;
-        DB::beginTransaction();
+        $request->validate(['keyword' => 'required|string|max:50']);
 
-        if (auth_user()->isAccepted !== 1) {
-            try {
-                $validated = $request->validate([
-                    'nama_siswa' => 'required|string|max:255',
-                    'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-                    'agama' => 'required|in:Islam,Kristen Protestan,Katolik,Hindu,Buddha,Konghucu',
-                    'email' => 'required|email',
-                    'asal_sekolah' => 'required|string|max:255',
-                    'jalur_pendaftaran' => 'required|in:Reguler,RMP',
-                    'id_jurusan' => 'required',
-                    'no_hp' => 'required|string|max:20',
-                    'mgm' => 'required',
-                ]);
-                $pendaftaranData = [
-                    'nis' => null,
-                    'nama' => $validated['nama_siswa'],
-                    'email' => $validated['email'],
-                    'jenis_kelamin' => $validated['jenis_kelamin'],
-                    'agama' => $validated['agama'],
-                    'asal_sekolah' => $validated['asal_sekolah'],
-                    'jalur_pendaftaran' => $validated['jalur_pendaftaran'],
-                    'id_jurusan' => $validated['id_jurusan'],
-                    'no_hp' => $validated['no_hp'],
-                    'mgm' => $validated['mgm'],
-                    'updated_at' => Carbon::now(),
-                ];
+        $keyword = trim($request->keyword);
+        $siswa = DB::table('siswas')
+            ->leftJoin('m_jurusans', 'siswas.id_jurusan', '=', 'm_jurusans.id')
+            ->leftJoin('bukti_pembayarans', 'siswas.id', '=', 'bukti_pembayarans.siswa_id')
+            ->select('siswas.*', 'm_jurusans.nama_jurusan', 'bukti_pembayarans.status as status_bayar')
+            ->where('siswas.kode_pendaftaran', $keyword)
+            ->orWhere('siswas.nisn', $keyword)
+            ->orWhere('siswas.email', $keyword)
+            ->first();
 
-                if ($request->filled('password')) {
-                    $pendaftaranData['password'] = Hash::make($request->password);
-                }
-
-                // Jika mgm adalah 'Y', tambahkan nama_mgm dan asal_mgm
-                if ($validated['mgm'] == true || $validated['mgm'] == 1) {
-                    $pendaftaranData['nama_mgm'] = $request->nama_mgm;
-                    $pendaftaranData['asal_mgm'] = $request->asal_mgm;
-                } else {
-                    $pendaftaranData['nama_mgm'] = null;
-                    $pendaftaranData['asal_mgm'] = null;
-                }
-                // Menyimpan data menggunakan query builder
-                if ($pendaftaranData['jalur_pendaftaran'] === 'RMP') {
-                    if ($request->hasFile('dtks')) {
-                        $student_name = str_replace(' ', '-', strtolower($validated['nama_siswa'])); // Format nama
-                        $folder = "pendaftar/{$student_name}/berkas_tambahan"; // Path penyimpanan
-
-                        $file = $request->file('dtks');
-                        $dtks = $student_name . '_' . 'DTKS'  . '_' . $file->getClientOriginalName(); // Buat nama unik
-                        $dtks_path = $file->storeAs($folder, $dtks, 'public'); // Simpan di storage
-
-                    } else {
-                        $dtks = null;
-                        $dtks_path = null;
-                    }
-                    if ($request->hasFile('kip')) {
-                        $student_name = str_replace(' ', '-', strtolower($validated['nama_siswa'])); // Format nama
-                        $folder = "pendaftar/{$student_name}/berkas_tambahan"; // Path penyimpanan
-
-                        $file = $request->file('kip');
-                        $kip = $student_name . '_' . 'KIP'  . '_' . $file->getClientOriginalName(); // Buat nama unik
-                        $kip_path = $file->storeAs($folder, $kip, 'public'); // Simpan di storage
-
-                    } else {
-                        $kip = null;
-                        $kip_path = null;
-                    }
-                    DB::table('berkas_tambahans')->where('siswa_id', $id)->update([
-                        'dtks' => $dtks,
-                        'dtks_path' => $dtks_path,
-                        'kip' => $kip,
-                        'kip_path' => $kip_path,
-                        'created_at' => Carbon::now()
-                    ]);
-                }
-                DB::table('siswas')->where('id', $id)->update($pendaftaranData);
-                DB::commit();
-                return response()->json(['message' => 'Data berhasil diUpdate!'], 201);
-            } catch (\Exception $e) {
-                DB::rollBack();
-                return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
-                // return response()->json(['message' => $e->getMessage()], 500);
-            }
-        }
-        return response()->json(['message' => 'Data Sudah Disimpan Permanen tidak Bisaa Di edit'], 500);
-    }
-    public function upsertDataTambahan(Request $request)
-    {
-        // Validasi data yang diterima
-        $validated = $request->validate([
-            'isAbk' => 'required|boolean',
-            'alamat' => 'nullable|string|max:255',
-            'tempat_lahir' => 'nullable|string|max:255',
-            'tanggal_lahir' => 'nullable|date',
-            'nama_orang_tua' => 'nullable|string|max:255',
-            'alamat_orang_tua' => 'nullable|string|max:255',
-            'no_hp_orang_tua' => 'nullable|string|max:20',
-            'pekerjaan_orang_tua' => 'nullable|string|max:255',
-        ]);
-
-        // Data array untuk upsert
-        $data = [
-            'isAbk' => $validated['isAbk'],
-            'alamat' => $validated['alamat'],
-            'tempat_lahir' => $validated['tempat_lahir'],
-            'tanggal_lahir' => $validated['tanggal_lahir'],
-            'nama_orang_tua' => $validated['nama_orang_tua'],
-            'alamat_orang_tua' => $validated['alamat_orang_tua'],
-            'no_hp_orang_tua' => $validated['no_hp_orang_tua'],
-            'pekerjaan_orang_tua' => $validated['pekerjaan_orang_tua'],
-        ];
-
-        // Mendapatkan waktu saat ini
-        $now = now();
-
-        // Menambahkan timestamps
-        $user_id = auth_user()->id; // Ambil user_id dari authenticated user
-
-        try {
-            // Mulai transaksi
-            DB::beginTransaction();
-
-            // Cek apakah data sudah ada
-            $existing = DB::table('s_data_tambahans')->where('siswa_id', $user_id)->first();
-
-            if ($existing) {
-                // Jika data sudah ada (update)
-                $data['updated_at'] = $now;  // Update timestamp
-                DB::table('s_data_tambahans')
-                    ->where('siswa_id', $user_id)
-                    ->update($data);  // Update data
-            } else {
-                // Jika data belum ada (insert)
-                $data['siswa_id'] = $user_id;
-                $data['created_at'] = $now;  // Set created_at untuk insert
-                DB::table('s_data_tambahans')
-                    ->insert($data);  // Insert data
-            }
-
-            // Commit transaksi jika berhasil
-            DB::commit();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Data berhasil diperbarui atau disimpan.'
-            ]);
-        } catch (\Exception $e) {
-            // Rollback transaksi jika terjadi kesalahan
-            DB::rollBack();
-
-            // return response()->json([
-            //     'status' => 'error',
-            //     'message' => 'Terjadi kesalahan, coba lagi.'
-            // ], 500); // Kode error 500 untuk kesalahan server
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 500); // Kode error 500 untuk kesalahan server
-        }
+        $setting = DB::table('pengaturan_aplikasis')->first();
+        return view('cek-status', compact('siswa', 'keyword', 'setting'));
     }
 }

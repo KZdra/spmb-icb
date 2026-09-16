@@ -14,12 +14,14 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = [
-            ['name' => 'Administrator', 'email' => 'admin@x.com', 'password' => Hash::make('admin'), 'role_id' => 1, 'created_at' => now()],
-            ['name' => 'Operator Sekolah', 'email' => 'operator@x.com', 'password' => Hash::make('operator'), 'role_id' => 2, 'created_at' => now()],
-            ['name' => 'Staff PPDB', 'email' => 'staff@x.com', 'password' => Hash::make('staff'), 'role_id' => 3, 'created_at' => now()],
+        $users = [
+            ['id' => 1, 'name' => 'Administrator', 'email' => 'admin@x.com', 'password' => Hash::make('admin'), 'role_id' => 1, 'created_at' => now()],
+            // ['id' => 2, 'name' => 'Operator Sekolah', 'email' => 'operator@x.com', 'password' => Hash::make('operator'), 'role_id' => 2, 'created_at' => now()],
+            // ['id' => 3, 'name' => 'Staff PPDB', 'email' => 'staff@x.com', 'password' => Hash::make('staff'), 'role_id' => 3, 'created_at' => now()],
         ];
 
-        DB::table('users')->insert($roles);
+        foreach ($users as $u) {
+            DB::table('users')->updateOrInsert(['email' => $u['email']], $u);
+        }
     }
 }

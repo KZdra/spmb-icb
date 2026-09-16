@@ -13,17 +13,16 @@ return new class extends Migration
     {
         Schema::create('bukti_pembayarans', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('siswa_id');
+            $table->foreignId('siswa_id')->constrained('siswas')->onDelete('cascade');
             $table->string('file_name')->nullable();
             $table->string('file_path')->nullable();
-            $table->enum('payment_type', ['cash', 'transfer'])->nullable();
+            $table->string('payment_type', 50)->default('transfer')->nullable();
             $table->string('account_name')->nullable();
             $table->decimal('amount', 15, 2)->nullable();
             $table->date('payment_date')->nullable();
-            $table->enum('status', ['waiting_upload', 'pending', 'verified', 'rejected', 'waiting_cash'])->nullable();
+            $table->string('status', 50)->default('Pending');
             $table->string('alasan')->nullable();
             $table->timestamps();
-            $table->foreign('siswa_id')->references('id')->on('siswas')->onDelete('cascade');
         });
     }
 
