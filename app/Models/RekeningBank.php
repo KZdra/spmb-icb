@@ -22,3 +22,4 @@ class RekeningBank extends Model
         'urutan' => 'integer',
     ];
 }
+

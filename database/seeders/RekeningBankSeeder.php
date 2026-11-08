@@ -45,3 +45,4 @@ class RekeningBankSeeder extends Seeder
         );
     }
 }
+
