@@ -89,7 +89,7 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link font-weight-bold" id="tab-banner-link" data-toggle="pill" href="#tab-banner" role="tab">
-                                            <i class="fas fa-bullhorn mr-1 text-info"></i> Gelombang & Banner
+                                            <i class="fas fa-home mr-1 text-info"></i> Konten Beranda & Banner
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -148,6 +148,28 @@
                                                 <div class="form-group">
                                                     <label for="alamat_sekolah" class="font-weight-bold">Alamat Resmi Sekolah</label>
                                                     <textarea class="form-control" id="alamat_sekolah" name="alamat_sekolah" rows="3">{{ old('alamat_sekolah', $setting?->alamat_sekolah ?? 'Jl. Atlas No. 4, Babakan Surabaya, Kiaracondong, Kota Bandung, Jawa Barat') }}</textarea>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="jam_pelayanan" class="font-weight-bold">Jam Layanan Sekretariat SPMB</label>
+                                                            <input type="text" class="form-control" id="jam_pelayanan" name="jam_pelayanan"
+                                                                value="{{ old('jam_pelayanan', $setting?->jam_pelayanan ?? 'Senin - Sabtu (08:00 - 15:00 WIB)') }}" placeholder="Contoh: Senin - Sabtu (08:00 - 15:00 WIB)">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="video_profil_url" class="font-weight-bold">Tautan Video Profil / YouTube</label>
+                                                            <input type="text" class="form-control" id="video_profil_url" name="video_profil_url"
+                                                                value="{{ old('video_profil_url', $setting?->video_profil_url) }}" placeholder="Contoh: https://www.youtube.com/watch?v=...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="tentang_sekolah" class="font-weight-bold">Profil Ringkas Sekolah (Footer & Beranda)</label>
+                                                    <textarea class="form-control" id="tentang_sekolah" name="tentang_sekolah" rows="3" placeholder="Deskripsi ringkas profil sekolah untuk footer dan bagian tentang kami...">{{ old('tentang_sekolah', $setting?->tentang_sekolah ?? 'Sekolah Menengah Kejuruan Terakreditasi A (Unggul). Menghasilkan lulusan yang disiplin berintegritas, kompeten di bidang keahlian, berkarakter luhur, dan siap kerja maupun melanjutkan studi.') }}</textarea>
                                                 </div>
 
                                                 <div class="row">
@@ -215,6 +237,10 @@
                                                     <button type="button" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 shadow-sm" onclick="applyPreset('#4F46E5', '#312E81', '#06B6D4')">
                                                         <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#4F46E5; margin-right:5px;"></span>
                                                         Modern Indigo
+                                                    </button>
+                                                    <button type="button" class="btn btn-outline-danger btn-sm font-weight-bold px-3 shadow-sm" onclick="applyPreset('#DC2626', '#881337', '#F59E0B')">
+                                                        <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#DC2626; margin-right:5px;"></span>
+                                                        Marun & Gold Elegan
                                                     </button>
                                                 </div>
                                             </div>
@@ -315,21 +341,93 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group mt-2">
-                                            <label for="hero_title" class="font-weight-bold">Judul Utama Banner Hero (Landing Page)</label>
-                                            <input type="text" class="form-control font-weight-bold" id="hero_title" name="hero_title"
-                                                value="{{ old('hero_title', $setting?->hero_title ?? 'Raih Masa Depan Gemilang Bersama Kami') }}"
-                                                placeholder="Contoh: Raih Masa Depan Gemilang Bersama Kami">
+                                        <div class="card bg-light border mb-3">
+                                            <div class="card-header bg-white font-weight-bold text-dark py-2">
+                                                <i class="fas fa-home text-primary mr-1"></i> Konten Bagian Hero (Atas)
+                                            </div>
+                                            <div class="card-body p-3">
+                                                <div class="row">
+                                                    <div class="col-md-7">
+                                                        <div class="form-group">
+                                                            <label for="hero_badge" class="font-weight-bold">Teks Badge Paling Atas (Pita Informasi)</label>
+                                                            <input type="text" class="form-control" id="hero_badge" name="hero_badge"
+                                                                value="{{ old('hero_badge', $setting?->hero_badge ?? 'TERAKREDITASI A • PENERIMAAN SISWA BARU ONLINE') }}"
+                                                                placeholder="Contoh: TERAKREDITASI A • PENERIMAAN SISWA BARU ONLINE">
+                                                            <small class="text-muted">Teks kecil melengkung di atas judul utama.</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <label for="hero_cta_text" class="font-weight-bold">Teks Tombol Aksi Utama</label>
+                                                            <input type="text" class="form-control" id="hero_cta_text" name="hero_cta_text"
+                                                                value="{{ old('hero_cta_text', $setting?->hero_cta_text ?? 'Daftar Sekarang (Online)') }}"
+                                                                placeholder="Contoh: Daftar Sekarang (Online)">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="hero_title" class="font-weight-bold">Judul Utama Banner Hero</label>
+                                                    <input type="text" class="form-control font-weight-bold" id="hero_title" name="hero_title"
+                                                        value="{{ old('hero_title', $setting?->hero_title ?? 'Membuka Jalan Menuju Keahlian Nyata & Karir Masa Depan') }}"
+                                                        placeholder="Contoh: Membuka Jalan Menuju Keahlian Nyata & Karir Masa Depan">
+                                                </div>
+
+                                                <div class="form-group mb-0">
+                                                    <label for="hero_subtitle" class="font-weight-bold">Subjudul Deskripsi Hero (Sambutan Ramah Calon Siswa & Ortu)</label>
+                                                    <textarea class="form-control" id="hero_subtitle" name="hero_subtitle" rows="3">{{ old('hero_subtitle', $setting?->hero_subtitle ?? 'Selamat datang calon peserta didik baru dan orang tua. Pelajari program keahlian unggulan kami, fasilitas praktik industri, dan daftar mandiri dari rumah dalam hitungan menit.') }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card bg-light border mb-3">
+                                            <div class="card-header bg-white font-weight-bold text-dark py-2">
+                                                <i class="fas fa-list-ol text-info mr-1"></i> Konten Bagian Langkah & Ajakan Bawah
+                                            </div>
+                                            <div class="card-body p-3">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="panduan_title" class="font-weight-bold">Judul Bagian Langkah Pendaftaran</label>
+                                                            <input type="text" class="form-control font-weight-bold" id="panduan_title" name="panduan_title"
+                                                                value="{{ old('panduan_title', $setting?->panduan_title ?? '4 Langkah Mudah Pendaftaran Siswa') }}"
+                                                                placeholder="4 Langkah Mudah Pendaftaran Siswa">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="panduan_desc" class="font-weight-bold">Deskripsi Bagian Langkah</label>
+                                                            <input type="text" class="form-control" id="panduan_desc" name="panduan_desc"
+                                                                value="{{ old('panduan_desc', $setting?->panduan_desc ?? 'Ikuti tahapan pendaftaran secara berurutan agar proses seleksi berjalan lancar.') }}"
+                                                                placeholder="Ikuti tahapan pendaftaran secara berurutan...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group mb-md-0">
+                                                            <label for="cta_banner_title" class="font-weight-bold">Judul Banner Ajakan Bawah (CTA)</label>
+                                                            <input type="text" class="form-control font-weight-bold" id="cta_banner_title" name="cta_banner_title"
+                                                                value="{{ old('cta_banner_title', $setting?->cta_banner_title ?? 'Siap Menjadi Bagian dari Keluarga Besar Kami?') }}"
+                                                                placeholder="Siap Menjadi Bagian dari Keluarga Besar Kami?">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group mb-0">
+                                                            <label for="cta_banner_desc" class="font-weight-bold">Deskripsi Banner Ajakan Bawah</label>
+                                                            <input type="text" class="form-control" id="cta_banner_desc" name="cta_banner_desc"
+                                                                value="{{ old('cta_banner_desc', $setting?->cta_banner_desc ?? 'Kuota setiap jurusan terbatas untuk menjamin rasio praktik terbaik. Daftar lebih awal untuk mengamankan pilihan jurusan Anda.') }}"
+                                                                placeholder="Kuota setiap jurusan terbatas...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="hero_subtitle" class="font-weight-bold">Subjudul Deskripsi Hero</label>
-                                            <textarea class="form-control" id="hero_subtitle" name="hero_subtitle" rows="3">{{ old('hero_subtitle', $setting?->hero_subtitle ?? 'Penerimaan Peserta Didik Baru (PPDB / SPMB) Online. Pendaftaran cepat, transparan, dan tanpa ribet login akun.') }}</textarea>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="pesan_penutupan" class="font-weight-bold">Pesan Saat Pendaftaran Ditutup</label>
-                                            <textarea class="form-control" id="pesan_penutupan" name="pesan_penutupan" rows="2">{{ old('pesan_penutupan', $setting?->pesan_penutupan ?? 'Pendaftaran saat ini sedang ditutup sementara. Silakan pantau pengumuman resmi atau hubungi kontak panitia WhatsApp.') }}</textarea>
+                                            <label for="pesan_penutupan" class="font-weight-bold">Pesan Ramah Saat Pendaftaran Ditutup</label>
+                                            <textarea class="form-control" id="pesan_penutupan" name="pesan_penutupan" rows="2">{{ old('pesan_penutupan', $setting?->pesan_penutupan ?? 'Terima kasih atas antusiasme Anda. Pendaftaran saat ini sedang ditutup sementara atau kuota telah terpenuhi. Silakan hubungi panitia via WhatsApp untuk informasi gelombang berikutnya.') }}</textarea>
                                         </div>
                                     </div>
 

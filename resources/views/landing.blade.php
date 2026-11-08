@@ -61,22 +61,51 @@
 
     <link rel="shortcut icon" href="{{ $setting?->favicon_url ?? asset('images/icb.png') }}" type="image/x-icon">
 
+    @php
+        $pCol = $setting?->primary_color ?? '#1A56DB';
+        $sCol = $setting?->secondary_color ?? '#0B3B7B';
+        $aCol = $setting?->accent_color ?? '#10B981';
+    @endphp
     <style>
         :root {
-            --primary-navy: {{ $setting?->secondary_color ?? '#0B3B7B' }};
-            --primary-blue: {{ $setting?->primary_color ?? '#1A56DB' }};
-            --primary-color: {{ $setting?->primary_color ?? '#1A56DB' }};
-            --secondary-color: {{ $setting?->secondary_color ?? '#0B3B7B' }};
-            --accent-color: {{ $setting?->accent_color ?? '#10B981' }};
-            --primary-light: #EBF5FF;
-            --accent-gold: {{ $setting?->accent_color ?? '#F59E0B' }};
+            --primary-navy: {{ $sCol }};
+            --primary-blue: {{ $pCol }};
+            --primary-color: {{ $pCol }};
+            --secondary-color: {{ $sCol }};
+            --accent-color: {{ $aCol }};
+            --primary-light: {{ $pCol }}18;
+            --accent-gold: {{ $aCol }};
             --accent-gold-dark: #D97706;
             --accent-amber: #FEF3C7;
-            --success-green: {{ $setting?->accent_color ?? '#10B981' }};
+            --success-green: {{ $aCol }};
             --dark-slate: #0F172A;
             --muted-slate: #64748B;
             --border-color: #E2E8F0;
             --bg-light: #F8FAFC;
+        }
+
+        .btn-primary, .bg-primary {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+        .border-primary {
+            border-color: var(--primary-color) !important;
+        }
+        .btn-outline-primary {
+            color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            color: #ffffff !important;
+        }
+        .badge-primary {
+            background-color: var(--primary-color) !important;
+            color: #ffffff !important;
         }
 
         body {
@@ -246,7 +275,7 @@
         }
 
         .hero-title span {
-            background: linear-gradient(135deg, #0B3B7B 0%, #1A56DB 100%);
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -259,7 +288,7 @@
         }
 
         .btn-brand-primary {
-            background: linear-gradient(135deg, #1A56DB 0%, #0B3B7B 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: #FFFFFF;
             font-weight: 700;
             padding: 14px 28px;
@@ -684,7 +713,7 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, #1A56DB, #F59E0B);
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
         }
 
         .jurusan-icon {
@@ -702,13 +731,13 @@
 
         /* CTA Banner */
         .cta-banner {
-            background: linear-gradient(135deg, #0B3B7B 0%, #1A56DB 100%);
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
             border-radius: 24px;
             padding: 60px 40px;
             color: #FFFFFF;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(11, 59, 123, 0.35);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
         .cta-banner::after {
@@ -934,14 +963,10 @@
     <nav class="navbar navbar-expand-lg custom-navbar sticky-top" id="mainNav">
         <div class="container">
             <a class="navbar-brand" href="#beranda">
-                @if ($setting?->logo_path)
-                    <img src="{{ asset('storage/' . $setting->logo_path) }}" alt="Logo" height="34">
-                @else
-                    <img src="{{ asset('images/icb.png') }}" alt="Logo SMK ICB" height="34">
-                @endif
+                <img src="{{ $setting?->logo_url ?? asset('images/icb.png') }}" alt="Logo {{ $setting->app_name ?? 'SMK ICB' }}" height="36" style="object-fit: contain;">
                 <div>
                     <div>{{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }}</div>
-                    <div class="brand-subtitle">Student Today Leader Tomorrow</div>
+                    <div class="brand-subtitle">{{ $setting->slogan ?? 'Student Today Leader Tomorrow' }}</div>
                 </div>
             </a>
 
@@ -958,6 +983,7 @@
                     <li class="nav-item"><a class="nav-link" href="#alur-spmb">Alur SPMB</a></li>
                     <li class="nav-item"><a class="nav-link" href="#brosur">Brosur</a></li>
                     <li class="nav-item"><a class="nav-link" href="#jurusan">Jurusan</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
                 </ul>
 
                 <div class="navbar-cta-group">
@@ -980,15 +1006,15 @@
                 <div class="col-lg-7">
                     <div class="badge-akreditasi mb-2">
                         <i class="fas fa-award text-warning"></i>
-                        <span>TERAKREDITASI A &bull; TAHUN AJARAN {{ $setting->tahun_ajaran ?? '2027/2028' }} &bull; {{ $setting->gelombang_aktif ?? 'Gelombang 1' }}</span>
+                        <span>{{ $setting->hero_badge ?? ('TERAKREDITASI A • SPMB ONLINE TAHUN AJARAN ' . ($setting->tahun_ajaran ?? '2027/2028') . ' • ' . ($setting->gelombang_aktif ?? 'Gelombang 1')) }}</span>
                     </div>
 
                     <h1 class="hero-title">
                         @if (!empty($setting->hero_title))
-                            {{ $setting->hero_title }}
+                            {!! nl2br(e($setting->hero_title)) !!}
                         @else
-                            Masa Depan Hebat <br>
-                            <span>Dimulai dari Sini!</span>
+                            Keahlian Nyata & Karir Pasti <br>
+                            <span>Dimulai Hari Ini.</span>
                         @endif
                     </h1>
 
@@ -996,15 +1022,15 @@
                         @if (!empty($setting->hero_subtitle))
                             {{ $setting->hero_subtitle }}
                         @else
-                            Bergabunglah bersama <strong>{{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }}</strong>. Sekolah kejuruan modern yang mencetak lulusan berkarakter, kompeten, siap kerja, siap kuliah, dan siap berprestasi.
+                            Selamat datang calon peserta didik dan orang tua di portal resmi SPMB <strong>{{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }}</strong>. Sekolah kejuruan terakreditasi A dengan kurikulum berbasis industri, fasilitas praktik lengkap, dan pendaftaran mandiri cepat tanpa ribet.
                         @endif
                     </p>
 
                     <div class="d-flex flex-wrap align-items-center mb-3" style="gap: 12px;">
                         @if (($setting->status_pendaftaran ?? 'buka') === 'buka')
                             <a href="{{ route('siswa.daftar') }}" class="btn-brand-primary">
-                                <i class="fas fa-paper-plane"></i>
-                                Daftar Sekarang (Online)
+                                <i class="fas fa-paper-plane mr-1"></i>
+                                {{ $setting->hero_cta_text ?? 'Daftar Sekarang (Online)' }}
                             </a>
                         @else
                             <button type="button" class="btn btn-secondary py-3 px-4 font-weight-bold" style="border-radius: 12px; cursor: not-allowed;" onclick="Swal.fire('Pendaftaran Ditutup', '{{ addslashes($setting->pesan_penutupan ?? 'Pendaftaran saat ini sedang ditutup sementara.') }}', 'info')">
@@ -1012,13 +1038,14 @@
                             </button>
                         @endif
                         <a href="{{ route('pendaftaran.cekStatus') }}" class="btn-brand-outline">
-                            <i class="fas fa-search"></i>
+                            <i class="fas fa-search mr-1"></i>
                             Cek Status Pendaftaran
                         </a>
                         @php
                             $waKontak = $setting->kontak_wa ?? '081222485558';
+                            $waMsg = 'Halo Panitia SPMB ' . ($setting->app_name ?? 'SMK ICB') . ', saya calon siswa/orang tua ingin konsultasi mengenai pendaftaran siswa baru.';
                         @endphp
-                        <a href="{{ wa_link($waKontak, 'Halo Panitia SPMB SMK ICB Cinta Teknika, saya ingin berkonsultasi mengenai pendaftaran siswa baru.') }}" target="_blank" class="btn btn-outline-success font-weight-bold py-3 px-3" style="border-radius: 12px;">
+                        <a href="{{ wa_link($waKontak, $waMsg) }}" target="_blank" class="btn btn-outline-success font-weight-bold py-3 px-3" style="border-radius: 12px; min-height: 48px; display: inline-flex; align-items: center;">
                             <i class="fab fa-whatsapp text-success mr-1"></i> Tanya Panitia
                         </a>
                     </div>
@@ -1050,11 +1077,11 @@
                         </div>
                         <div class="pill-item">
                             <div class="pill-icon"><i class="fas fa-graduation-cap"></i></div>
-                            <div>6 Program Keahlian</div>
+                            <div>{{ $jurusans->count() > 0 ? $jurusans->count() . ' Program Keahlian' : 'Kompetensi Keahlian' }}</div>
                         </div>
                         <div class="pill-item">
                             <div class="pill-icon"><i class="fas fa-user-check"></i></div>
-                            <div>Reguler, Prestasi & Kemitraan</div>
+                            <div>Reguler, Prestasi & RMP</div>
                         </div>
                     </div>
                 </div>
@@ -1083,8 +1110,8 @@
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Petunjuk Pendaftaran</span>
-                <h2 class="section-title">4 Langkah Mudah Pendaftaran Calon Siswa</h2>
-                <p class="section-desc">Ikuti tahapan resmi pendaftaran calon peserta didik baru SMK ICB Cinta Teknika secara berurutan dan terstruktur.</p>
+                <h2 class="section-title">{{ $setting->panduan_title ?? '4 Langkah Mudah Pendaftaran Calon Siswa' }}</h2>
+                <p class="section-desc">{{ $setting->panduan_desc ?? ('Ikuti tahapan resmi pendaftaran calon peserta didik baru ' . ($setting->app_name ?? 'SMK ICB Cinta Teknika') . ' secara berurutan dan terstruktur.') }}</p>
             </div>
 
             <div class="row">
@@ -1093,13 +1120,13 @@
                     <div class="step-card">
                         <div class="step-number step-1-num">1</div>
                         <h4>Siapkan Dokumen</h4>
-                        <p class="text-muted" style="font-size: 0.9rem;">Siapkan seluruh berkas fisik maupun file scan berikut:</p>
+                        <p class="text-muted" style="font-size: 0.9rem;">Kumpulkan berkas dasar untuk kelengkapan administrasi calon siswa:</p>
                         <ul class="step-checklist">
-                            <li><i class="fas fa-check-circle"></i> <span>Ijazah SMP / Surat Keterangan Lulus (SKL)</span></li>
-                            <li><i class="fas fa-check-circle"></i> <span>Kartu Keluarga (KK)</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Ijazah SMP / Surat Keterangan Lulus (SKL) sementara</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Kartu Keluarga (KK) & Akta Kelahiran</span></li>
                             <li><i class="fas fa-check-circle"></i> <span>Surat Kelakuan Baik dari Sekolah Asal</span></li>
-                            <li><i class="fas fa-check-circle"></i> <span>Pas foto terbaru (3x4)</span></li>
-                            <li><i class="fas fa-check-circle"></i> <span>Dokumen pendukung (Piagam Prestasi / Surat Sehat / DTKS / KIP / DTSEN)</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Pas foto terbaru (format bebas, rapi)</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Piagam kejuaraan / KIP / DTKS (khusus jalur beasiswa)</span></li>
                         </ul>
                     </div>
                 </div>
@@ -1108,23 +1135,38 @@
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="step-card">
                         <div class="step-number step-2-num">2</div>
-                        <h4>Akses & Pembayaran</h4>
-                        <p class="text-muted" style="font-size: 0.9rem;">Lakukan pembayaran biaya pendaftaran seleksi:</p>
+                        <h4>Biaya & Pembayaran</h4>
+                        <p class="text-muted" style="font-size: 0.9rem;">Pembayaran biaya formulir pendaftaran seleksi:</p>
                         <ul class="step-checklist">
-                            <li><i class="fas fa-check-circle"></i> <span>Biaya Pendaftaran: <strong>Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }}</strong></span></li>
-                            <li><i class="fas fa-check-circle"></i> <span>Dapat transfer mandiri atau bayar tunai di sekolah</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Biaya Formulir: <strong>Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }}</strong></span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Bisa transfer m-Banking, ATM, atau bayar langsung di sekolah</span></li>
                         </ul>
 
                         <div class="bank-info-box">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="badge badge-primary"><i class="fas fa-university mr-1"></i> {{ strtoupper($setting->bank_name ?? 'BANK BRI') }}</span>
-                                <button type="button" class="btn-copy-rek" onclick="copyToClipboard('{{ $setting->no_rekening ?? '210501000140303' }}')">
-                                    <i class="fas fa-copy mr-1"></i> Salin Rek
-                                </button>
-                            </div>
-                            <div class="bank-rek-number">{{ $setting->no_rekening ?? '210501000140303' }}</div>
-                            <small class="text-muted d-block mt-1">a.n. <strong>{{ $setting->atas_nama ?? 'SMK ICB Cinta Teknika' }}</strong></small>
-                            <small class="text-danger font-weight-bold d-block mt-1">*Simpan bukti pembayaran untuk di-upload</small>
+                            @if(isset($rekeningBanks) && $rekeningBanks->count() > 0)
+                                @foreach($rekeningBanks as $rek)
+                                    <div class="{{ !$loop->first ? 'mt-2 pt-2 border-top' : '' }}">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="badge badge-primary"><i class="fas fa-university mr-1"></i> {{ strtoupper($rek->nama_bank) }}</span>
+                                            <button type="button" class="btn-copy-rek" onclick="copyToClipboard('{{ $rek->nomor_rekening }}')">
+                                                <i class="fas fa-copy mr-1"></i> Salin Rek
+                                            </button>
+                                        </div>
+                                        <div class="bank-rek-number" style="font-size: 1.15rem;">{{ $rek->nomor_rekening }}</div>
+                                        <small class="text-muted d-block font-weight-bold">a.n. {{ $rek->atas_nama }}</small>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="badge badge-primary"><i class="fas fa-university mr-1"></i> {{ strtoupper($setting->bank_name ?? 'BANK BRI') }}</span>
+                                    <button type="button" class="btn-copy-rek" onclick="copyToClipboard('{{ $setting->no_rekening ?? '210501000140303' }}')">
+                                        <i class="fas fa-copy mr-1"></i> Salin Rek
+                                    </button>
+                                </div>
+                                <div class="bank-rek-number">{{ $setting->no_rekening ?? '210501000140303' }}</div>
+                                <small class="text-muted d-block mt-1">a.n. <strong>{{ $setting->atas_nama ?? 'SMK ICB Cinta Teknika' }}</strong></small>
+                            @endif
+                            <small class="text-danger font-weight-bold d-block mt-2">*Simpan foto bukti transfer untuk di-upload</small>
                         </div>
                     </div>
                 </div>
@@ -1134,13 +1176,13 @@
                     <div class="step-card">
                         <div class="step-number step-3-num">3</div>
                         <h4>Isi Formulir Online</h4>
-                        <p class="text-muted" style="font-size: 0.9rem;">Registrasi akun & isi data diri di website:</p>
+                        <p class="text-muted" style="font-size: 0.9rem;">Pengisian mandiri tanpa perlu membuat akun berbelit:</p>
                         <ul class="step-checklist">
-                            <li><i class="fas fa-check-circle"></i> <span>Klik menu <strong>Daftar</strong> & lengkapi biodata</span></li>
-                            <li><i class="fas fa-check-circle"></i> <span>Pilih Jalur (Reguler / RMP) & Jurusan</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Klik tombol <strong>Daftar Sekarang</strong></span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Pilih jalur seleksi & jurusan impian</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Lengkapi data diri dan kontak orang tua</span></li>
                             <li><i class="fas fa-check-circle"></i> <span>Upload foto bukti transfer pendaftaran</span></li>
-                            <li><i class="fas fa-check-circle"></i> <span>Kirim formulir pendaftaran</span></li>
-                            <li><i class="fas fa-check-circle"></i> <span>Dapatkan konfirmasi & jadwal <strong>Tes Fisik Kesehatan</strong></span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Dapatkan <strong>Kode Pendaftaran</strong> unik Anda</span></li>
                         </ul>
                         <div class="mt-auto pt-3">
                             <a href="{{ route('siswa.daftar') }}" class="btn btn-sm btn-success btn-block font-weight-bold py-2" style="border-radius: 8px;">
@@ -1154,14 +1196,14 @@
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="step-card">
                         <div class="step-number step-4-num">4</div>
-                        <h4>Daftar Ulang</h4>
-                        <p class="text-muted" style="font-size: 0.9rem;">Finalisasi kelulusan dan persiapan masuk:</p>
+                        <h4>Verifikasi & Seleksi</h4>
+                        <p class="text-muted" style="font-size: 0.9rem;">Tahapan seleksi dan penetapan kelulusan calon murid:</p>
                         <ul class="step-checklist">
-                            <li><i class="fas fa-check-circle"></i> <span>Cek pengumuman hasil seleksi di portal</span></li>
-                            <li><i class="fas fa-check-circle"></i> <span>Wajib daftar ulang sesuai jadwal yang ditentukan</span></li>
-                            <li><i class="fas fa-check-circle"></i> <span>Membawa dokumen asli & fotokopi persyaratan</span></li>
-                            <li><i class="fas fa-check-circle"></i> <span>Menyelesaikan administrasi & cicilan pertama</span></li>
-                            <li><i class="fas fa-check-circle"></i> <span>Mengikuti kegiatan MPLS & resmi jadi siswa ICB</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Pemeriksaan berkas oleh panitia (1x24 jam)</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Wawancara minat bakat & tes fisik ringan</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Pengumuman kelulusan & terbit <strong>NIS Resmi</strong></span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Daftar ulang & fitting seragam praktik</span></li>
+                            <li><i class="fas fa-check-circle"></i> <span>Mengikuti MPLS dan resmi jadi siswa</span></li>
                         </ul>
                     </div>
                 </div>
@@ -1658,9 +1700,115 @@
             </div>
 
             <div class="text-center mt-4">
-                <a href="{{ route('siswa.daftar') }}" class="btn btn-primary px-4 py-2 font-weight-bold" style="border-radius: 10px; background: #1A56DB;">
+                <a href="{{ route('siswa.daftar') }}" class="btn btn-primary px-4 py-2 font-weight-bold" style="border-radius: 10px;">
                     <i class="fas fa-check-circle mr-1"></i> Pilih Jurusan Anda & Daftar Sekarang
                 </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ (Pertanyaan yang Sering Diajukan) -->
+    <section id="faq" class="section-padding bg-light border-top">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <span class="badge badge-primary px-3 py-2 text-uppercase font-weight-bold" style="letter-spacing: 0.8px; border-radius: 30px;">
+                    <i class="fas fa-question-circle mr-1"></i> Pusat Tanya Jawab
+                </span>
+                <h2 class="font-weight-bold text-dark mt-2" style="font-size: 2.2rem;">Pertanyaan yang Sering Diajukan (FAQ)</h2>
+                <p class="text-muted" style="max-width: 650px; margin: 0 auto; font-size: 1.05rem;">
+                    Temukan jawaban cepat untuk pertanyaan umum calon siswa dan orang tua seputar pendaftaran, berkas, dan pembiayaan.
+                </p>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <div class="accordion" id="faqAccordion">
+                        <!-- FAQ 1 -->
+                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 14px; overflow: hidden;">
+                            <div class="card-header bg-white p-3 border-0" id="faqHeading1">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link text-left text-dark font-weight-bold w-100 d-flex justify-content-between align-items-center text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCollapse1" aria-expanded="true" aria-controls="faqCollapse1" style="font-size: 1.05rem;">
+                                        <span><i class="fas fa-file-invoice text-primary mr-2"></i> Bagaimana jika Ijazah SMP atau SKL belum terbit saat mendaftar?</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="faqCollapse1" class="collapse show" aria-labelledby="faqHeading1" data-parent="#faqAccordion">
+                                <div class="card-body pt-0 px-4 pb-4 text-muted" style="line-height: 1.7;">
+                                    Tenang saja, Anda tetap dapat mendaftar sekarang! Calon siswa cukup melampirkan Surat Keterangan bahwa masih duduk di kelas 9 dari sekolah asal atau rapor semester terakhir. Ijazah asli atau SKL resmi dapat diserahkan menyusul saat jadwal daftar ulang.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 2 -->
+                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 14px; overflow: hidden;">
+                            <div class="card-header bg-white p-3 border-0" id="faqHeading2">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-left text-dark font-weight-bold w-100 d-flex justify-content-between align-items-center text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCollapse2" aria-expanded="false" aria-controls="faqCollapse2" style="font-size: 1.05rem;">
+                                        <span><i class="fas fa-money-check-alt text-success mr-2"></i> Apakah biaya pendaftaran dan DSP bisa dicicil?</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="faqCollapse2" class="collapse" aria-labelledby="faqHeading2" data-parent="#faqAccordion">
+                                <div class="card-body pt-0 px-4 pb-4 text-muted" style="line-height: 1.7;">
+                                    Untuk biaya formulir pendaftaran sebesar Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }} dibayarkan satu kali di awal. Sedangkan untuk biaya Dana Sumbangan Pendidikan (DSP) dan administrasi daftar ulang, pihak sekolah menyediakan skema cicilan bertahap yang fleksibel dan dapat dikonsultasikan dengan bagian keuangan sekolah.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 3 -->
+                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 14px; overflow: hidden;">
+                            <div class="card-header bg-white p-3 border-0" id="faqHeading3">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-left text-dark font-weight-bold w-100 d-flex justify-content-between align-items-center text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCollapse3" aria-expanded="false" aria-controls="faqCollapse3" style="font-size: 1.05rem;">
+                                        <span><i class="fas fa-building text-warning mr-2"></i> Apakah calon siswa bisa datang langsung mendaftar di kampus?</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="faqCollapse3" class="collapse" aria-labelledby="faqHeading3" data-parent="#faqAccordion">
+                                <div class="card-body pt-0 px-4 pb-4 text-muted" style="line-height: 1.7;">
+                                    Sangat bisa! Jika calon siswa atau orang tua ingin berkonsultasi langsung, melihat fasilitas bengkel/laboratorium praktik, atau membutuhkan pendampingan pengisian form, silakan datang langsung ke Ruang Sekretariat SPMB pada jam pelayanan ({{ $setting->jam_pelayanan ?? 'Senin - Sabtu, 08:00 - 15:00 WIB' }}).
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 4 -->
+                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 14px; overflow: hidden;">
+                            <div class="card-header bg-white p-3 border-0" id="faqHeading4">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-left text-dark font-weight-bold w-100 d-flex justify-content-between align-items-center text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCollapse4" aria-expanded="false" aria-controls="faqCollapse4" style="font-size: 1.05rem;">
+                                        <span><i class="fas fa-clock text-info mr-2"></i> Berapa lama proses verifikasi bukti pendaftaran saya?</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="faqCollapse4" class="collapse" aria-labelledby="faqHeading4" data-parent="#faqAccordion">
+                                <div class="card-body pt-0 px-4 pb-4 text-muted" style="line-height: 1.7;">
+                                    Panitia SPMB memeriksa berkas masuk secara berkala dalam kurun waktu 1x24 jam kerja. Calon siswa dapat memantau status validasi pembayaran maupun kelulusan setiap saat melalui menu <strong>Cek Status</strong> menggunakan Kode Pendaftaran atau NISN.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 5 -->
+                        <div class="card border-0 shadow-sm" style="border-radius: 14px; overflow: hidden;">
+                            <div class="card-header bg-white p-3 border-0" id="faqHeading5">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed text-left text-dark font-weight-bold w-100 d-flex justify-content-between align-items-center text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCollapse5" aria-expanded="false" aria-controls="faqCollapse5" style="font-size: 1.05rem;">
+                                        <span><i class="fas fa-award text-danger mr-2"></i> Apakah tersedia beasiswa untuk calon siswa berprestasi / keluarga prasejahtera?</span>
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="faqCollapse5" class="collapse" aria-labelledby="faqHeading5" data-parent="#faqAccordion">
+                                <div class="card-body pt-0 px-4 pb-4 text-muted" style="line-height: 1.7;">
+                                    Ya, kami membuka <strong>Jalur Beasiswa Prestasi</strong> bagi pemegang piagam kejuaraan olahraga/seni/akademik atau sertifikat tahfidz Qur'an, serta <strong>Jalur Kemitraan / RMP</strong> bagi keluarga pemegang KIP, DTKS, atau kartu program bantuan pemerintah lainnya.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -1672,23 +1820,27 @@
                 <div class="row align-items-center">
                     <div class="col-lg-8">
                         <h2 class="font-weight-bold mb-3" style="font-size: 2.2rem;">
-                            Bergabunglah Menjadi Bagian dari Keluarga Besar ICB!
+                            {{ $setting->cta_banner_title ?? 'Siap Menjadi Bagian dari Keluarga Besar Kami?' }}
                         </h2>
                         <p class="mb-4 text-white-50" style="font-size: 1.1rem; line-height: 1.6;">
-                            Jangan lewatkan kesempatan emas membangun karir dan masa depan gemilang bersama SMK ICB Cinta Teknika. Kuota pendaftaran terbatas setiap gelombangnya.
+                            {{ $setting->cta_banner_desc ?? ('Jangan lewatkan kesempatan membangun karir dan keahlian nyata bersama ' . ($setting->app_name ?? 'SMK ICB Cinta Teknika') . '. Kuota pendaftaran terbatas setiap gelombangnya.') }}
                         </p>
                         <div class="d-flex flex-wrap align-items-center gap-3">
                             <a href="{{ route('siswa.daftar') }}" class="btn btn-warning font-weight-bold px-4 py-3 mr-3 mb-2" style="border-radius: 12px; color: #0F172A; font-size: 1.05rem;">
                                 <i class="fas fa-rocket mr-2"></i> Daftar Online Sekarang
                             </a>
-                            <a href="https://wa.me/6281222223333?text=Halo%20Panitia%20SPMB%20SMK%20ICB%20Cinta%20Teknika,%20saya%20ingin%20konsultasi%20pendaftaran" target="_blank" class="btn btn-outline-light font-weight-bold px-4 py-3 mb-2" style="border-radius: 12px; font-size: 1.05rem;">
+                            @php
+                                $waCta = $setting->kontak_wa ?? '081222485558';
+                                $waCtaMsg = 'Halo Panitia SPMB ' . ($setting->app_name ?? 'SMK ICB') . ', saya ingin konsultasi pendaftaran.';
+                            @endphp
+                            <a href="{{ wa_link($waCta, $waCtaMsg) }}" target="_blank" class="btn btn-outline-light font-weight-bold px-4 py-3 mb-2" style="border-radius: 12px; font-size: 1.05rem;">
                                 <i class="fab fa-whatsapp mr-2"></i> Hubungi WhatsApp Panitia
                             </a>
                         </div>
                     </div>
                     <div class="col-lg-4 text-center mt-4 mt-lg-0">
                         <div class="bg-white p-3 rounded-circle d-inline-block shadow-lg">
-                            <img src="{{ asset('images/icb.png') }}" alt="SMK ICB Logo" width="130" height="130">
+                            <img src="{{ $setting?->logo_url ?? asset('images/icb.png') }}" alt="{{ $setting->app_name ?? 'Logo Sekolah' }}" width="130" height="130" style="object-fit: contain;">
                         </div>
                     </div>
                 </div>
@@ -1702,19 +1854,15 @@
             <div class="row">
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <div class="d-flex align-items-center mb-3">
-                        @if ($setting?->logo_path)
-                            <img src="{{ asset('storage/' . $setting->logo_path) }}" alt="Logo" height="40" class="mr-2">
-                        @else
-                            <img src="{{ asset('images/icb.png') }}" alt="Logo SMK ICB" height="40" class="mr-2">
-                        @endif
+                        <img src="{{ $setting?->logo_url ?? asset('images/icb.png') }}" alt="Logo" height="40" class="mr-2" style="object-fit: contain;">
                         <span class="font-weight-bold text-white h5 mb-0">{{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }}</span>
                     </div>
                     <p class="text-muted" style="line-height: 1.6;">
-                        Sekolah Menengah Kejuruan Terakreditasi A (Unggul). Menghasilkan lulusan yang disiplin berintegritas, kompeten di bidang teknologi, berkarakter luhur, dan siap bersaing di dunia global.
+                        {{ $setting->tentang_sekolah ?? 'Sekolah Menengah Kejuruan Terakreditasi A (Unggul). Menghasilkan lulusan yang disiplin berintegritas, kompeten di bidang kejuruan modern, berkarakter luhur, dan siap bersaing di dunia global maupun melanjutkan studi.' }}
                     </p>
                     <div class="mt-3">
                         <span class="badge badge-warning text-dark font-weight-bold px-3 py-2">
-                            Motto: Student Today Leader Tomorrow
+                            Motto: {{ $setting->slogan ?? 'Student Today Leader Tomorrow' }}
                         </span>
                     </div>
                 </div>
@@ -1724,26 +1872,26 @@
                     <ul class="list-unstyled" style="line-height: 2;">
                         <li><a href="#beranda">&bull; Beranda</a></li>
                         <li><a href="#panduan">&bull; 4 Langkah Pendaftaran</a></li>
-                        <li><a href="#artikel-info">&bull; Artikel Panduan & Informasi</a></li>
                         <li><a href="#alur-spmb">&bull; 9 Tahapan Alur SPMB</a></li>
-                        <li><a href="#syarat">&bull; Persyaratan Dokumen</a></li>
-                        <li><a href="#jurusan">&bull; Program Keahlian</a></li>
+                        <li><a href="#jurusan">&bull; Pilihan Jurusan</a></li>
+                        <li><a href="#faq">&bull; Tanya Jawab (FAQ)</a></li>
+                        <li><a href="{{ route('pendaftaran.cekStatus') }}">&bull; Cek Status Pendaftaran</a></li>
                     </ul>
                 </div>
 
                 <div class="col-lg-5 col-md-6">
                     <h5 class="text-white font-weight-bold mb-3">Sekretariat SPMB</h5>
                     <p class="text-muted mb-2">
-                        <i class="fas fa-map-marker-alt text-primary mr-2"></i> {{ $setting->alamat_sekolah ?? 'Kampus SMK ICB Cinta Teknika, Bandung, Jawa Barat' }}
+                        <i class="fas fa-map-marker-alt text-primary mr-2"></i> {{ $setting->alamat_sekolah ?? 'Bandung, Jawa Barat' }}
                     </p>
                     <p class="text-muted mb-2">
                         <i class="fas fa-university text-primary mr-2"></i> Rekening {{ $setting->bank_name ?? 'BRI' }}: <strong>{{ $setting->no_rekening ?? '210501000140303' }}</strong> (a.n. {{ $setting->atas_nama ?? 'SMK ICB Cinta Teknika' }})
                     </p>
                     <p class="text-muted mb-2">
-                        <i class="fas fa-money-bill-wave text-primary mr-2"></i> Biaya Pendaftaran: <strong>Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }},-</strong>
+                        <i class="fas fa-money-bill-wave text-primary mr-2"></i> Biaya Formulir: <strong>Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }},-</strong>
                     </p>
                     <p class="text-muted mb-3">
-                        <i class="fas fa-clock text-primary mr-2"></i> Layanan SPMB: Senin - Sabtu (08:00 - 15:00 WIB)
+                        <i class="fas fa-clock text-primary mr-2"></i> Layanan SPMB: {{ $setting->jam_pelayanan ?? 'Senin - Sabtu (08:00 - 15:00 WIB)' }}
                     </p>
                     <div>
                         <a href="{{ route('pendaftaran.cekStatus') }}" class="btn btn-outline-light btn-sm mr-2">

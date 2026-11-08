@@ -15,7 +15,8 @@ Route::get('/', function () {
     $jurusans = MJurusan::all();
     $articles = Article::where('is_published', true)->latest()->take(6)->get();
     $setting = PengaturanAplikasi::first();
-    return view('landing', compact('jurusans', 'articles', 'setting'));
+    $rekeningBanks = \App\Models\RekeningBank::where('is_active', true)->orderBy('urutan', 'asc')->get();
+    return view('landing', compact('jurusans', 'articles', 'setting', 'rekeningBanks'));
 })->name('landing');
 
 // Public Article Detail
