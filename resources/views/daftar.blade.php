@@ -1786,17 +1786,6 @@ $(document).ready(function () {
             }
         });
 
-            const existingKel = $('#kelurahan').val() || '{{ old("kelurahan") }}';
-            if (existingKel) {
-                const opt = $('#kelurahan_select option').filter(function() {
-                    return $(this).val().toUpperCase() === existingKel.toUpperCase();
-                });
-                if (opt.length) {
-                    $('#kelurahan_select').val(opt.val()).trigger('change');
-                }
-            }
-        });
-
         // 4. Kelurahan change
         $('#kelurahan_select').on('change', function () {
             $(this).next('.select2-container').removeClass('is-invalid-select2');
