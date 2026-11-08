@@ -56,7 +56,8 @@
     <link rel="stylesheet" href="{{ asset('css/fontawesome.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.min.css') }}">
-    <!-- Animate.css -->
+    <!-- Animate.css (Local Asset + CDN Fallback) -->
+    <link rel="stylesheet" href="{{ asset('css/animate.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
     <link rel="shortcut icon" href="{{ $setting?->favicon_url ?? asset('images/icb.png') }}" type="image/x-icon">
@@ -978,26 +979,21 @@
             color: var(--primary-blue) !important;
         }
 
-        /* === Animate.css Scroll Reveal & Fallbacks === */
+        /* === Animate.css Scroll Reveal & Keyframe Preservation === */
         .scroll-reveal {
             opacity: 0;
-            transform: translateY(22px);
-            transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform;
+            visibility: hidden;
+            transition: opacity 0.4s ease;
         }
         .scroll-reveal.animated {
-            opacity: 1 !important;
-            transform: translateY(0) !important;
+            opacity: 1;
+            visibility: visible;
         }
-        /* Override animate.css fill-mode so element stays visible */
-        .animate__animated {
-            animation-fill-mode: both;
-        }
-        /* Stagger delays */
-        .anim-delay-1 { animation-delay: 0.05s !important; }
-        .anim-delay-2 { animation-delay: 0.15s !important; }
-        .anim-delay-3 { animation-delay: 0.25s !important; }
-        .anim-delay-4 { animation-delay: 0.35s !important; }
+        /* Stagger delays for Hero and Sections */
+        .anim-delay-1 { animation-delay: 0.12s !important; }
+        .anim-delay-2 { animation-delay: 0.24s !important; }
+        .anim-delay-3 { animation-delay: 0.36s !important; }
+        .anim-delay-4 { animation-delay: 0.48s !important; }
 
         @media (prefers-reduced-motion: reduce) {
             .scroll-reveal,
@@ -1310,12 +1306,12 @@
             <div class="row align-items-center">
                 <!-- Text Column -->
                 <div class="col-lg-7">
-                    <div class="badge-akreditasi mb-2">
+                    <div class="badge-akreditasi mb-2 animate__animated animate__fadeInDown">
                         <i class="fas fa-award text-warning"></i>
                         <span>{{ $setting->hero_badge ?? ('TERAKREDITASI ' . ($setting->stat_akreditasi ?? 'A') . ' • SPMB ONLINE TAHUN AJARAN ' . ($setting->tahun_ajaran ?? '2027/2028') . ' • ' . ($setting->gelombang_aktif ?? 'Gelombang 1')) }}</span>
                     </div>
 
-                    <h1 class="hero-title">
+                    <h1 class="hero-title animate__animated animate__fadeInLeft anim-delay-1">
                         @if (!empty($setting->hero_title))
                             {!! nl2br(e($setting->hero_title)) !!}
                         @else
@@ -1324,7 +1320,7 @@
                         @endif
                     </h1>
 
-                    <p class="hero-lead">
+                    <p class="hero-lead animate__animated animate__fadeInLeft anim-delay-2">
                         @if (!empty($setting->hero_subtitle))
                             {{ $setting->hero_subtitle }}
                         @else
@@ -1333,7 +1329,7 @@
                     </p>
 
                     <!-- Main CTA Action Buttons -->
-                    <div class="d-flex flex-wrap align-items-center mb-3 hero-action-group" style="gap: 12px;">
+                    <div class="d-flex flex-wrap align-items-center mb-3 hero-action-group animate__animated animate__fadeInUp anim-delay-3" style="gap: 12px;">
                         @if (($setting->status_pendaftaran ?? 'buka') === 'buka')
                             <a href="{{ route('siswa.daftar') }}" class="btn-brand-primary">
                                 <i class="fas fa-paper-plane mr-1"></i>
@@ -1351,7 +1347,7 @@
                     </div>
 
                     <!-- Secondary Quick Actions (Pills) -->
-                    <div class="d-flex flex-wrap align-items-center mb-4 hero-sub-action" style="gap: 10px;">
+                    <div class="d-flex flex-wrap align-items-center mb-4 hero-sub-action animate__animated animate__fadeInUp anim-delay-3" style="gap: 10px;">
                         @if (!empty($setting->video_profil_url))
                             <a href="#modalVideoProfil" data-toggle="modal" class="btn btn-sm btn-white border shadow-sm font-weight-bold py-2 px-3 text-dark" style="border-radius: 20px; font-size: 0.825rem; display: inline-flex; align-items: center; background: #ffffff;">
                                 <i class="fas fa-play-circle text-danger mr-2" style="font-size: 1rem;"></i> Tonton Profil Video
@@ -1367,7 +1363,7 @@
                     </div>
 
                     <!-- Quick Status Tracker Box in Hero -->
-                    <div class="p-3 bg-white rounded-lg shadow-sm border mb-4 hero-tracker-box" style="border-radius: 14px; max-width: 500px;">
+                    <div class="p-3 bg-white rounded-lg shadow-sm border mb-4 hero-tracker-box animate__animated animate__fadeInUp anim-delay-3" style="border-radius: 14px; max-width: 500px;">
                         <div class="small font-weight-bold text-muted mb-2 d-flex align-items-center">
                             <i class="fas fa-search text-primary mr-2"></i> Lacak Formulir Anda Cepat:
                         </div>
@@ -1385,7 +1381,7 @@
                     </div>
 
                     <!-- Highlight Badges -->
-                    <div class="hero-pill-bar">
+                    <div class="hero-pill-bar animate__animated animate__fadeInUp anim-delay-4">
                         <div class="pill-item">
                             <div class="pill-icon"><i class="fas fa-money-bill-wave"></i></div>
                             <div>Biaya Daftar <strong>Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }}</strong></div>
@@ -1407,7 +1403,7 @@
 
                 <!-- Image / Poster Column -->
                 <div class="col-lg-5 mt-4 mt-lg-0">
-                    <div class="hero-poster-card text-center" data-toggle="modal" data-target="#modalBrosurPanduan" title="Klik untuk memperbesar brosur">
+                    <div class="hero-poster-card text-center animate__animated animate__fadeInRight anim-delay-2" data-toggle="modal" data-target="#modalBrosurPanduan" title="Klik untuk memperbesar brosur">
                         <img src="{{ $setting?->hero_image_url }}" alt="Poster Panduan Pendaftaran {{ $setting->atas_nama ?? ($setting->app_name ?? 'Sekolah') }}" class="hero-poster-img">
                         <div class="poster-floating-badge text-left">
                             <div>
@@ -1428,7 +1424,7 @@
     <section class="countdown-bar-wrap">
         <div class="container">
             @if(!empty($setting->tanggal_tutup_gelombang))
-                <div class="countdown-card mb-4" id="countdownWrapper" data-target-date="{{ \Carbon\Carbon::parse($setting->tanggal_tutup_gelombang)->endOfDay()->toIso8601String() }}">
+                <div class="countdown-card mb-4 animate__animated animate__fadeInUp" id="countdownWrapper" data-target-date="{{ \Carbon\Carbon::parse($setting->tanggal_tutup_gelombang)->endOfDay()->toIso8601String() }}">
                     <div class="row align-items-center">
                         <div class="col-lg-6 mb-3 mb-lg-0 text-center text-lg-left">
                             <span class="badge badge-warning px-3 py-1 font-weight-bold mb-1 text-dark" style="border-radius: 20px;">
@@ -2623,7 +2619,8 @@
                                 const stagger = delay * (i % 4);
                                 target.style.animationDelay = stagger + 'ms';
                                 target.style.animationDuration = '0.65s';
-                                target.classList.add('animate__animated', anim, 'animated');
+                                target.classList.remove('scroll-reveal');
+                                target.classList.add('animate__animated', anim);
                                 obs.unobserve(target);
                             }
                         });
