@@ -978,12 +978,16 @@
             color: var(--primary-blue) !important;
         }
 
-        /* === Animate.css Scroll Reveal === */
+        /* === Animate.css Scroll Reveal & Fallbacks === */
         .scroll-reveal {
             opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
         }
         .scroll-reveal.animated {
-            opacity: 1;
+            opacity: 1 !important;
+            transform: translateY(0) !important;
         }
         /* Override animate.css fill-mode so element stays visible */
         .animate__animated {
@@ -995,34 +999,53 @@
         .anim-delay-3 { animation-delay: 0.25s !important; }
         .anim-delay-4 { animation-delay: 0.35s !important; }
 
-        /* === Responsive Fixes === */
+        @media (prefers-reduced-motion: reduce) {
+            .scroll-reveal,
+            .animate__animated {
+                opacity: 1 !important;
+                transform: none !important;
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* === Responsive & Humanized Layout Adjustments === */
         @media (max-width: 1199px) {
             .navbar-nav .nav-item .nav-link {
-                padding: 6px 9px !important;
-                font-size: 0.84rem;
+                padding: 6px 10px !important;
+                font-size: 0.86rem;
             }
         }
 
         @media (max-width: 991px) {
+            .hero-section {
+                padding: 45px 0 35px 0;
+            }
             .hero-title {
-                font-size: 2rem;
+                font-size: 2.15rem;
+                line-height: 1.22;
+                margin-top: 10px;
+                margin-bottom: 14px;
             }
             .hero-lead {
                 font-size: 1rem;
+                line-height: 1.6;
+                margin-bottom: 20px;
             }
             .hero-poster-img {
-                height: 300px;
-                margin-top: 30px;
+                height: 320px;
+                margin-top: 25px;
             }
-            .hero-section {
-                padding: 50px 0 40px;
+            .countdown-bar-wrap {
+                margin-top: 20px !important;
+                margin-bottom: 25px !important;
             }
             .section-padding {
                 padding: 55px 0;
             }
             .custom-navbar {
-                padding-left: 8px !important;
-                padding-right: 8px !important;
+                padding-left: 10px !important;
+                padding-right: 10px !important;
             }
             .navbar-collapse {
                 background: rgba(255, 255, 255, 0.98);
@@ -1039,15 +1062,86 @@
                 border-top: 1px solid #E2E8F0;
                 justify-content: flex-start;
             }
+            .hero-action-group .btn-brand-primary,
+            .hero-action-group .btn-brand-outline {
+                padding: 12px 20px;
+                font-size: 0.95rem;
+            }
         }
 
         @media (max-width: 767px) {
             body {
-                padding-bottom: 72px; /* Ruang untuk mobile sticky bottom bar */
+                padding-bottom: 74px; /* Ruang untuk mobile sticky bottom bar */
+            }
+            .section-padding {
+                padding: 42px 0;
+            }
+            .section-title {
+                font-size: 1.7rem !important;
+            }
+            .section-desc {
+                font-size: 0.92rem !important;
             }
             .floating-action {
                 bottom: 84px !important;
-                right: 18px !important;
+                right: 16px !important;
+            }
+            .countdown-card {
+                padding: 18px 16px;
+                border-radius: 16px;
+            }
+            .countdown-card h3 {
+                font-size: 1.2rem !important;
+            }
+            .countdown-unit {
+                min-width: 54px;
+                padding: 6px 8px;
+                border-radius: 10px;
+            }
+            .countdown-num {
+                font-size: 1.25rem;
+            }
+            .milestone-card {
+                padding: 14px 10px;
+                border-radius: 14px;
+            }
+            .milestone-number {
+                font-size: 1.6rem;
+            }
+            .hero-action-group {
+                flex-direction: column;
+                align-items: stretch !important;
+            }
+            .hero-action-group a,
+            .hero-action-group button {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+            .hero-sub-action {
+                justify-content: flex-start;
+            }
+            .hero-tracker-box {
+                max-width: 100% !important;
+            }
+            .hero-poster-img {
+                height: 260px;
+            }
+            .alur-timeline::before {
+                left: 20px;
+            }
+            .alur-item {
+                padding-left: 56px;
+            }
+            .alur-badge {
+                width: 42px;
+                height: 42px;
+                font-size: 1rem;
+                border-radius: 12px;
+            }
+            .alur-card {
+                padding: 14px 16px;
+                border-radius: 14px;
             }
         }
 
@@ -1079,10 +1173,36 @@
 
         @media (max-width: 575px) {
             .hero-title {
-                font-size: 1.75rem;
+                font-size: 1.7rem;
+            }
+            .hero-lead {
+                font-size: 0.92rem;
+            }
+            .badge-akreditasi {
+                font-size: 0.72rem;
+                padding: 5px 10px;
+            }
+            .countdown-unit {
+                min-width: 50px;
+                padding: 5px 6px;
+            }
+            .countdown-num {
+                font-size: 1.15rem;
+            }
+            .countdown-label {
+                font-size: 0.6rem;
             }
             .hero-pill-bar {
-                gap: 10px;
+                gap: 8px;
+            }
+            .pill-item {
+                font-size: 0.78rem;
+                padding: 5px 10px;
+            }
+            .cta-banner {
+                padding: 35px 18px;
+                border-radius: 16px;
+            }
             }
             .section-title {
                 font-size: 1.75rem;
@@ -1212,7 +1332,8 @@
                         @endif
                     </p>
 
-                    <div class="d-flex flex-wrap align-items-center mb-3" style="gap: 12px;">
+                    <!-- Main CTA Action Buttons -->
+                    <div class="d-flex flex-wrap align-items-center mb-3 hero-action-group" style="gap: 12px;">
                         @if (($setting->status_pendaftaran ?? 'buka') === 'buka')
                             <a href="{{ route('siswa.daftar') }}" class="btn-brand-primary">
                                 <i class="fas fa-paper-plane mr-1"></i>
@@ -1227,29 +1348,36 @@
                             <i class="fas fa-search mr-1"></i>
                             Cek Status Pendaftaran
                         </a>
+                    </div>
+
+                    <!-- Secondary Quick Actions (Pills) -->
+                    <div class="d-flex flex-wrap align-items-center mb-4 hero-sub-action" style="gap: 10px;">
                         @if (!empty($setting->video_profil_url))
-                            <a href="#modalVideoProfil" data-toggle="modal" class="btn btn-outline-danger font-weight-bold py-3 px-3" style="border-radius: 12px; min-height: 48px; display: inline-flex; align-items: center;">
-                                <i class="fas fa-play-circle text-danger mr-1"></i> Tonton Profil
+                            <a href="#modalVideoProfil" data-toggle="modal" class="btn btn-sm btn-white border shadow-sm font-weight-bold py-2 px-3 text-dark" style="border-radius: 20px; font-size: 0.825rem; display: inline-flex; align-items: center; background: #ffffff;">
+                                <i class="fas fa-play-circle text-danger mr-2" style="font-size: 1rem;"></i> Tonton Profil Video
                             </a>
                         @endif
                         @php
                             $waKontak = $setting->kontak_wa ?? '081222485558';
                             $waMsg = 'Halo Panitia SPMB ' . ($setting->atas_nama ?? ($setting->app_name ?? 'Sekolah')) . ', saya calon siswa/orang tua ingin konsultasi mengenai pendaftaran siswa baru.';
                         @endphp
-                        <a href="{{ wa_link($waKontak, $waMsg) }}" target="_blank" class="btn btn-outline-success font-weight-bold py-3 px-3" style="border-radius: 12px; min-height: 48px; display: inline-flex; align-items: center;">
-                            <i class="fab fa-whatsapp text-success mr-1"></i> Tanya Panitia
+                        <a href="{{ wa_link($waKontak, $waMsg) }}" target="_blank" class="btn btn-sm btn-white border shadow-sm font-weight-bold py-2 px-3 text-dark" style="border-radius: 20px; font-size: 0.825rem; display: inline-flex; align-items: center; background: #ffffff;">
+                            <i class="fab fa-whatsapp text-success mr-2" style="font-size: 1rem;"></i> Tanya CS SPMB
                         </a>
                     </div>
 
                     <!-- Quick Status Tracker Box in Hero -->
-                    <div class="p-3 bg-white rounded-lg shadow-sm border mt-3" style="border-radius: 14px; max-width: 540px;">
+                    <div class="p-3 bg-white rounded-lg shadow-sm border mb-4 hero-tracker-box" style="border-radius: 14px; max-width: 500px;">
+                        <div class="small font-weight-bold text-muted mb-2 d-flex align-items-center">
+                            <i class="fas fa-search text-primary mr-2"></i> Lacak Formulir Anda Cepat:
+                        </div>
                         <form action="{{ route('pendaftaran.cekStatus.post') }}" method="POST">
                             @csrf
                             <div class="input-group">
-                                <input type="text" name="keyword" class="form-control border-primary" placeholder="Cek Status: Kode Pendaftaran / NISN..." required style="border-radius: 8px 0 0 8px; font-size: 16px; min-height: 48px;">
+                                <input type="text" name="keyword" class="form-control" placeholder="Ketik Kode Pendaftaran atau NISN..." required style="border-radius: 8px 0 0 8px; font-size: 14px; min-height: 44px; border-color: #CBD5E1;">
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary font-weight-bold px-3" type="submit" style="border-radius: 0 8px 8px 0; min-height: 48px;">
-                                        <i class="fas fa-search mr-1"></i> Periksa
+                                    <button class="btn btn-primary font-weight-bold px-3" type="submit" style="border-radius: 0 8px 8px 0; min-height: 44px;">
+                                        Cari Status
                                     </button>
                                 </div>
                             </div>
@@ -2405,20 +2533,6 @@
                 prompt("Silakan salin nomor rekening berikut:", text);
             });
         }
-            navigator.clipboard.writeText(text).then(function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil Disalin!',
-                    text: 'Nomor Rekening telah disalin ke clipboard.',
-                    timer: 2000,
-                    showConfirmButton: false,
-                    toast: true,
-                    position: 'top-end'
-                });
-            }, function() {
-                prompt("Silakan salin nomor rekening berikut:", text);
-            });
-        }
 
         /* ==========================================
            Smooth Scroll for Anchor Links
@@ -2481,36 +2595,44 @@
            Animate.css Scroll Reveal (IntersectionObserver)
         ========================================== */
         const animateSelectors = [
-            { sel: '.section-header',    anim: 'animate__fadeInDown', delay: 0   },
-            { sel: '.step-card',         anim: 'animate__fadeInUp',   delay: 100 },
-            { sel: '.alur-item',         anim: 'animate__fadeInLeft', delay: 80  },
-            { sel: '.jurusan-card',      anim: 'animate__fadeInUp',   delay: 100 },
-            { sel: '.brochure-card',     anim: 'animate__zoomIn',     delay: 100 },
-            { sel: '.article-grid-card', anim: 'animate__fadeInUp',   delay: 100 },
+            { sel: '.section-header',     anim: 'animate__fadeInDown', delay: 0  },
+            { sel: '.step-card',          anim: 'animate__fadeInUp',   delay: 80 },
+            { sel: '.alur-item',          anim: 'animate__fadeInLeft', delay: 60 },
+            { sel: '.jurusan-card',       anim: 'animate__fadeInUp',   delay: 80 },
+            { sel: '.brochure-card',      anim: 'animate__zoomIn',     delay: 80 },
+            { sel: '.article-grid-card',  anim: 'animate__fadeInUp',   delay: 80 },
+            { sel: '.milestone-card',     anim: 'animate__fadeInUp',   delay: 60 },
+            { sel: '.mitra-card',         anim: 'animate__fadeInUp',   delay: 40 },
+            { sel: '.testimoni-card',     anim: 'animate__fadeInUp',   delay: 80 },
+            { sel: '.faq-card',           anim: 'animate__fadeInUp',   delay: 60 },
+            { sel: '.cta-banner',         anim: 'animate__fadeInUp',   delay: 0  },
         ];
 
-        animateSelectors.forEach(({ sel, anim, delay }) => {
-            const els = document.querySelectorAll(sel);
-            els.forEach((el, i) => {
-                // Hide before viewport
-                el.classList.add('scroll-reveal');
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-                const observer = new IntersectionObserver((entries, obs) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const el = entry.target;
-                            const stagger = delay * (i % 4);
-                            el.style.animationDelay = stagger + 'ms';
-                            el.style.animationDuration = '0.65s';
-                            el.classList.add('animate__animated', anim, 'animated');
-                            obs.unobserve(el);
-                        }
-                    });
-                }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+        if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+            animateSelectors.forEach(({ sel, anim, delay }) => {
+                const els = document.querySelectorAll(sel);
+                els.forEach((el, i) => {
+                    el.classList.add('scroll-reveal');
 
-                observer.observe(el);
+                    const observer = new IntersectionObserver((entries, obs) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const target = entry.target;
+                                const stagger = delay * (i % 4);
+                                target.style.animationDelay = stagger + 'ms';
+                                target.style.animationDuration = '0.65s';
+                                target.classList.add('animate__animated', anim, 'animated');
+                                obs.unobserve(target);
+                            }
+                        });
+                    }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+
+                    observer.observe(el);
+                });
             });
-        });
+        }
     </script>
     <!-- Mobile Sticky Bottom CTA Bar -->
     <div class="mobile-sticky-bottom d-flex d-md-none">
