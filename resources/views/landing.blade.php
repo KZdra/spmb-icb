@@ -282,10 +282,10 @@
         .navbar-nav .nav-item .nav-link {
             font-weight: 600;
             color: #475569 !important;
-            padding: 6px 11px !important;
-            border-radius: 7px;
+            padding: 8px 14px !important;
+            border-radius: 8px;
             transition: all 0.2s ease;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             white-space: nowrap;
         }
 
@@ -293,6 +293,47 @@
         .navbar-nav .nav-item .nav-link.active {
             color: var(--primary-blue) !important;
             background-color: var(--primary-light);
+        }
+
+        /* Navbar Dropdown Menu */
+        .custom-navbar .dropdown-menu {
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 12px 30px -5px rgba(15, 23, 42, 0.12);
+            padding: 8px;
+            min-width: 220px;
+            margin-top: 6px;
+        }
+
+        .custom-navbar .dropdown-item {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: #475569;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .custom-navbar .dropdown-item:hover {
+            color: var(--primary-blue);
+            background-color: var(--primary-light);
+            transform: translateX(3px);
+        }
+
+        .custom-navbar .dropdown-item i {
+            width: 20px;
+            text-align: center;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+
+        @media (min-width: 992px) {
+            .custom-navbar .nav-item.dropdown:hover .dropdown-menu {
+                display: block;
+                animation: fadeInDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            }
         }
 
         .navbar-cta-group {
@@ -1104,14 +1145,31 @@
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav mx-auto align-items-lg-center">
                     <li class="nav-item"><a class="nav-link" href="#beranda">Beranda</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#berita">Berita</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#panduan">Langkah Daftar</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#alur-spmb">Alur SPMB</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#brosur">Brosur</a></li>
                     <li class="nav-item"><a class="nav-link" href="#jurusan">Jurusan</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#mitra">Mitra DU/DI</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#testimoni">Testimoni</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#panduan">Alur & Syarat</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navDropInfo" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Informasi
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" aria-labelledby="navDropInfo">
+                            <a class="dropdown-item" href="#brosur">
+                                <i class="fas fa-file-pdf text-danger"></i> Brosur Resmi
+                            </a>
+                            <a class="dropdown-item" href="#mitra">
+                                <i class="fas fa-handshake text-primary"></i> Mitra Industri DU/DI
+                            </a>
+                            <a class="dropdown-item" href="#testimoni">
+                                <i class="fas fa-comment-dots text-success"></i> Testimoni Alumni
+                            </a>
+                            <a class="dropdown-item" href="#berita">
+                                <i class="fas fa-newspaper text-info"></i> Berita & Kegiatan
+                            </a>
+                            <div class="dropdown-divider my-1"></div>
+                            <a class="dropdown-item" href="#faq">
+                                <i class="fas fa-question-circle text-warning"></i> Tanya Jawab (FAQ)
+                            </a>
+                        </div>
+                    </li>
                 </ul>
 
                 <div class="navbar-cta-group">
@@ -2367,7 +2425,9 @@
         ========================================== */
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
-                const target = document.querySelector(this.getAttribute('href'));
+                const href = this.getAttribute('href');
+                if (!href || href === '#' || href.startsWith('#modal')) return;
+                const target = document.querySelector(href);
                 if (target) {
                     e.preventDefault();
                     const offset = 68; // navbar height
