@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             JurusanSeeders::class,
             SyaratBerkasSeeder::class,
             ArticleSeeder::class,
+            LandingCmsSeeder::class,
             // SiswaSeeder::class, // Opsional: Dibiarkan nonaktif agar database produksi tetap bersih dari dummy pendaftar
         ]);
 

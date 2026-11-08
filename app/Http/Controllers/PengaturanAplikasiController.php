@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Faq;
+use App\Models\MitraIndustri;
 use App\Models\PengaturanAplikasi;
 use App\Models\RekeningBank;
 use App\Models\SyaratBerkas;
+use App\Models\Testimoni;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -19,8 +22,13 @@ class PengaturanAplikasiController extends Controller
         $counter = DB::table('nis_counters')->first();
         $syaratBerkas = SyaratBerkas::orderBy('urutan', 'asc')->get();
         $rekeningBanks = RekeningBank::orderBy('urutan', 'asc')->get();
+        $faqs = Faq::orderBy('urutan', 'asc')->get();
+        $mitraIndustris = MitraIndustri::orderBy('urutan', 'asc')->get();
+        $testimonis = Testimoni::orderBy('urutan', 'asc')->get();
 
-        return view('PengaturanAplikasi.index', compact('setting', 'counter', 'syaratBerkas', 'rekeningBanks'));
+        return view('PengaturanAplikasi.index', compact(
+            'setting', 'counter', 'syaratBerkas', 'rekeningBanks', 'faqs', 'mitraIndustris', 'testimonis'
+        ));
     }
 
     public function store(Request $request)
@@ -29,6 +37,10 @@ class PengaturanAplikasiController extends Controller
             'app_name' => 'required|string|max:255',
             'logo_path' => 'nullable|image|max:3072',
             'favicon_path' => 'nullable|file|mimes:jpeg,jpg,png,ico,svg,webp|max:1024',
+            'hero_image_path' => 'nullable|image|max:4096',
+            'brosur_panduan_path' => 'nullable|image|max:4096',
+            'brosur_syarat_path' => 'nullable|image|max:4096',
+            'brosur_alur_path' => 'nullable|image|max:4096',
             'primary_color' => 'nullable|string|max:10',
             'secondary_color' => 'nullable|string|max:10',
             'accent_color' => 'nullable|string|max:10',
@@ -50,9 +62,18 @@ class PengaturanAplikasiController extends Controller
             'biaya_pendaftaran' => 'nullable|numeric|min:0',
             'kontak_wa' => 'nullable|string|max:50',
             'alamat_sekolah' => 'nullable|string|max:500',
+            'sosmed_instagram' => 'nullable|string|max:255',
+            'sosmed_tiktok' => 'nullable|string|max:255',
+            'sosmed_youtube' => 'nullable|string|max:255',
+            'sosmed_facebook' => 'nullable|string|max:255',
+            'stat_akreditasi' => 'nullable|string|max:50',
+            'stat_lulusan_kerja' => 'nullable|string|max:50',
+            'stat_mitra_industri' => 'nullable|string|max:50',
+            'stat_ekskul_lab' => 'nullable|string|max:50',
             'tahun_ajaran' => 'nullable|string|max:50',
             'status_pendaftaran' => 'nullable|in:buka,tutup',
             'gelombang_aktif' => 'nullable|string|max:50',
+            'tanggal_tutup_gelombang' => 'nullable|date',
             'pesan_penutupan' => 'nullable|string',
             'nis_prefix' => 'nullable|string|max:20',
             'nis_start_number' => 'nullable|integer|min:1',
@@ -83,6 +104,38 @@ class PengaturanAplikasiController extends Controller
             $setting->favicon_path = ImageService::uploadAsWebp($request->file('favicon_path'), 'favicons', 90);
         }
 
+        // Upload Hero Poster Image
+        if ($request->hasFile('hero_image_path')) {
+            if ($setting->hero_image_path && Storage::disk('public')->exists($setting->hero_image_path)) {
+                Storage::disk('public')->delete($setting->hero_image_path);
+            }
+            $setting->hero_image_path = ImageService::uploadAsWebp($request->file('hero_image_path'), 'spmb_assets', 90);
+        }
+
+        // Upload Brosur Panduan
+        if ($request->hasFile('brosur_panduan_path')) {
+            if ($setting->brosur_panduan_path && Storage::disk('public')->exists($setting->brosur_panduan_path)) {
+                Storage::disk('public')->delete($setting->brosur_panduan_path);
+            }
+            $setting->brosur_panduan_path = ImageService::uploadAsWebp($request->file('brosur_panduan_path'), 'spmb_assets', 90);
+        }
+
+        // Upload Brosur Syarat
+        if ($request->hasFile('brosur_syarat_path')) {
+            if ($setting->brosur_syarat_path && Storage::disk('public')->exists($setting->brosur_syarat_path)) {
+                Storage::disk('public')->delete($setting->brosur_syarat_path);
+            }
+            $setting->brosur_syarat_path = ImageService::uploadAsWebp($request->file('brosur_syarat_path'), 'spmb_assets', 90);
+        }
+
+        // Upload Brosur Alur
+        if ($request->hasFile('brosur_alur_path')) {
+            if ($setting->brosur_alur_path && Storage::disk('public')->exists($setting->brosur_alur_path)) {
+                Storage::disk('public')->delete($setting->brosur_alur_path);
+            }
+            $setting->brosur_alur_path = ImageService::uploadAsWebp($request->file('brosur_alur_path'), 'spmb_assets', 90);
+        }
+
         $setting->app_name = $validated['app_name'];
         $setting->primary_color = $validated['primary_color'] ?? ($setting->primary_color ?? '#1A56DB');
         $setting->secondary_color = $validated['secondary_color'] ?? ($setting->secondary_color ?? '#0B3B7B');
@@ -105,9 +158,18 @@ class PengaturanAplikasiController extends Controller
         $setting->biaya_pendaftaran = $validated['biaya_pendaftaran'] ?? $setting->biaya_pendaftaran;
         $setting->kontak_wa = $validated['kontak_wa'] ?? $setting->kontak_wa;
         $setting->alamat_sekolah = $validated['alamat_sekolah'] ?? $setting->alamat_sekolah;
+        $setting->sosmed_instagram = $validated['sosmed_instagram'] ?? $setting->sosmed_instagram;
+        $setting->sosmed_tiktok = $validated['sosmed_tiktok'] ?? $setting->sosmed_tiktok;
+        $setting->sosmed_youtube = $validated['sosmed_youtube'] ?? $setting->sosmed_youtube;
+        $setting->sosmed_facebook = $validated['sosmed_facebook'] ?? $setting->sosmed_facebook;
+        $setting->stat_akreditasi = $validated['stat_akreditasi'] ?? ($setting->stat_akreditasi ?? 'A (Unggul)');
+        $setting->stat_lulusan_kerja = $validated['stat_lulusan_kerja'] ?? ($setting->stat_lulusan_kerja ?? '95%+');
+        $setting->stat_mitra_industri = $validated['stat_mitra_industri'] ?? ($setting->stat_mitra_industri ?? '50+');
+        $setting->stat_ekskul_lab = $validated['stat_ekskul_lab'] ?? ($setting->stat_ekskul_lab ?? '15+');
         $setting->tahun_ajaran = $validated['tahun_ajaran'] ?? $setting->tahun_ajaran;
         $setting->status_pendaftaran = $validated['status_pendaftaran'] ?? ($setting->status_pendaftaran ?? 'buka');
         $setting->gelombang_aktif = $validated['gelombang_aktif'] ?? ($setting->gelombang_aktif ?? 'Gelombang 1');
+        $setting->tanggal_tutup_gelombang = $validated['tanggal_tutup_gelombang'] ?? $setting->tanggal_tutup_gelombang;
         $setting->pesan_penutupan = $validated['pesan_penutupan'] ?? $setting->pesan_penutupan;
         $setting->nis_prefix = $validated['nis_prefix'] ?? ($setting->nis_prefix ?? '125');
         $setting->nis_start_number = $validated['nis_start_number'] ?? ($setting->nis_start_number ?? 1);
@@ -317,5 +379,261 @@ class PengaturanAplikasiController extends Controller
         $syarat->delete();
 
         return response()->json(['message' => 'Syarat berkas berhasil dihapus!']);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // FAQ CRUD
+    // ─────────────────────────────────────────────────────────────
+    public function storeFaq(Request $request)
+    {
+        $validated = $request->validate([
+            'pertanyaan' => 'required|string|max:255',
+            'jawaban'    => 'required|string',
+            'kategori'   => 'nullable|string|max:100',
+            'urutan'     => 'nullable|integer',
+        ]);
+
+        $max = Faq::max('urutan') ?? 0;
+        $faq = Faq::create([
+            'pertanyaan' => $validated['pertanyaan'],
+            'jawaban'    => $validated['jawaban'],
+            'kategori'   => $validated['kategori'] ?? 'Umum',
+            'urutan'     => $validated['urutan'] ?? ($max + 1),
+            'is_active'  => true,
+        ]);
+
+        return response()->json([
+            'message' => 'Pertanyaan FAQ berhasil ditambahkan!',
+            'data'    => $faq
+        ]);
+    }
+
+    public function updateFaq(Request $request, $id)
+    {
+        $faq = Faq::findOrFail($id);
+        $validated = $request->validate([
+            'pertanyaan' => 'required|string|max:255',
+            'jawaban'    => 'required|string',
+            'kategori'   => 'nullable|string|max:100',
+            'urutan'     => 'nullable|integer',
+            'is_active'  => 'nullable|boolean',
+        ]);
+
+        $faq->update([
+            'pertanyaan' => $validated['pertanyaan'],
+            'jawaban'    => $validated['jawaban'],
+            'kategori'   => $validated['kategori'] ?? $faq->kategori,
+            'urutan'     => $validated['urutan'] ?? $faq->urutan,
+            'is_active'  => $request->boolean('is_active'),
+        ]);
+
+        return response()->json([
+            'message' => 'FAQ berhasil diperbarui!',
+            'data'    => $faq
+        ]);
+    }
+
+    public function toggleFaq($id)
+    {
+        $faq = Faq::findOrFail($id);
+        $faq->is_active = !$faq->is_active;
+        $faq->save();
+
+        $statusStr = $faq->is_active ? 'diaktifkan' : 'dinonaktifkan';
+        return response()->json([
+            'message'   => "FAQ berhasil {$statusStr}!",
+            'is_active' => $faq->is_active
+        ]);
+    }
+
+    public function destroyFaq($id)
+    {
+        $faq = Faq::findOrFail($id);
+        $faq->delete();
+        return response()->json(['message' => 'FAQ berhasil dihapus!']);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // MITRA INDUSTRI / DU/DI CRUD
+    // ─────────────────────────────────────────────────────────────
+    public function storeMitra(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_mitra' => 'required|string|max:255',
+            'bidang'     => 'nullable|string|max:150',
+            'urutan'     => 'nullable|integer',
+            'logo'       => 'nullable|image|max:2048',
+        ]);
+
+        $logoPath = null;
+        if ($request->hasFile('logo')) {
+            $logoPath = ImageService::uploadAsWebp($request->file('logo'), 'mitra_logos', 90);
+        }
+
+        $max = MitraIndustri::max('urutan') ?? 0;
+        $mitra = MitraIndustri::create([
+            'nama_mitra' => $validated['nama_mitra'],
+            'bidang'     => $validated['bidang'] ?? null,
+            'logo_path'  => $logoPath,
+            'urutan'     => $validated['urutan'] ?? ($max + 1),
+            'is_active'  => true,
+        ]);
+
+        return response()->json([
+            'message' => 'Mitra industri berhasil ditambahkan!',
+            'data'    => $mitra
+        ]);
+    }
+
+    public function updateMitra(Request $request, $id)
+    {
+        $mitra = MitraIndustri::findOrFail($id);
+        $validated = $request->validate([
+            'nama_mitra' => 'required|string|max:255',
+            'bidang'     => 'nullable|string|max:150',
+            'urutan'     => 'nullable|integer',
+            'is_active'  => 'nullable|boolean',
+            'logo'       => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('logo')) {
+            if ($mitra->logo_path && Storage::disk('public')->exists($mitra->logo_path)) {
+                Storage::disk('public')->delete($mitra->logo_path);
+            }
+            $mitra->logo_path = ImageService::uploadAsWebp($request->file('logo'), 'mitra_logos', 90);
+        }
+
+        $mitra->update([
+            'nama_mitra' => $validated['nama_mitra'],
+            'bidang'     => $validated['bidang'] ?? $mitra->bidang,
+            'urutan'     => $validated['urutan'] ?? $mitra->urutan,
+            'is_active'  => $request->boolean('is_active'),
+        ]);
+
+        return response()->json([
+            'message' => 'Data mitra industri berhasil diperbarui!',
+            'data'    => $mitra
+        ]);
+    }
+
+    public function toggleMitra($id)
+    {
+        $mitra = MitraIndustri::findOrFail($id);
+        $mitra->is_active = !$mitra->is_active;
+        $mitra->save();
+
+        $statusStr = $mitra->is_active ? 'diaktifkan' : 'dinonaktifkan';
+        return response()->json([
+            'message'   => "Mitra '{$mitra->nama_mitra}' berhasil {$statusStr}!",
+            'is_active' => $mitra->is_active
+        ]);
+    }
+
+    public function destroyMitra($id)
+    {
+        $mitra = MitraIndustri::findOrFail($id);
+        if ($mitra->logo_path && Storage::disk('public')->exists($mitra->logo_path)) {
+            Storage::disk('public')->delete($mitra->logo_path);
+        }
+        $mitra->delete();
+        return response()->json(['message' => 'Mitra industri berhasil dihapus!']);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // TESTIMONI ALUMNI CRUD
+    // ─────────────────────────────────────────────────────────────
+    public function storeTestimoni(Request $request)
+    {
+        $validated = $request->validate([
+            'nama'           => 'required|string|max:255',
+            'profesi_alumni' => 'required|string|max:255',
+            'tahun_lulus'    => 'nullable|string|max:50',
+            'jurusan'        => 'nullable|string|max:150',
+            'testimoni'      => 'required|string',
+            'urutan'         => 'nullable|integer',
+            'foto'           => 'nullable|image|max:2048',
+        ]);
+
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $fotoPath = ImageService::uploadAsWebp($request->file('foto'), 'testimoni_fotos', 85);
+        }
+
+        $max = Testimoni::max('urutan') ?? 0;
+        $testimoni = Testimoni::create([
+            'nama'           => $validated['nama'],
+            'profesi_alumni' => $validated['profesi_alumni'],
+            'tahun_lulus'    => $validated['tahun_lulus'] ?? null,
+            'jurusan'        => $validated['jurusan'] ?? null,
+            'foto_path'      => $fotoPath,
+            'testimoni'      => $validated['testimoni'],
+            'urutan'         => $validated['urutan'] ?? ($max + 1),
+            'is_active'      => true,
+        ]);
+
+        return response()->json([
+            'message' => 'Testimoni alumni berhasil ditambahkan!',
+            'data'    => $testimoni
+        ]);
+    }
+
+    public function updateTestimoni(Request $request, $id)
+    {
+        $testimoni = Testimoni::findOrFail($id);
+        $validated = $request->validate([
+            'nama'           => 'required|string|max:255',
+            'profesi_alumni' => 'required|string|max:255',
+            'tahun_lulus'    => 'nullable|string|max:50',
+            'jurusan'        => 'nullable|string|max:150',
+            'testimoni'      => 'required|string',
+            'urutan'         => 'nullable|integer',
+            'is_active'      => 'nullable|boolean',
+            'foto'           => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            if ($testimoni->foto_path && Storage::disk('public')->exists($testimoni->foto_path)) {
+                Storage::disk('public')->delete($testimoni->foto_path);
+            }
+            $testimoni->foto_path = ImageService::uploadAsWebp($request->file('foto'), 'testimoni_fotos', 85);
+        }
+
+        $testimoni->update([
+            'nama'           => $validated['nama'],
+            'profesi_alumni' => $validated['profesi_alumni'],
+            'tahun_lulus'    => $validated['tahun_lulus'] ?? $testimoni->tahun_lulus,
+            'jurusan'        => $validated['jurusan'] ?? $testimoni->jurusan,
+            'testimoni'      => $validated['testimoni'],
+            'urutan'         => $validated['urutan'] ?? $testimoni->urutan,
+            'is_active'      => $request->boolean('is_active'),
+        ]);
+
+        return response()->json([
+            'message' => 'Testimoni berhasil diperbarui!',
+            'data'    => $testimoni
+        ]);
+    }
+
+    public function toggleTestimoni($id)
+    {
+        $testimoni = Testimoni::findOrFail($id);
+        $testimoni->is_active = !$testimoni->is_active;
+        $testimoni->save();
+
+        $statusStr = $testimoni->is_active ? 'diaktifkan' : 'dinonaktifkan';
+        return response()->json([
+            'message'   => "Testimoni '{$testimoni->nama}' berhasil {$statusStr}!",
+            'is_active' => $testimoni->is_active
+        ]);
+    }
+
+    public function destroyTestimoni($id)
+    {
+        $testimoni = Testimoni::findOrFail($id);
+        if ($testimoni->foto_path && Storage::disk('public')->exists($testimoni->foto_path)) {
+            Storage::disk('public')->delete($testimoni->foto_path);
+        }
+        $testimoni->delete();
+        return response()->json(['message' => 'Testimoni berhasil dihapus!']);
     }
 }

@@ -117,6 +117,21 @@
                                             <i class="fas fa-newspaper mr-1 text-purple"></i> CMS Panduan
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link font-weight-bold" id="tab-faq-link" data-toggle="pill" href="#tab-faq" role="tab">
+                                            <i class="fas fa-question-circle mr-1 text-danger"></i> Tanya Jawab (FAQ)
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link font-weight-bold" id="tab-mitra-link" data-toggle="pill" href="#tab-mitra" role="tab">
+                                            <i class="fas fa-handshake mr-1 text-primary"></i> Mitra DU/DI
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link font-weight-bold" id="tab-testimoni-link" data-toggle="pill" href="#tab-testimoni" role="tab">
+                                            <i class="fas fa-comment-dots mr-1 text-success"></i> Testimoni Alumni
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="card-body">
@@ -148,6 +163,46 @@
                                                 <div class="form-group">
                                                     <label for="alamat_sekolah" class="font-weight-bold">Alamat Resmi Sekolah</label>
                                                     <textarea class="form-control" id="alamat_sekolah" name="alamat_sekolah" rows="3">{{ old('alamat_sekolah', $setting?->alamat_sekolah ?? 'Jl. Atlas No. 4, Babakan Surabaya, Kiaracondong, Kota Bandung, Jawa Barat') }}</textarea>
+                                                </div>
+
+                                                <div class="card border rounded bg-white p-3 mb-3">
+                                                    <label class="font-weight-bold text-dark d-block mb-2">
+                                                        <i class="fas fa-share-alt text-primary mr-1"></i> Tautan Media Sosial Resmi Sekolah
+                                                    </label>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-2">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-text bg-white text-danger"><i class="fab fa-instagram"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control" name="sosmed_instagram" placeholder="https://instagram.com/sekolah" value="{{ old('sosmed_instagram', $setting?->sosmed_instagram) }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 mb-2">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-text bg-white text-dark"><i class="fab fa-tiktok"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control" name="sosmed_tiktok" placeholder="https://tiktok.com/@sekolah" value="{{ old('sosmed_tiktok', $setting?->sosmed_tiktok) }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 mb-2">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-text bg-white text-danger"><i class="fab fa-youtube"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control" name="sosmed_youtube" placeholder="https://youtube.com/@sekolah" value="{{ old('sosmed_youtube', $setting?->sosmed_youtube) }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 mb-2">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-text bg-white text-primary"><i class="fab fa-facebook"></i></span>
+                                                                </div>
+                                                                <input type="text" class="form-control" name="sosmed_facebook" placeholder="https://facebook.com/sekolah" value="{{ old('sosmed_facebook', $setting?->sosmed_facebook) }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
                                                 <div class="row">
@@ -312,31 +367,132 @@
                                     <!-- TAB 3: GELOMBANG & BANNER -->
                                     <div class="tab-pane fade" id="tab-banner" role="tabpanel">
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label class="font-weight-bold d-block">Status Penerimaan Pendaftaran</label>
                                                     <div class="custom-control custom-radio custom-control-inline">
                                                         <input type="radio" id="status_buka" name="status_pendaftaran" value="buka" class="custom-control-input"
                                                             {{ ($setting?->status_pendaftaran ?? 'buka') === 'buka' ? 'checked' : '' }}>
                                                         <label class="custom-control-label text-success font-weight-bold" for="status_buka">
-                                                            <i class="fas fa-door-open mr-1"></i> DIBUKA (Menerima Pendaftaran Siswa)
+                                                            <i class="fas fa-door-open mr-1"></i> DIBUKA
                                                         </label>
                                                     </div>
                                                     <div class="custom-control custom-radio custom-control-inline">
                                                         <input type="radio" id="status_tutup" name="status_pendaftaran" value="tutup" class="custom-control-input"
                                                             {{ ($setting?->status_pendaftaran ?? 'buka') === 'tutup' ? 'checked' : '' }}>
                                                         <label class="custom-control-label text-danger font-weight-bold" for="status_tutup">
-                                                            <i class="fas fa-door-closed mr-1"></i> DITUTUP (Pendaftaran Ditutup Sementara)
+                                                            <i class="fas fa-door-closed mr-1"></i> DITUTUP
                                                         </label>
                                                     </div>
-                                                    <small class="form-text text-muted">Jika ditutup, formulir pendaftaran akan menampilkan pesan ramah bahwa pendaftaran belum dibuka.</small>
+                                                    <small class="form-text text-muted">Jika ditutup, tombol daftar menampilkan pesan ramah.</small>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="gelombang_aktif" class="font-weight-bold">Nama Gelombang Aktif</label>
                                                     <input type="text" class="form-control font-weight-bold" id="gelombang_aktif" name="gelombang_aktif"
                                                         value="{{ old('gelombang_aktif', $setting?->gelombang_aktif ?? 'Gelombang 1') }}" placeholder="Contoh: Gelombang 1 - Early Bird">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="tanggal_tutup_gelombang" class="font-weight-bold">
+                                                        <i class="fas fa-stopwatch text-warning mr-1"></i> Batas Akhir Gelombang (Countdown)
+                                                    </label>
+                                                    <input type="date" class="form-control" id="tanggal_tutup_gelombang" name="tanggal_tutup_gelombang"
+                                                        value="{{ old('tanggal_tutup_gelombang', $setting?->tanggal_tutup_gelombang ? \Carbon\Carbon::parse($setting->tanggal_tutup_gelombang)->format('Y-m-d') : '') }}">
+                                                    <small class="text-muted">Menghidupkan timer hitung mundur otomatis di beranda.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Poster & Brosur SPMB Upload Card -->
+                                        <div class="card bg-light border mb-3">
+                                            <div class="card-header bg-white font-weight-bold text-dark py-2">
+                                                <i class="fas fa-images text-primary mr-1"></i> Upload Poster Hero & 3 Brosur Resmi SPMB
+                                            </div>
+                                            <div class="card-body p-3">
+                                                <div class="row">
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="font-weight-bold small">Poster Utama Hero</label>
+                                                        <div class="custom-file mb-2">
+                                                            <input type="file" class="custom-file-input" name="hero_image_path" id="hero-img-input" accept="image/*">
+                                                            <label class="custom-file-label small" for="hero-img-input">Pilih file...</label>
+                                                        </div>
+                                                        <div class="text-center p-2 bg-white rounded border">
+                                                            <img src="{{ $setting?->hero_image_url }}" alt="Poster Hero" class="img-fluid rounded" style="max-height: 100px; object-fit: contain;">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="font-weight-bold small">Brosur 1: Panduan</label>
+                                                        <div class="custom-file mb-2">
+                                                            <input type="file" class="custom-file-input" name="brosur_panduan_path" id="brosur1-input" accept="image/*">
+                                                            <label class="custom-file-label small" for="brosur1-input">Pilih file...</label>
+                                                        </div>
+                                                        <div class="text-center p-2 bg-white rounded border">
+                                                            <img src="{{ $setting?->brosur_panduan_url }}" alt="Brosur Panduan" class="img-fluid rounded" style="max-height: 100px; object-fit: contain;">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="font-weight-bold small">Brosur 2: Syarat</label>
+                                                        <div class="custom-file mb-2">
+                                                            <input type="file" class="custom-file-input" name="brosur_syarat_path" id="brosur2-input" accept="image/*">
+                                                            <label class="custom-file-label small" for="brosur2-input">Pilih file...</label>
+                                                        </div>
+                                                        <div class="text-center p-2 bg-white rounded border">
+                                                            <img src="{{ $setting?->brosur_syarat_url }}" alt="Brosur Syarat" class="img-fluid rounded" style="max-height: 100px; object-fit: contain;">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="font-weight-bold small">Brosur 3: Alur SPMB</label>
+                                                        <div class="custom-file mb-2">
+                                                            <input type="file" class="custom-file-input" name="brosur_alur_path" id="brosur3-input" accept="image/*">
+                                                            <label class="custom-file-label small" for="brosur3-input">Pilih file...</label>
+                                                        </div>
+                                                        <div class="text-center p-2 bg-white rounded border">
+                                                            <img src="{{ $setting?->brosur_alur_url }}" alt="Brosur Alur" class="img-fluid rounded" style="max-height: 100px; object-fit: contain;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <small class="text-muted"><i class="fas fa-info-circle mr-1"></i> Format JPG/PNG/WEBP. Jika belum mengunggah, sistem otomatis memakai poster/brosur default.</small>
+                                            </div>
+                                        </div>
+
+                                        <!-- Statistik & Milestone Counter Bar -->
+                                        <div class="card bg-light border mb-3">
+                                            <div class="card-header bg-white font-weight-bold text-dark py-2">
+                                                <i class="fas fa-chart-line text-success mr-1"></i> 4 Statistik Keberhasilan Sekolah (Social Proof Bar)
+                                            </div>
+                                            <div class="card-body p-3">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-md-0">
+                                                            <label for="stat_akreditasi" class="font-weight-bold small">Status Akreditasi</label>
+                                                            <input type="text" class="form-control" id="stat_akreditasi" name="stat_akreditasi"
+                                                                value="{{ old('stat_akreditasi', $setting?->stat_akreditasi ?? 'A (Unggul)') }}" placeholder="A (Unggul)">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-md-0">
+                                                            <label for="stat_lulusan_kerja" class="font-weight-bold small">% Lulusan Bekerja & Kuliah</label>
+                                                            <input type="text" class="form-control" id="stat_lulusan_kerja" name="stat_lulusan_kerja"
+                                                                value="{{ old('stat_lulusan_kerja', $setting?->stat_lulusan_kerja ?? '95%+') }}" placeholder="95%+">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-md-0">
+                                                            <label for="stat_mitra_industri" class="font-weight-bold small">Total Mitra Industri</label>
+                                                            <input type="text" class="form-control" id="stat_mitra_industri" name="stat_mitra_industri"
+                                                                value="{{ old('stat_mitra_industri', $setting?->stat_mitra_industri ?? '50+') }}" placeholder="50+">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-md-0">
+                                                            <label for="stat_ekskul_lab" class="font-weight-bold small">Lab & Fasilitas</label>
+                                                            <input type="text" class="form-control" id="stat_ekskul_lab" name="stat_ekskul_lab"
+                                                                value="{{ old('stat_ekskul_lab', $setting?->stat_ekskul_lab ?? '15+') }}" placeholder="15+">
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -678,6 +834,165 @@
                                         </div>
                                     </div>
 
+                                    <!-- TAB 9: TANYA JAWAB (FAQ) DINAMIS -->
+                                    <div class="tab-pane fade" id="tab-faq" role="tabpanel">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <h5 class="font-weight-bold text-dark mb-1"><i class="fas fa-question-circle text-danger mr-2"></i> Kelola Pertanyaan & Jawaban (FAQ)</h5>
+                                                <p class="text-muted small mb-0">Pertanyaan umum ini akan langsung tampil di accordion FAQ beranda calon siswa.</p>
+                                            </div>
+                                            <button type="button" class="btn btn-danger btn-sm font-weight-bold px-3 shadow-sm" data-toggle="modal" data-target="#modalTambahFaq">
+                                                <i class="fas fa-plus mr-1"></i> Tambah Pertanyaan FAQ
+                                            </button>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-striped border rounded" id="tableFaq">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th style="width: 5%; text-align: center;">Urutan</th>
+                                                        <th style="width: 30%;">Pertanyaan</th>
+                                                        <th>Jawaban</th>
+                                                        <th style="width: 12%; text-align: center;">Kategori</th>
+                                                        <th style="width: 12%; text-align: center;">Status</th>
+                                                        <th style="width: 10%; text-align: center;">Aksi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @forelse($faqs as $f)
+                                                        <tr id="row-faq-{{ $f->id }}">
+                                                            <td class="text-center font-weight-bold">{{ $f->urutan }}</td>
+                                                            <td class="font-weight-bold text-dark">{{ $f->pertanyaan }}</td>
+                                                            <td class="small text-muted">{{ Str::limit($f->jawaban, 100) }}</td>
+                                                            <td class="text-center"><span class="badge badge-light border">{{ $f->kategori }}</span></td>
+                                                            <td class="text-center">
+                                                                <button type="button" class="btn btn-xs {{ $f->is_active ? 'btn-success' : 'btn-outline-danger' }} btnToggleFaq font-weight-bold" data-id="{{ $f->id }}">
+                                                                    {{ $f->is_active ? 'AKTIF' : 'NONAKTIF' }}
+                                                                </button>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button type="button" class="btn btn-xs btn-outline-danger btnHapusFaq" data-id="{{ $f->id }}" data-pertanyaan="{{ $f->pertanyaan }}">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        <tr id="empty-faq-row">
+                                                            <td colspan="6" class="text-center py-4 text-muted">Belum ada pertanyaan FAQ.</td>
+                                                        </tr>
+                                                    @endforelse
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- TAB 10: MITRA INDUSTRI (DU/DI) -->
+                                    <div class="tab-pane fade" id="tab-mitra" role="tabpanel">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <h5 class="font-weight-bold text-dark mb-1"><i class="fas fa-handshake text-primary mr-2"></i> Rekanan Mitra Industri (Dunia Usaha & Kerja)</h5>
+                                                <p class="text-muted small mb-0">Logo perusahaan rekanan magang & penyaluran kerja yang tampil di beranda sekolah.</p>
+                                            </div>
+                                            <button type="button" class="btn btn-primary btn-sm font-weight-bold px-3 shadow-sm" data-toggle="modal" data-target="#modalTambahMitra">
+                                                <i class="fas fa-plus mr-1"></i> Tambah Mitra Industri
+                                            </button>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-striped border rounded" id="tableMitra">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th style="width: 6%; text-align: center;">Urutan</th>
+                                                        <th style="width: 35%;">Nama Perusahaan / Institusi</th>
+                                                        <th>Bidang Usaha</th>
+                                                        <th style="width: 14%; text-align: center;">Status</th>
+                                                        <th style="width: 10%; text-align: center;">Aksi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @forelse($mitraIndustris as $m)
+                                                        <tr id="row-mitra-{{ $m->id }}">
+                                                            <td class="text-center font-weight-bold">{{ $m->urutan }}</td>
+                                                            <td class="font-weight-bold text-primary">
+                                                                <i class="fas fa-building mr-1"></i> {{ $m->nama_mitra }}
+                                                            </td>
+                                                            <td class="small">{{ $m->bidang ?? 'Industri & Teknologi' }}</td>
+                                                            <td class="text-center">
+                                                                <button type="button" class="btn btn-xs {{ $m->is_active ? 'btn-success' : 'btn-outline-danger' }} btnToggleMitra font-weight-bold" data-id="{{ $m->id }}">
+                                                                    {{ $m->is_active ? 'AKTIF' : 'NONAKTIF' }}
+                                                                </button>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button type="button" class="btn btn-xs btn-outline-danger btnHapusMitra" data-id="{{ $m->id }}" data-nama="{{ $m->nama_mitra }}">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        <tr id="empty-mitra-row">
+                                                            <td colspan="5" class="text-center py-4 text-muted">Belum ada mitra industri.</td>
+                                                        </tr>
+                                                    @endforelse
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- TAB 11: TESTIMONI ALUMNI -->
+                                    <div class="tab-pane fade" id="tab-testimoni" role="tabpanel">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div>
+                                                <h5 class="font-weight-bold text-dark mb-1"><i class="fas fa-comment-dots text-success mr-2"></i> Testimoni Alumni & Siswa</h5>
+                                                <p class="text-muted small mb-0">Ulasan nyata alumni yang sudah berkarir sukses untuk menginspirasi pendaftar baru.</p>
+                                            </div>
+                                            <button type="button" class="btn btn-success btn-sm font-weight-bold px-3 shadow-sm" data-toggle="modal" data-target="#modalTambahTestimoni">
+                                                <i class="fas fa-plus mr-1"></i> Tambah Testimoni
+                                            </button>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-striped border rounded" id="tableTestimoni">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th style="width: 6%; text-align: center;">Urutan</th>
+                                                        <th style="width: 25%;">Nama Alumni</th>
+                                                        <th style="width: 25%;">Profesi / Pekerjaan Saat Ini</th>
+                                                        <th>Ulasan Singkat</th>
+                                                        <th style="width: 12%; text-align: center;">Status</th>
+                                                        <th style="width: 10%; text-align: center;">Aksi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @forelse($testimonis as $t)
+                                                        <tr id="row-testimoni-{{ $t->id }}">
+                                                            <td class="text-center font-weight-bold">{{ $t->urutan }}</td>
+                                                            <td class="font-weight-bold text-dark">
+                                                                {{ $t->nama }}
+                                                                <small class="d-block text-muted">{{ $t->tahun_lulus }} &bull; {{ $t->jurusan }}</small>
+                                                            </td>
+                                                            <td class="small text-primary font-weight-bold">{{ $t->profesi_alumni }}</td>
+                                                            <td class="small text-muted">"{{ Str::limit($t->testimoni, 90) }}"</td>
+                                                            <td class="text-center">
+                                                                <button type="button" class="btn btn-xs {{ $t->is_active ? 'btn-success' : 'btn-outline-danger' }} btnToggleTestimoni font-weight-bold" data-id="{{ $t->id }}">
+                                                                    {{ $t->is_active ? 'AKTIF' : 'NONAKTIF' }}
+                                                                </button>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button type="button" class="btn btn-xs btn-outline-danger btnHapusTestimoni" data-id="{{ $t->id }}" data-nama="{{ $t->nama }}">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        <tr id="empty-testimoni-row">
+                                                            <td colspan="6" class="text-center py-4 text-muted">Belum ada testimoni alumni.</td>
+                                                        </tr>
+                                                    @endforelse
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="card-footer bg-white text-right sticky-mobile-save">
@@ -767,6 +1082,139 @@
                         <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-success font-weight-bold px-4" id="btnSimpanBerkas">
                             <i class="fas fa-save mr-1"></i> Simpan Dokumen
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah FAQ -->
+    <div class="modal fade" id="modalTambahFaq" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);">
+                    <h5 class="modal-title font-weight-bold"><i class="fas fa-question-circle mr-1"></i> Tambah Pertanyaan FAQ</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                </div>
+                <form id="formTambahFaq">
+                    @csrf
+                    <div class="modal-body p-4">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Pertanyaan <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control font-weight-bold" name="pertanyaan" required placeholder="Contoh: Bagaimana jika ijazah belum terbit?">
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold">Jawaban <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="jawaban" rows="4" required placeholder="Tuliskan jawaban yang jelas dan membantu..."></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Kategori</label>
+                                    <input type="text" class="form-control" name="kategori" value="Umum" placeholder="Umum / Biaya / Berkas">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Urutan</label>
+                                    <input type="number" class="form-control" name="urutan" value="{{ ($faqs->max('urutan') ?? 0) + 1 }}" min="1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger font-weight-bold px-4" id="btnSimpanFaq">
+                            <i class="fas fa-save mr-1"></i> Simpan FAQ
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Mitra Industri -->
+    <div class="modal fade" id="modalTambahMitra" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #1A56DB 0%, #0B3B7B 100%);">
+                    <h5 class="modal-title font-weight-bold"><i class="fas fa-handshake mr-1"></i> Tambah Rekanan Mitra Industri</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                </div>
+                <form id="formTambahMitra">
+                    @csrf
+                    <div class="modal-body p-4">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Nama Perusahaan / Institusi <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control font-weight-bold" name="nama_mitra" required placeholder="Contoh: PT Telkom Indonesia Tbk">
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold">Bidang Usaha</label>
+                            <input type="text" class="form-control" name="bidang" placeholder="Contoh: Telekomunikasi & Teknologi Informasi">
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold">Urutan Tampil</label>
+                            <input type="number" class="form-control" name="urutan" value="{{ ($mitraIndustris->max('urutan') ?? 0) + 1 }}" min="1">
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary font-weight-bold px-4" id="btnSimpanMitra">
+                            <i class="fas fa-save mr-1"></i> Simpan Mitra
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Testimoni Alumni -->
+    <div class="modal fade" id="modalTambahTestimoni" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #10B981 0%, #047857 100%);">
+                    <h5 class="modal-title font-weight-bold"><i class="fas fa-comment-dots mr-1"></i> Tambah Testimoni Alumni</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                </div>
+                <form id="formTambahTestimoni">
+                    @csrf
+                    <div class="modal-body p-4">
+                        <div class="form-group">
+                            <label class="font-weight-bold">Nama Alumni <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control font-weight-bold" name="nama" required placeholder="Contoh: Ahmad Fauzi">
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold">Profesi / Pekerjaan Saat Ini <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="profesi_alumni" required placeholder="Contoh: Staff Keuangan di Bank Mandiri">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Tahun Lulus</label>
+                                    <input type="text" class="form-control" name="tahun_lulus" placeholder="Lulusan 2024">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Kompetensi / Jurusan</label>
+                                    <input type="text" class="form-control" name="jurusan" placeholder="Akuntansi / RPL">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold">Ulasan Singkat / Testimoni <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="testimoni" rows="3" required placeholder="Ceritakan pengalaman belajar atau kesiapan kerja yang didapatkan..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold">Urutan</label>
+                            <input type="number" class="form-control" name="urutan" value="{{ ($testimonis->max('urutan') ?? 0) + 1 }}" min="1">
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success font-weight-bold px-4" id="btnSimpanTestimoni">
+                            <i class="fas fa-save mr-1"></i> Simpan Testimoni
                         </button>
                     </div>
                 </form>
@@ -1171,6 +1619,288 @@
                             },
                             error: function() {
                                 Swal.fire('Error', 'Gagal menghapus berkas.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+            // ─────────────────────────────────────────────────────────────
+            // FAQ Handlers (NO RELOAD!)
+            // ─────────────────────────────────────────────────────────────
+            $('#formTambahFaq').on('submit', function(e) {
+                e.preventDefault();
+                const btn = $('#btnSimpanFaq');
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...');
+
+                $.ajax({
+                    url: '{{ route('appconfig.faq.store') }}',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(res) {
+                        btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Simpan FAQ');
+                        $('#modalTambahFaq').modal('hide');
+                        $('#formTambahFaq')[0].reset();
+
+                        const f = res.data;
+                        const newRow = `
+                            <tr id="row-faq-${f.id}">
+                                <td class="text-center font-weight-bold">${f.urutan}</td>
+                                <td class="font-weight-bold text-dark">${f.pertanyaan}</td>
+                                <td class="small text-muted">${f.jawaban.substring(0, 100)}</td>
+                                <td class="text-center"><span class="badge badge-light border">${f.kategori}</span></td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-xs btn-success btnToggleFaq font-weight-bold" data-id="${f.id}">AKTIF</button>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-xs btn-outline-danger btnHapusFaq" data-id="${f.id}" data-pertanyaan="${f.pertanyaan}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                        $('#empty-faq-row').remove();
+                        $('#tableFaq tbody').append(newRow);
+                        Toast.fire({ icon: 'success', title: res.message });
+                    },
+                    error: function(xhr) {
+                        btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Simpan FAQ');
+                        Swal.fire('Error', xhr.responseJSON?.message || 'Gagal menambahkan FAQ.', 'error');
+                    }
+                });
+            });
+
+            $(document).on('click', '.btnToggleFaq', function() {
+                const id = $(this).data('id');
+                const btn = $(this);
+                btn.prop('disabled', true);
+
+                $.ajax({
+                    url: `{{ url('admin/settings/faq') }}/${id}/toggle`,
+                    method: 'POST',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(res) {
+                        btn.prop('disabled', false);
+                        if (res.is_active) {
+                            btn.removeClass('btn-outline-danger').addClass('btn-success').text('AKTIF');
+                        } else {
+                            btn.removeClass('btn-success').addClass('btn-outline-danger').text('NONAKTIF');
+                        }
+                        Toast.fire({ icon: 'success', title: res.message });
+                    },
+                    error: function() {
+                        btn.prop('disabled', false);
+                        Swal.fire('Error', 'Gagal mengubah status FAQ.', 'error');
+                    }
+                });
+            });
+
+            $(document).on('click', '.btnHapusFaq', function() {
+                const id = $(this).data('id');
+                const row = $(this).closest('tr');
+
+                Swal.fire({
+                    title: 'Hapus FAQ?',
+                    text: 'Apakah Anda yakin ingin menghapus pertanyaan ini?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus!'
+                }).then((r) => {
+                    if (r.isConfirmed) {
+                        $.ajax({
+                            url: `{{ url('admin/settings/faq') }}/${id}`,
+                            method: 'DELETE',
+                            data: { _token: '{{ csrf_token() }}' },
+                            success: function(res) {
+                                row.fadeOut(300, function() { $(this).remove(); });
+                                Toast.fire({ icon: 'success', title: res.message });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // ─────────────────────────────────────────────────────────────
+            // Mitra Industri Handlers (NO RELOAD!)
+            // ─────────────────────────────────────────────────────────────
+            $('#formTambahMitra').on('submit', function(e) {
+                e.preventDefault();
+                const btn = $('#btnSimpanMitra');
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...');
+
+                $.ajax({
+                    url: '{{ route('appconfig.mitra.store') }}',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(res) {
+                        btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Simpan Mitra');
+                        $('#modalTambahMitra').modal('hide');
+                        $('#formTambahMitra')[0].reset();
+
+                        const m = res.data;
+                        const newRow = `
+                            <tr id="row-mitra-${m.id}">
+                                <td class="text-center font-weight-bold">${m.urutan}</td>
+                                <td class="font-weight-bold text-primary"><i class="fas fa-building mr-1"></i> ${m.nama_mitra}</td>
+                                <td class="small">${m.bidang || '-'}</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-xs btn-success btnToggleMitra font-weight-bold" data-id="${m.id}">AKTIF</button>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-xs btn-outline-danger btnHapusMitra" data-id="${m.id}" data-nama="${m.nama_mitra}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                        $('#empty-mitra-row').remove();
+                        $('#tableMitra tbody').append(newRow);
+                        Toast.fire({ icon: 'success', title: res.message });
+                    },
+                    error: function(xhr) {
+                        btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Simpan Mitra');
+                        Swal.fire('Error', xhr.responseJSON?.message || 'Gagal menambahkan mitra.', 'error');
+                    }
+                });
+            });
+
+            $(document).on('click', '.btnToggleMitra', function() {
+                const id = $(this).data('id');
+                const btn = $(this);
+                btn.prop('disabled', true);
+
+                $.ajax({
+                    url: `{{ url('admin/settings/mitra') }}/${id}/toggle`,
+                    method: 'POST',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(res) {
+                        btn.prop('disabled', false);
+                        if (res.is_active) {
+                            btn.removeClass('btn-outline-danger').addClass('btn-success').text('AKTIF');
+                        } else {
+                            btn.removeClass('btn-success').addClass('btn-outline-danger').text('NONAKTIF');
+                        }
+                        Toast.fire({ icon: 'success', title: res.message });
+                    }
+                });
+            });
+
+            $(document).on('click', '.btnHapusMitra', function() {
+                const id = $(this).data('id');
+                const row = $(this).closest('tr');
+
+                Swal.fire({
+                    title: 'Hapus Mitra Industri?',
+                    text: 'Apakah Anda yakin ingin menghapus mitra ini?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus!'
+                }).then((r) => {
+                    if (r.isConfirmed) {
+                        $.ajax({
+                            url: `{{ url('admin/settings/mitra') }}/${id}`,
+                            method: 'DELETE',
+                            data: { _token: '{{ csrf_token() }}' },
+                            success: function(res) {
+                                row.fadeOut(300, function() { $(this).remove(); });
+                                Toast.fire({ icon: 'success', title: res.message });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // ─────────────────────────────────────────────────────────────
+            // Testimoni Handlers (NO RELOAD!)
+            // ─────────────────────────────────────────────────────────────
+            $('#formTambahTestimoni').on('submit', function(e) {
+                e.preventDefault();
+                const btn = $('#btnSimpanTestimoni');
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...');
+
+                $.ajax({
+                    url: '{{ route('appconfig.testimoni.store') }}',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(res) {
+                        btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Simpan Testimoni');
+                        $('#modalTambahTestimoni').modal('hide');
+                        $('#formTambahTestimoni')[0].reset();
+
+                        const t = res.data;
+                        const newRow = `
+                            <tr id="row-testimoni-${t.id}">
+                                <td class="text-center font-weight-bold">${t.urutan}</td>
+                                <td class="font-weight-bold text-dark">
+                                    ${t.nama}
+                                    <small class="d-block text-muted">${t.tahun_lulus || ''} &bull; ${t.jurusan || ''}</small>
+                                </td>
+                                <td class="small text-primary font-weight-bold">${t.profesi_alumni}</td>
+                                <td class="small text-muted">"${t.testimoni.substring(0, 90)}"</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-xs btn-success btnToggleTestimoni font-weight-bold" data-id="${t.id}">AKTIF</button>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-xs btn-outline-danger btnHapusTestimoni" data-id="${t.id}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                        $('#empty-testimoni-row').remove();
+                        $('#tableTestimoni tbody').append(newRow);
+                        Toast.fire({ icon: 'success', title: res.message });
+                    },
+                    error: function(xhr) {
+                        btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Simpan Testimoni');
+                        Swal.fire('Error', xhr.responseJSON?.message || 'Gagal menambahkan testimoni.', 'error');
+                    }
+                });
+            });
+
+            $(document).on('click', '.btnToggleTestimoni', function() {
+                const id = $(this).data('id');
+                const btn = $(this);
+                btn.prop('disabled', true);
+
+                $.ajax({
+                    url: `{{ url('admin/settings/testimoni') }}/${id}/toggle`,
+                    method: 'POST',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(res) {
+                        btn.prop('disabled', false);
+                        if (res.is_active) {
+                            btn.removeClass('btn-outline-danger').addClass('btn-success').text('AKTIF');
+                        } else {
+                            btn.removeClass('btn-success').addClass('btn-outline-danger').text('NONAKTIF');
+                        }
+                        Toast.fire({ icon: 'success', title: res.message });
+                    }
+                });
+            });
+
+            $(document).on('click', '.btnHapusTestimoni', function() {
+                const id = $(this).data('id');
+                const row = $(this).closest('tr');
+
+                Swal.fire({
+                    title: 'Hapus Testimoni?',
+                    text: 'Apakah Anda yakin ingin menghapus testimoni ini?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus!'
+                }).then((r) => {
+                    if (r.isConfirmed) {
+                        $.ajax({
+                            url: `{{ url('admin/settings/testimoni') }}/${id}`,
+                            method: 'DELETE',
+                            data: { _token: '{{ csrf_token() }}' },
+                            success: function(res) {
+                                row.fadeOut(300, function() { $(this).remove(); });
+                                Toast.fire({ icon: 'success', title: res.message });
                             }
                         });
                     }

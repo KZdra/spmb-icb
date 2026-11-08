@@ -16,7 +16,14 @@ Route::get('/', function () {
     $articles = Article::where('is_published', true)->latest()->take(6)->get();
     $setting = PengaturanAplikasi::first();
     $rekeningBanks = \App\Models\RekeningBank::where('is_active', true)->orderBy('urutan', 'asc')->get();
-    return view('landing', compact('jurusans', 'articles', 'setting', 'rekeningBanks'));
+    $syaratBerkas = \App\Models\SyaratBerkas::where('is_active', true)->orderBy('urutan', 'asc')->get();
+    $faqs = \App\Models\Faq::where('is_active', true)->orderBy('urutan', 'asc')->get();
+    $mitraIndustris = \App\Models\MitraIndustri::where('is_active', true)->orderBy('urutan', 'asc')->get();
+    $testimonis = \App\Models\Testimoni::where('is_active', true)->orderBy('urutan', 'asc')->get();
+
+    return view('landing', compact(
+        'jurusans', 'articles', 'setting', 'rekeningBanks', 'syaratBerkas', 'faqs', 'mitraIndustris', 'testimonis'
+    ));
 })->name('landing');
 
 // Public Article Detail
@@ -89,6 +96,24 @@ Route::prefix('admin')->middleware('auth:web')->group(function () {
         Route::put('settings/rekening/{id}', [PengaturanAplikasiController::class, 'updateRekening'])->name('appconfig.rekening.update');
         Route::post('settings/rekening/{id}/toggle', [PengaturanAplikasiController::class, 'toggleRekening'])->name('appconfig.rekening.toggle');
         Route::delete('settings/rekening/{id}', [PengaturanAplikasiController::class, 'destroyRekening'])->name('appconfig.rekening.destroy');
+
+        // CMS FAQ
+        Route::post('settings/faq', [PengaturanAplikasiController::class, 'storeFaq'])->name('appconfig.faq.store');
+        Route::put('settings/faq/{id}', [PengaturanAplikasiController::class, 'updateFaq'])->name('appconfig.faq.update');
+        Route::post('settings/faq/{id}/toggle', [PengaturanAplikasiController::class, 'toggleFaq'])->name('appconfig.faq.toggle');
+        Route::delete('settings/faq/{id}', [PengaturanAplikasiController::class, 'destroyFaq'])->name('appconfig.faq.destroy');
+
+        // CMS Mitra Industri
+        Route::post('settings/mitra', [PengaturanAplikasiController::class, 'storeMitra'])->name('appconfig.mitra.store');
+        Route::put('settings/mitra/{id}', [PengaturanAplikasiController::class, 'updateMitra'])->name('appconfig.mitra.update');
+        Route::post('settings/mitra/{id}/toggle', [PengaturanAplikasiController::class, 'toggleMitra'])->name('appconfig.mitra.toggle');
+        Route::delete('settings/mitra/{id}', [PengaturanAplikasiController::class, 'destroyMitra'])->name('appconfig.mitra.destroy');
+
+        // CMS Testimoni
+        Route::post('settings/testimoni', [PengaturanAplikasiController::class, 'storeTestimoni'])->name('appconfig.testimoni.store');
+        Route::put('settings/testimoni/{id}', [PengaturanAplikasiController::class, 'updateTestimoni'])->name('appconfig.testimoni.update');
+        Route::post('settings/testimoni/{id}/toggle', [PengaturanAplikasiController::class, 'toggleTestimoni'])->name('appconfig.testimoni.toggle');
+        Route::delete('settings/testimoni/{id}', [PengaturanAplikasiController::class, 'destroyTestimoni'])->name('appconfig.testimoni.destroy');
         // CMS Artikel
         Route::resource('articles', ArticleController::class);
     });

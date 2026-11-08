@@ -108,6 +108,116 @@
             color: #ffffff !important;
         }
 
+        /* Countdown Timer & Milestone Bars */
+        .countdown-bar-wrap {
+            position: relative;
+            z-index: 20;
+            margin-top: -36px;
+            margin-bottom: 30px;
+        }
+        .countdown-card {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #0F172A 100%);
+            border-radius: 18px;
+            padding: 22px 28px;
+            color: #ffffff;
+            box-shadow: 0 16px 36px rgba(11, 59, 123, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .countdown-unit {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 8px 14px;
+            text-align: center;
+            min-width: 62px;
+        }
+        .countdown-num {
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #FDE68A;
+            line-height: 1.1;
+        }
+        .countdown-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.85;
+            margin-top: 2px;
+        }
+
+        .milestone-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px 18px;
+            text-align: center;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            height: 100%;
+        }
+        .milestone-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+            border-color: var(--primary-color);
+        }
+        .milestone-number {
+            font-size: 2rem;
+            font-weight: 900;
+            font-family: 'Outfit', sans-serif;
+            color: var(--primary-color);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        /* Mitra Industri Cards */
+        .mitra-card {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 85px;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            text-align: center;
+            height: 100%;
+        }
+        .mitra-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+            transform: translateY(-3px);
+        }
+
+        /* Testimoni Alumni Cards */
+        .testimoni-card {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-radius: 18px;
+            padding: 26px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .testimoni-card:hover {
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            transform: translateY(-4px);
+            border-color: var(--primary-color);
+        }
+        .testimoni-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: #1E293B;
@@ -952,10 +1062,26 @@
 
     <!-- Announcement Bar -->
     <div class="top-bar text-center">
-        <div class="container">
-            <span>✨ <strong>Penerimaan Peserta Didik Baru (SPMB) Tahun Ajaran {{ $setting->tahun_ajaran ?? '2027/2028' }} Telah Dibuka!</strong> Terakreditasi A (Unggul).</span>
-            <span class="d-none d-md-inline ms-3">| Biaya Pendaftaran Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }} ({{ $setting->bank_name ?? 'Bank BRI' }}: {{ $setting->no_rekening ?? '210501000140303' }})</span>
-            <a href="{{ route('siswa.daftar') }}" class="ml-2 font-weight-bold">Daftar Online &rarr;</a>
+        <div class="container d-flex flex-wrap justify-content-between align-items-center">
+            <div class="text-truncate">
+                <span>✨ <strong>Penerimaan Peserta Didik Baru (SPMB) Tahun Ajaran {{ $setting->tahun_ajaran ?? '2027/2028' }} Telah Dibuka!</strong></span>
+                <span class="d-none d-md-inline ml-2">| Terakreditasi {{ $setting->stat_akreditasi ?? 'A (Unggul)' }}</span>
+            </div>
+            <div class="d-none d-lg-flex align-items-center" style="gap: 14px;">
+                @if(!empty($setting->sosmed_instagram))
+                    <a href="{{ $setting->sosmed_instagram }}" target="_blank" class="text-white" title="Instagram"><i class="fab fa-instagram"></i></a>
+                @endif
+                @if(!empty($setting->sosmed_tiktok))
+                    <a href="{{ $setting->sosmed_tiktok }}" target="_blank" class="text-white" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                @endif
+                @if(!empty($setting->sosmed_youtube))
+                    <a href="{{ $setting->sosmed_youtube }}" target="_blank" class="text-white" title="YouTube"><i class="fab fa-youtube"></i></a>
+                @endif
+                @if(!empty($setting->sosmed_facebook))
+                    <a href="{{ $setting->sosmed_facebook }}" target="_blank" class="text-white" title="Facebook"><i class="fab fa-facebook"></i></a>
+                @endif
+                <a href="{{ route('siswa.daftar') }}" class="font-weight-bold ml-2 text-warning">Daftar Online &rarr;</a>
+            </div>
         </div>
     </div>
 
@@ -963,7 +1089,7 @@
     <nav class="navbar navbar-expand-lg custom-navbar sticky-top" id="mainNav">
         <div class="container">
             <a class="navbar-brand" href="#beranda">
-                <img src="{{ $setting?->logo_url ?? asset('images/icb.png') }}" alt="Logo {{ $setting->app_name ?? 'SMK ICB' }}" height="36" style="object-fit: contain;">
+                <img src="{{ $setting?->logo_url ?? asset('images/icb.png') }}" alt="Logo {{ $setting->app_name ?? 'Sekolah' }}" height="36" style="object-fit: contain;">
                 <div>
                     <div>{{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }}</div>
                     <div class="brand-subtitle">{{ $setting->slogan ?? 'Student Today Leader Tomorrow' }}</div>
@@ -983,6 +1109,8 @@
                     <li class="nav-item"><a class="nav-link" href="#alur-spmb">Alur SPMB</a></li>
                     <li class="nav-item"><a class="nav-link" href="#brosur">Brosur</a></li>
                     <li class="nav-item"><a class="nav-link" href="#jurusan">Jurusan</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#mitra">Mitra DU/DI</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#testimoni">Testimoni</a></li>
                     <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
                 </ul>
 
@@ -1006,7 +1134,7 @@
                 <div class="col-lg-7">
                     <div class="badge-akreditasi mb-2">
                         <i class="fas fa-award text-warning"></i>
-                        <span>{{ $setting->hero_badge ?? ('TERAKREDITASI A • SPMB ONLINE TAHUN AJARAN ' . ($setting->tahun_ajaran ?? '2027/2028') . ' • ' . ($setting->gelombang_aktif ?? 'Gelombang 1')) }}</span>
+                        <span>{{ $setting->hero_badge ?? ('TERAKREDITASI ' . ($setting->stat_akreditasi ?? 'A') . ' • SPMB ONLINE TAHUN AJARAN ' . ($setting->tahun_ajaran ?? '2027/2028') . ' • ' . ($setting->gelombang_aktif ?? 'Gelombang 1')) }}</span>
                     </div>
 
                     <h1 class="hero-title">
@@ -1022,7 +1150,7 @@
                         @if (!empty($setting->hero_subtitle))
                             {{ $setting->hero_subtitle }}
                         @else
-                            Selamat datang calon peserta didik dan orang tua di portal resmi SPMB <strong>{{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }}</strong>. Sekolah kejuruan terakreditasi A dengan kurikulum berbasis industri, fasilitas praktik lengkap, dan pendaftaran mandiri cepat tanpa ribet.
+                            Selamat datang calon peserta didik dan orang tua di portal resmi SPMB <strong>{{ $setting->atas_nama ?? ($setting->app_name ?? 'SMK ICB Cinta Teknika') }}</strong>. Sekolah kejuruan terakreditasi dengan kurikulum berbasis industri, fasilitas praktik lengkap, dan pendaftaran mandiri cepat tanpa ribet.
                         @endif
                     </p>
 
@@ -1041,9 +1169,14 @@
                             <i class="fas fa-search mr-1"></i>
                             Cek Status Pendaftaran
                         </a>
+                        @if (!empty($setting->video_profil_url))
+                            <a href="#modalVideoProfil" data-toggle="modal" class="btn btn-outline-danger font-weight-bold py-3 px-3" style="border-radius: 12px; min-height: 48px; display: inline-flex; align-items: center;">
+                                <i class="fas fa-play-circle text-danger mr-1"></i> Tonton Profil
+                            </a>
+                        @endif
                         @php
                             $waKontak = $setting->kontak_wa ?? '081222485558';
-                            $waMsg = 'Halo Panitia SPMB ' . ($setting->app_name ?? 'SMK ICB') . ', saya calon siswa/orang tua ingin konsultasi mengenai pendaftaran siswa baru.';
+                            $waMsg = 'Halo Panitia SPMB ' . ($setting->atas_nama ?? ($setting->app_name ?? 'Sekolah')) . ', saya calon siswa/orang tua ingin konsultasi mengenai pendaftaran siswa baru.';
                         @endphp
                         <a href="{{ wa_link($waKontak, $waMsg) }}" target="_blank" class="btn btn-outline-success font-weight-bold py-3 px-3" style="border-radius: 12px; min-height: 48px; display: inline-flex; align-items: center;">
                             <i class="fab fa-whatsapp text-success mr-1"></i> Tanya Panitia
@@ -1089,16 +1222,91 @@
                 <!-- Image / Poster Column -->
                 <div class="col-lg-5 mt-4 mt-lg-0">
                     <div class="hero-poster-card text-center" data-toggle="modal" data-target="#modalBrosurPanduan" title="Klik untuk memperbesar brosur">
-                        <img src="{{ asset('images/spmb/panduan_pendaftaran.jpg') }}" alt="Poster Panduan Pendaftaran SMK ICB Cinta Teknika" class="hero-poster-img">
+                        <img src="{{ $setting?->hero_image_url }}" alt="Poster Panduan Pendaftaran {{ $setting->atas_nama ?? ($setting->app_name ?? 'Sekolah') }}" class="hero-poster-img">
                         <div class="poster-floating-badge text-left">
                             <div>
-                                <div style="font-size: 0.8rem; opacity: 0.9;">Brosur Resmi SPMB 2027/2028</div>
+                                <div style="font-size: 0.8rem; opacity: 0.9;">Brosur Resmi SPMB {{ $setting->tahun_ajaran ?? '2027/2028' }}</div>
                                 <div style="font-weight: 800; font-size: 0.95rem;">Panduan Pendaftaran Lengkap</div>
                             </div>
                             <span class="badge badge-warning px-3 py-2" style="font-size: 0.8rem;">
                                 <i class="fas fa-search-plus mr-1"></i> Perbesar
                             </span>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Countdown & Social Proof Milestone Section -->
+    <section class="countdown-bar-wrap">
+        <div class="container">
+            @if(!empty($setting->tanggal_tutup_gelombang))
+                <div class="countdown-card mb-4" id="countdownWrapper" data-target-date="{{ \Carbon\Carbon::parse($setting->tanggal_tutup_gelombang)->endOfDay()->toIso8601String() }}">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 mb-3 mb-lg-0 text-center text-lg-left">
+                            <span class="badge badge-warning px-3 py-1 font-weight-bold mb-1 text-dark" style="border-radius: 20px;">
+                                <i class="fas fa-stopwatch mr-1"></i> HITUNG MUNDUR PENUTUPAN
+                            </span>
+                            <h3 class="font-weight-bold mb-1 text-white" style="font-size: 1.45rem;">
+                                {{ $setting->gelombang_aktif ?? 'Gelombang 1' }} Segera Berakhir!
+                            </h3>
+                            <p class="mb-0 text-white-50 small">
+                                Amankan kuota jurusan pilihan Anda sebelum: <strong>{{ \Carbon\Carbon::parse($setting->tanggal_tutup_gelombang)->translatedFormat('l, d F Y') }}</strong>
+                            </p>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="d-flex justify-content-center justify-content-lg-end" style="gap: 10px;">
+                                <div class="countdown-unit">
+                                    <div class="countdown-num" id="cd-days">00</div>
+                                    <div class="countdown-label">Hari</div>
+                                </div>
+                                <div class="countdown-unit">
+                                    <div class="countdown-num" id="cd-hours">00</div>
+                                    <div class="countdown-label">Jam</div>
+                                </div>
+                                <div class="countdown-unit">
+                                    <div class="countdown-num" id="cd-minutes">00</div>
+                                    <div class="countdown-label">Menit</div>
+                                </div>
+                                <div class="countdown-unit">
+                                    <div class="countdown-num" id="cd-seconds">00</div>
+                                    <div class="countdown-label">Detik</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            <!-- 4 Milestone Social Proof Cards -->
+            <div class="row">
+                <div class="col-lg-3 col-6 mb-3">
+                    <div class="milestone-card">
+                        <div class="milestone-number">{{ $setting->stat_akreditasi ?? 'A' }}</div>
+                        <div class="font-weight-bold text-dark small">Status Akreditasi</div>
+                        <div class="text-muted" style="font-size: 11px;">BAN-S/M Unggul Nasional</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6 mb-3">
+                    <div class="milestone-card">
+                        <div class="milestone-number">{{ $setting->stat_lulusan_kerja ?? '95%+' }}</div>
+                        <div class="font-weight-bold text-dark small">Lulusan Terserap</div>
+                        <div class="text-muted" style="font-size: 11px;">Bekerja, Wirausaha & Kuliah</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6 mb-3">
+                    <div class="milestone-card">
+                        <div class="milestone-number">{{ $setting->stat_mitra_industri ?? '50+' }}</div>
+                        <div class="font-weight-bold text-dark small">Mitra DU / DI</div>
+                        <div class="text-muted" style="font-size: 11px;">Perusahaan Magang & Kerja</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6 mb-3">
+                    <div class="milestone-card">
+                        <div class="milestone-number">{{ $setting->stat_ekskul_lab ?? '15+' }}</div>
+                        <div class="font-weight-bold text-dark small">Fasilitas Praktik</div>
+                        <div class="text-muted" style="font-size: 11px;">Lab Kejuruan Berstandar Industri</div>
                     </div>
                 </div>
             </div>
@@ -1490,7 +1698,7 @@
                 <div class="alur-item">
                     <div class="alur-badge">7</div>
                     <div class="alur-card">
-                        <h5><span>Daftar Ulang & Menjadi Keluarga ICB</span> <i class="fas fa-file-signature text-primary"></i></h5>
+                        <h5><span>Daftar Ulang & Registrasi Resmi</span> <i class="fas fa-file-signature text-primary"></i></h5>
                         <p>Calon murid yang diterima melakukan daftar ulang, penyerahan berkas fisik, dan menyelesaikan administrasi/cicilan pertama sesuai ketentuan sekolah.</p>
                     </div>
                 </div>
@@ -1500,7 +1708,7 @@
                     <div class="alur-badge">8</div>
                     <div class="alur-card">
                         <h5><span>Mengikuti Kegiatan MPLS</span> <i class="fas fa-users text-primary"></i></h5>
-                        <p>Mengikuti Masa Pengenalan Lingkungan Sekolah (MPLS) untuk mengenal budaya disiplin, guru, teman sejawat, dan lingkungan kampus ICB.</p>
+                        <p>Mengikuti Masa Pengenalan Lingkungan Sekolah (MPLS) untuk mengenal budaya disiplin, pengajar, teman sejawat, dan lingkungan kampus sekolah.</p>
                     </div>
                 </div>
 
@@ -1508,8 +1716,8 @@
                 <div class="alur-item">
                     <div class="alur-badge" style="background: var(--primary-blue); color: white;"><i class="fas fa-user-graduate"></i></div>
                     <div class="alur-card" style="border: 2px solid var(--primary-blue); background: #F0FDF4;">
-                        <h5 class="text-success font-weight-bold"><span>Resmi Menjadi Siswa di SMK ICB Cinta Teknika!</span> <i class="fas fa-check-double text-success"></i></h5>
-                        <p class="text-dark font-weight-bold">Selamat! Anda resmi menjadi bagian dari keluarga besar SMK ICB Cinta Teknika. Siap menyongsong masa depan gemilang!</p>
+                        <h5 class="text-success font-weight-bold"><span>Resmi Menjadi Siswa di {{ $setting->atas_nama ?? ($setting->app_name ?? 'Sekolah') }}!</span> <i class="fas fa-check-double text-success"></i></h5>
+                        <p class="text-dark font-weight-bold">Selamat! Anda resmi menjadi bagian dari keluarga besar {{ $setting->atas_nama ?? ($setting->app_name ?? 'Sekolah') }}. Siap menyongsong masa depan gemilang!</p>
                     </div>
                 </div>
             </div>
@@ -1545,13 +1753,27 @@
                         <h4 class="font-weight-bold text-dark text-center mb-2">Melengkapi Dokumen</h4>
                         <p class="text-muted text-center mb-3" style="font-size: 0.9rem;">Siapkan fotokopi & file digital berkas berikut:</p>
                         <ul class="step-checklist" style="font-size: 0.88rem;">
-                            <li><i class="fas fa-file-alt text-primary"></i> <span>FC Ijazah / SKL SMP/MTs</span></li>
-                            <li><i class="fas fa-file-alt text-primary"></i> <span>FC Akta Kelahiran</span></li>
-                            <li><i class="fas fa-file-alt text-primary"></i> <span>FC Kartu Keluarga (KK)</span></li>
-                            <li><i class="fas fa-file-alt text-primary"></i> <span>FC KTP Orang Tua</span></li>
-                            <li><i class="fas fa-file-alt text-primary"></i> <span>FC Surat Kelakuan Baik Sekolah</span></li>
-                            <li><i class="fas fa-camera text-primary"></i> <span>Pas Foto 3x4 (2 Lembar)</span></li>
-                            <li><i class="fas fa-award text-warning"></i> <span>Piagam/Sertifikat Prestasi/DTKS/DTSEN (Jika Ada)</span></li>
+                            @if(isset($syaratBerkas) && $syaratBerkas->count() > 0)
+                                @foreach($syaratBerkas as $sb)
+                                    <li>
+                                        <i class="fas {{ $sb->is_required ? 'fa-check-circle text-primary' : 'fa-info-circle text-muted' }}"></i> 
+                                        <span>
+                                            {{ $sb->nama_berkas }}
+                                            @if($sb->is_required)
+                                                <strong class="text-danger small">(Wajib)</strong>
+                                            @else
+                                                <span class="text-muted small">(Opsional)</span>
+                                            @endif
+                                        </span>
+                                    </li>
+                                @endforeach
+                            @else
+                                <li><i class="fas fa-file-alt text-primary"></i> <span>FC Ijazah / SKL SMP/MTs (Wajib)</span></li>
+                                <li><i class="fas fa-file-alt text-primary"></i> <span>FC Akta Kelahiran (Wajib)</span></li>
+                                <li><i class="fas fa-file-alt text-primary"></i> <span>FC Kartu Keluarga (KK) (Wajib)</span></li>
+                                <li><i class="fas fa-camera text-primary"></i> <span>Pas Foto 3x4 (2 Lembar)</span></li>
+                                <li><i class="fas fa-award text-warning"></i> <span>Piagam/Sertifikat Prestasi/DTKS (Opsional)</span></li>
+                            @endif
                         </ul>
                     </div>
                 </div>
@@ -1585,10 +1807,10 @@
                 <!-- Brosur 1 -->
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="brochure-card" data-toggle="modal" data-target="#modalBrosurPanduan">
-                        <img src="{{ asset('images/spmb/panduan_pendaftaran.jpg') }}" alt="Brosur Panduan Pendaftaran" class="brochure-thumb">
+                        <img src="{{ $setting?->brosur_panduan_url }}" alt="Brosur Panduan Pendaftaran" class="brochure-thumb">
                         <div class="brochure-body">
                             <h5 class="font-weight-bold text-dark mb-1">Panduan Pendaftaran</h5>
-                            <p class="text-muted small mb-2">4 Langkah Pendaftaran TA 2027/2028</p>
+                            <p class="text-muted small mb-2">4 Langkah Pendaftaran TA {{ $setting->tahun_ajaran ?? '2027/2028' }}</p>
                             <span class="btn btn-sm btn-outline-primary btn-block font-weight-bold">
                                 <i class="fas fa-search-plus mr-1"></i> Klik untuk Perbesar
                             </span>
@@ -1599,7 +1821,7 @@
                 <!-- Brosur 2 -->
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="brochure-card" data-toggle="modal" data-target="#modalBrosurSyarat">
-                        <img src="{{ asset('images/spmb/syarat_pendaftaran.jpg') }}" alt="Brosur Syarat Pendaftaran" class="brochure-thumb">
+                        <img src="{{ $setting?->brosur_syarat_url }}" alt="Brosur Syarat Pendaftaran" class="brochure-thumb">
                         <div class="brochure-body">
                             <h5 class="font-weight-bold text-dark mb-1">Syarat Pendaftaran</h5>
                             <p class="text-muted small mb-2">Rincian Berkas & Kelengkapan Dokumen</p>
@@ -1613,7 +1835,7 @@
                 <!-- Brosur 3 -->
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="brochure-card" data-toggle="modal" data-target="#modalBrosurAlur">
-                        <img src="{{ asset('images/spmb/alur_pendaftaran.jpg') }}" alt="Brosur Alur SPMB" class="brochure-thumb">
+                        <img src="{{ $setting?->brosur_alur_url }}" alt="Brosur Alur SPMB" class="brochure-thumb">
                         <div class="brochure-body">
                             <h5 class="font-weight-bold text-dark mb-1">Alur Pendaftaran SPMB</h5>
                             <p class="text-muted small mb-2">9 Tahapan Menuju Siswa Resmi</p>
@@ -1707,8 +1929,84 @@
         </div>
     </section>
 
+    <!-- Mitra Industri / DU-DI Section -->
+    <section id="mitra" class="section-padding bg-white border-top">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <span class="badge badge-primary px-3 py-2 text-uppercase font-weight-bold" style="letter-spacing: 0.8px; border-radius: 30px;">
+                    <i class="fas fa-handshake mr-1"></i> Sinergi Dunia Industri
+                </span>
+                <h2 class="font-weight-bold text-dark mt-2" style="font-size: 2.2rem;">Mitra Kerja & Penyaluran Lulusan</h2>
+                <p class="text-muted" style="max-width: 650px; margin: 0 auto; font-size: 1.05rem;">
+                    Bekerja sama erat dengan berbagai perusahaan nasional terkemuka untuk program magang (PKL), kurikulum berbasis industri, dan rekrutmen kerja langsung.
+                </p>
+            </div>
+
+            <div class="row">
+                @forelse($mitraIndustris as $mitra)
+                    <div class="col-lg-2 col-md-4 col-6 mb-4">
+                        <div class="mitra-card">
+                            <div>
+                                <i class="fas fa-building text-primary fa-2x mb-2 d-block" style="opacity: 0.85;"></i>
+                                <div class="font-weight-bold text-dark small">{{ $mitra->nama_mitra }}</div>
+                                @if($mitra->bidang)
+                                    <div class="text-muted" style="font-size: 10px;">{{ $mitra->bidang }}</div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-12 text-center text-muted">
+                        <p>Mitra industri sedang dalam proses sinkronisasi.</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimoni Alumni & Siswa Berprestasi -->
+    <section id="testimoni" class="section-padding bg-light border-top">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <span class="badge badge-success px-3 py-2 text-uppercase font-weight-bold" style="letter-spacing: 0.8px; border-radius: 30px;">
+                    <i class="fas fa-quote-left mr-1"></i> Cerita Sukses Alumni
+                </span>
+                <h2 class="font-weight-bold text-dark mt-2" style="font-size: 2.2rem;">Kisah Nyata Para Alumni</h2>
+                <p class="text-muted" style="max-width: 650px; margin: 0 auto; font-size: 1.05rem;">
+                    Dengarkan langsung pengalaman berharga para alumni yang telah membuktikan kualitas pembelajaran dan sukses berkarir di berbagai bidang.
+                </p>
+            </div>
+
+            <div class="row">
+                @forelse($testimonis as $testi)
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="testimoni-card">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center font-weight-bold mr-3" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                                    {{ strtoupper(substr($testi->nama, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <h5 class="font-weight-bold text-dark mb-0" style="font-size: 1rem;">{{ $testi->nama }}</h5>
+                                    <div class="text-primary font-weight-bold" style="font-size: 0.82rem;">{{ $testi->profesi_alumni }}</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">{{ $testi->tahun_lulus }} &bull; {{ $testi->jurusan }}</div>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-0" style="font-size: 0.92rem; line-height: 1.6; font-style: italic;">
+                                "{{ $testi->testimoni }}"
+                            </p>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-12 text-center text-muted">
+                        <p>Belum ada testimoni alumni yang dipublikasikan.</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </section>
+
     <!-- FAQ (Pertanyaan yang Sering Diajukan) -->
-    <section id="faq" class="section-padding bg-light border-top">
+    <section id="faq" class="section-padding bg-white border-top">
         <div class="container">
             <div class="section-header text-center mb-5">
                 <span class="badge badge-primary px-3 py-2 text-uppercase font-weight-bold" style="letter-spacing: 0.8px; border-radius: 30px;">
@@ -1723,90 +2021,27 @@
             <div class="row justify-content-center">
                 <div class="col-lg-9">
                     <div class="accordion" id="faqAccordion">
-                        <!-- FAQ 1 -->
-                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 14px; overflow: hidden;">
-                            <div class="card-header bg-white p-3 border-0" id="faqHeading1">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link text-left text-dark font-weight-bold w-100 d-flex justify-content-between align-items-center text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCollapse1" aria-expanded="true" aria-controls="faqCollapse1" style="font-size: 1.05rem;">
-                                        <span><i class="fas fa-file-invoice text-primary mr-2"></i> Bagaimana jika Ijazah SMP atau SKL belum terbit saat mendaftar?</span>
-                                        <i class="fas fa-chevron-down text-muted"></i>
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="faqCollapse1" class="collapse show" aria-labelledby="faqHeading1" data-parent="#faqAccordion">
-                                <div class="card-body pt-0 px-4 pb-4 text-muted" style="line-height: 1.7;">
-                                    Tenang saja, Anda tetap dapat mendaftar sekarang! Calon siswa cukup melampirkan Surat Keterangan bahwa masih duduk di kelas 9 dari sekolah asal atau rapor semester terakhir. Ijazah asli atau SKL resmi dapat diserahkan menyusul saat jadwal daftar ulang.
+                        @forelse($faqs as $idx => $faq)
+                            <div class="card border-0 shadow-sm mb-3" style="border-radius: 14px; overflow: hidden; border: 1px solid #E2E8F0 !important;">
+                                <div class="card-header bg-white p-3 border-0" id="faqHeading{{ $faq->id }}">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link {{ $idx > 0 ? 'collapsed' : '' }} text-left text-dark font-weight-bold w-100 d-flex justify-content-between align-items-center text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCollapse{{ $faq->id }}" aria-expanded="{{ $idx === 0 ? 'true' : 'false' }}" aria-controls="faqCollapse{{ $faq->id }}" style="font-size: 1.05rem;">
+                                            <span><i class="fas fa-question-circle text-primary mr-2"></i> {{ $faq->pertanyaan }}</span>
+                                            <i class="fas fa-chevron-down text-muted"></i>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="faqCollapse{{ $faq->id }}" class="collapse {{ $idx === 0 ? 'show' : '' }}" aria-labelledby="faqHeading{{ $faq->id }}" data-parent="#faqAccordion">
+                                    <div class="card-body pt-0 px-4 pb-4 text-muted" style="line-height: 1.7;">
+                                        {!! nl2br(e($faq->jawaban)) !!}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- FAQ 2 -->
-                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 14px; overflow: hidden;">
-                            <div class="card-header bg-white p-3 border-0" id="faqHeading2">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link collapsed text-left text-dark font-weight-bold w-100 d-flex justify-content-between align-items-center text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCollapse2" aria-expanded="false" aria-controls="faqCollapse2" style="font-size: 1.05rem;">
-                                        <span><i class="fas fa-money-check-alt text-success mr-2"></i> Apakah biaya pendaftaran dan DSP bisa dicicil?</span>
-                                        <i class="fas fa-chevron-down text-muted"></i>
-                                    </button>
-                                </h5>
+                        @empty
+                            <div class="text-center py-4 text-muted">
+                                <p>Belum ada pertanyaan FAQ yang dipublikasikan.</p>
                             </div>
-                            <div id="faqCollapse2" class="collapse" aria-labelledby="faqHeading2" data-parent="#faqAccordion">
-                                <div class="card-body pt-0 px-4 pb-4 text-muted" style="line-height: 1.7;">
-                                    Untuk biaya formulir pendaftaran sebesar Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }} dibayarkan satu kali di awal. Sedangkan untuk biaya Dana Sumbangan Pendidikan (DSP) dan administrasi daftar ulang, pihak sekolah menyediakan skema cicilan bertahap yang fleksibel dan dapat dikonsultasikan dengan bagian keuangan sekolah.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- FAQ 3 -->
-                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 14px; overflow: hidden;">
-                            <div class="card-header bg-white p-3 border-0" id="faqHeading3">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link collapsed text-left text-dark font-weight-bold w-100 d-flex justify-content-between align-items-center text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCollapse3" aria-expanded="false" aria-controls="faqCollapse3" style="font-size: 1.05rem;">
-                                        <span><i class="fas fa-building text-warning mr-2"></i> Apakah calon siswa bisa datang langsung mendaftar di kampus?</span>
-                                        <i class="fas fa-chevron-down text-muted"></i>
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="faqCollapse3" class="collapse" aria-labelledby="faqHeading3" data-parent="#faqAccordion">
-                                <div class="card-body pt-0 px-4 pb-4 text-muted" style="line-height: 1.7;">
-                                    Sangat bisa! Jika calon siswa atau orang tua ingin berkonsultasi langsung, melihat fasilitas bengkel/laboratorium praktik, atau membutuhkan pendampingan pengisian form, silakan datang langsung ke Ruang Sekretariat SPMB pada jam pelayanan ({{ $setting->jam_pelayanan ?? 'Senin - Sabtu, 08:00 - 15:00 WIB' }}).
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- FAQ 4 -->
-                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 14px; overflow: hidden;">
-                            <div class="card-header bg-white p-3 border-0" id="faqHeading4">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link collapsed text-left text-dark font-weight-bold w-100 d-flex justify-content-between align-items-center text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCollapse4" aria-expanded="false" aria-controls="faqCollapse4" style="font-size: 1.05rem;">
-                                        <span><i class="fas fa-clock text-info mr-2"></i> Berapa lama proses verifikasi bukti pendaftaran saya?</span>
-                                        <i class="fas fa-chevron-down text-muted"></i>
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="faqCollapse4" class="collapse" aria-labelledby="faqHeading4" data-parent="#faqAccordion">
-                                <div class="card-body pt-0 px-4 pb-4 text-muted" style="line-height: 1.7;">
-                                    Panitia SPMB memeriksa berkas masuk secara berkala dalam kurun waktu 1x24 jam kerja. Calon siswa dapat memantau status validasi pembayaran maupun kelulusan setiap saat melalui menu <strong>Cek Status</strong> menggunakan Kode Pendaftaran atau NISN.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- FAQ 5 -->
-                        <div class="card border-0 shadow-sm" style="border-radius: 14px; overflow: hidden;">
-                            <div class="card-header bg-white p-3 border-0" id="faqHeading5">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link collapsed text-left text-dark font-weight-bold w-100 d-flex justify-content-between align-items-center text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCollapse5" aria-expanded="false" aria-controls="faqCollapse5" style="font-size: 1.05rem;">
-                                        <span><i class="fas fa-award text-danger mr-2"></i> Apakah tersedia beasiswa untuk calon siswa berprestasi / keluarga prasejahtera?</span>
-                                        <i class="fas fa-chevron-down text-muted"></i>
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="faqCollapse5" class="collapse" aria-labelledby="faqHeading5" data-parent="#faqAccordion">
-                                <div class="card-body pt-0 px-4 pb-4 text-muted" style="line-height: 1.7;">
-                                    Ya, kami membuka <strong>Jalur Beasiswa Prestasi</strong> bagi pemegang piagam kejuaraan olahraga/seni/akademik atau sertifikat tahfidz Qur'an, serta <strong>Jalur Kemitraan / RMP</strong> bagi keluarga pemegang KIP, DTKS, atau kartu program bantuan pemerintah lainnya.
-                                </div>
-                            </div>
-                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -1855,7 +2090,7 @@
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <div class="d-flex align-items-center mb-3">
                         <img src="{{ $setting?->logo_url ?? asset('images/icb.png') }}" alt="Logo" height="40" class="mr-2" style="object-fit: contain;">
-                        <span class="font-weight-bold text-white h5 mb-0">{{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }}</span>
+                        <span class="font-weight-bold text-white h5 mb-0">{{ $setting->atas_nama ?? ($setting->app_name ?? 'SMK ICB Cinta Teknika') }}</span>
                     </div>
                     <p class="text-muted" style="line-height: 1.6;">
                         {{ $setting->tentang_sekolah ?? 'Sekolah Menengah Kejuruan Terakreditasi A (Unggul). Menghasilkan lulusan yang disiplin berintegritas, kompeten di bidang kejuruan modern, berkarakter luhur, dan siap bersaing di dunia global maupun melanjutkan studi.' }}
@@ -1864,6 +2099,21 @@
                         <span class="badge badge-warning text-dark font-weight-bold px-3 py-2">
                             Motto: {{ $setting->slogan ?? 'Student Today Leader Tomorrow' }}
                         </span>
+                    </div>
+                    <!-- Social Media Links in Footer -->
+                    <div class="mt-3 d-flex align-items-center" style="gap: 12px;">
+                        @if(!empty($setting->sosmed_instagram))
+                            <a href="{{ $setting->sosmed_instagram }}" target="_blank" class="btn btn-sm btn-outline-light rounded-circle" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;"><i class="fab fa-instagram"></i></a>
+                        @endif
+                        @if(!empty($setting->sosmed_tiktok))
+                            <a href="{{ $setting->sosmed_tiktok }}" target="_blank" class="btn btn-sm btn-outline-light rounded-circle" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;"><i class="fab fa-tiktok"></i></a>
+                        @endif
+                        @if(!empty($setting->sosmed_youtube))
+                            <a href="{{ $setting->sosmed_youtube }}" target="_blank" class="btn btn-sm btn-outline-light rounded-circle" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;"><i class="fab fa-youtube"></i></a>
+                        @endif
+                        @if(!empty($setting->sosmed_facebook))
+                            <a href="{{ $setting->sosmed_facebook }}" target="_blank" class="btn btn-sm btn-outline-light rounded-circle" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;"><i class="fab fa-facebook"></i></a>
+                        @endif
                     </div>
                 </div>
 
@@ -1874,6 +2124,8 @@
                         <li><a href="#panduan">&bull; 4 Langkah Pendaftaran</a></li>
                         <li><a href="#alur-spmb">&bull; 9 Tahapan Alur SPMB</a></li>
                         <li><a href="#jurusan">&bull; Pilihan Jurusan</a></li>
+                        <li><a href="#mitra">&bull; Mitra Kerja & DU/DI</a></li>
+                        <li><a href="#testimoni">&bull; Testimoni Alumni</a></li>
                         <li><a href="#faq">&bull; Tanya Jawab (FAQ)</a></li>
                         <li><a href="{{ route('pendaftaran.cekStatus') }}">&bull; Cek Status Pendaftaran</a></li>
                     </ul>
@@ -1885,7 +2137,7 @@
                         <i class="fas fa-map-marker-alt text-primary mr-2"></i> {{ $setting->alamat_sekolah ?? 'Bandung, Jawa Barat' }}
                     </p>
                     <p class="text-muted mb-2">
-                        <i class="fas fa-university text-primary mr-2"></i> Rekening {{ $setting->bank_name ?? 'BRI' }}: <strong>{{ $setting->no_rekening ?? '210501000140303' }}</strong> (a.n. {{ $setting->atas_nama ?? 'SMK ICB Cinta Teknika' }})
+                        <i class="fas fa-university text-primary mr-2"></i> Rekening {{ $setting->bank_name ?? 'BRI' }}: <strong>{{ $setting->no_rekening ?? '210501000140303' }}</strong> (a.n. {{ $setting->atas_nama ?? ($setting->app_name ?? 'Sekolah') }})
                     </p>
                     <p class="text-muted mb-2">
                         <i class="fas fa-money-bill-wave text-primary mr-2"></i> Biaya Formulir: <strong>Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }},-</strong>
@@ -1913,7 +2165,7 @@
     <!-- Floating Action WhatsApp -->
     @php
         $waFloating = $setting->kontak_wa ?? '081222485558';
-        $waPesan = 'Halo Panitia SPMB ' . ($setting->app_name ?? 'SMK ICB Cinta Teknika') . ', saya ingin bertanya mengenai pendaftaran siswa baru.';
+        $waPesan = 'Halo Panitia SPMB ' . ($setting->atas_nama ?? ($setting->app_name ?? 'Sekolah')) . ', saya ingin bertanya mengenai pendaftaran siswa baru.';
     @endphp
     <div class="floating-action">
         <a href="{{ wa_link($waFloating, $waPesan) }}" target="_blank" class="floating-btn-wa" title="Konsultasi WhatsApp">
@@ -1928,17 +2180,17 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title font-weight-bold" id="modalBrosurPanduanLabel">
-                        <i class="fas fa-book-open text-primary mr-2"></i> Brosur Panduan Pendaftaran SPMB 2027/2028
+                        <i class="fas fa-book-open text-primary mr-2"></i> Brosur Panduan Pendaftaran SPMB {{ $setting->tahun_ajaran ?? '2027/2028' }}
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body text-center p-3">
-                    <img src="{{ asset('images/spmb/panduan_pendaftaran.jpg') }}" alt="Panduan Pendaftaran" class="modal-poster-img">
+                    <img src="{{ $setting?->brosur_panduan_url }}" alt="Panduan Pendaftaran" class="modal-poster-img">
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <a href="{{ asset('images/spmb/panduan_pendaftaran.jpg') }}" download="Panduan_Pendaftaran_SMK_ICB.jpg" class="btn btn-outline-primary">
+                    <a href="{{ $setting?->brosur_panduan_url }}" download="Brosur_Panduan_SPMB.jpg" class="btn btn-outline-primary">
                         <i class="fas fa-download mr-1"></i> Unduh Brosur
                     </a>
                     <a href="{{ route('siswa.daftar') }}" class="btn btn-primary font-weight-bold">
@@ -1955,17 +2207,17 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title font-weight-bold" id="modalBrosurSyaratLabel">
-                        <i class="fas fa-clipboard-check text-primary mr-2"></i> Brosur Syarat Pendaftaran SPMB 2027/2028
+                        <i class="fas fa-clipboard-check text-primary mr-2"></i> Brosur Syarat Pendaftaran SPMB {{ $setting->tahun_ajaran ?? '2027/2028' }}
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body text-center p-3">
-                    <img src="{{ asset('images/spmb/syarat_pendaftaran.jpg') }}" alt="Syarat Pendaftaran" class="modal-poster-img">
+                    <img src="{{ $setting?->brosur_syarat_url }}" alt="Syarat Pendaftaran" class="modal-poster-img">
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <a href="{{ asset('images/spmb/syarat_pendaftaran.jpg') }}" download="Syarat_Pendaftaran_SMK_ICB.jpg" class="btn btn-outline-primary">
+                    <a href="{{ $setting?->brosur_syarat_url }}" download="Brosur_Syarat_SPMB.jpg" class="btn btn-outline-primary">
                         <i class="fas fa-download mr-1"></i> Unduh Brosur
                     </a>
                     <a href="{{ route('siswa.daftar') }}" class="btn btn-primary font-weight-bold">
@@ -1982,17 +2234,17 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title font-weight-bold" id="modalBrosurAlurLabel">
-                        <i class="fas fa-project-diagram text-primary mr-2"></i> Brosur 9 Alur Pendaftaran SPMB 2027/2028
+                        <i class="fas fa-project-diagram text-primary mr-2"></i> Brosur 9 Alur Pendaftaran SPMB {{ $setting->tahun_ajaran ?? '2027/2028' }}
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body text-center p-3">
-                    <img src="{{ asset('images/spmb/alur_pendaftaran.jpg') }}" alt="Alur SPMB" class="modal-poster-img">
+                    <img src="{{ $setting?->brosur_alur_url }}" alt="Alur SPMB" class="modal-poster-img">
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <a href="{{ asset('images/spmb/alur_pendaftaran.jpg') }}" download="Alur_Pendaftaran_SMK_ICB.jpg" class="btn btn-outline-primary">
+                    <a href="{{ $setting?->brosur_alur_url }}" download="Brosur_Alur_SPMB.jpg" class="btn btn-outline-primary">
                         <i class="fas fa-download mr-1"></i> Unduh Brosur
                     </a>
                     <a href="{{ route('siswa.daftar') }}" class="btn btn-primary font-weight-bold">
@@ -2003,6 +2255,32 @@
         </div>
     </div>
 
+    <!-- Modal 4: Video Profil Sekolah -->
+    @if(!empty($setting->video_profil_url))
+        @php
+            $vUrl = $setting->video_profil_url;
+            $ytEmbed = $vUrl;
+            if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i', $vUrl, $matches)) {
+                $ytEmbed = 'https://www.youtube.com/embed/' . $matches[1] . '?rel=0&autoplay=1';
+            }
+        @endphp
+        <div class="modal fade" id="modalVideoProfil" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden; background: #000;">
+                    <div class="modal-header text-white border-0 py-2 px-3" style="background: rgba(0,0,0,0.85);">
+                        <h6 class="modal-title font-weight-bold"><i class="fas fa-play-circle text-danger mr-2"></i> Video Profil Resmi {{ $setting->atas_nama ?? ($setting->app_name ?? 'Sekolah') }}</h6>
+                        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <iframe class="embed-responsive-item" src="{{ $ytEmbed }}" allowfullscreen allow="autoplay"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     @vite('resources/js/app.js')
     <!-- AdminLTE & jQuery JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -2011,9 +2289,64 @@
 
     <script>
         /* ==========================================
+           Countdown Timer Logic
+        ========================================== */
+        const cdWrap = document.getElementById('countdownWrapper');
+        if (cdWrap) {
+            const targetIso = cdWrap.getAttribute('data-target-date');
+            if (targetIso) {
+                const targetTime = new Date(targetIso).getTime();
+                function updateCountdown() {
+                    const now = new Date().getTime();
+                    const diff = targetTime - now;
+                    if (diff <= 0) {
+                        const dEl = document.getElementById('cd-days');
+                        const hEl = document.getElementById('cd-hours');
+                        const mEl = document.getElementById('cd-minutes');
+                        const sEl = document.getElementById('cd-seconds');
+                        if (dEl) dEl.textContent = '00';
+                        if (hEl) hEl.textContent = '00';
+                        if (mEl) mEl.textContent = '00';
+                        if (sEl) sEl.textContent = '00';
+                        return;
+                    }
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    const dEl = document.getElementById('cd-days');
+                    const hEl = document.getElementById('cd-hours');
+                    const mEl = document.getElementById('cd-minutes');
+                    const sEl = document.getElementById('cd-seconds');
+                    if (dEl) dEl.textContent = String(days).padStart(2, '0');
+                    if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+                    if (mEl) mEl.textContent = String(minutes).padStart(2, '0');
+                    if (sEl) sEl.textContent = String(seconds).padStart(2, '0');
+                }
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+            }
+        }
+
+        /* ==========================================
            Copy to Clipboard
         ========================================== */
         function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil Disalin!',
+                    text: 'Nomor Rekening telah disalin ke clipboard.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            }, function() {
+                prompt("Silakan salin nomor rekening berikut:", text);
+            });
+        }
             navigator.clipboard.writeText(text).then(function() {
                 Swal.fire({
                     icon: 'success',
