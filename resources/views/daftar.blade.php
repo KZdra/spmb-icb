@@ -379,43 +379,74 @@
     }
 
     @media (max-width: 767px) {
-        .step-label { display: none; }
         .section-card-body { padding: 20px 16px; }
-        .form-nav { flex-direction: column; gap: 12px; }
-        .btn-next, .btn-prev, .btn-submit-final { width: 100%; text-align: center; }
+        .form-nav { flex-direction: column-reverse; gap: 10px; }
+        .btn-next, .btn-prev, .btn-submit-final { width: 100% !important; text-align: center; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .radio-cards { gap: 8px; }
+        .radio-card { min-width: 100px; padding: 10px 8px; }
+        .form-control { font-size: 16px !important; min-height: 48px; }
     }
 </style>
 
-{{-- Progress Bar --}}
+{{-- Progress Bar (Responsive Mobile & Desktop) --}}
 <div class="form-progress-wrapper">
-    <div class="progress-steps" id="progressSteps">
-        <div class="progress-step active" data-step="1">
+    <!-- Desktop Steps View (>= 768px) -->
+    <div class="progress-steps d-none d-md-flex" id="progressSteps">
+        <div class="progress-step active" data-step="1" onclick="goToStep(1)">
             <div class="step-circle">1</div>
             <span class="step-label">Jalur & Jurusan</span>
         </div>
-        <div class="progress-step" data-step="2">
+        <div class="progress-step" data-step="2" onclick="goToStep(2)">
             <div class="step-circle">2</div>
             <span class="step-label">Data Pribadi</span>
         </div>
-        <div class="progress-step" data-step="3">
+        <div class="progress-step" data-step="3" onclick="goToStep(3)">
             <div class="step-circle">3</div>
             <span class="step-label">Alamat</span>
         </div>
-        <div class="progress-step" data-step="4">
+        <div class="progress-step" data-step="4" onclick="goToStep(4)">
             <div class="step-circle">4</div>
             <span class="step-label">Kontak</span>
         </div>
-        <div class="progress-step" data-step="5">
+        <div class="progress-step" data-step="5" onclick="goToStep(5)">
             <div class="step-circle">5</div>
             <span class="step-label">Asal Sekolah</span>
         </div>
-        <div class="progress-step" data-step="6">
+        <div class="progress-step" data-step="6" onclick="goToStep(6)">
             <div class="step-circle">6</div>
             <span class="step-label">Orang Tua</span>
         </div>
-        <div class="progress-step" data-step="7">
+        <div class="progress-step" data-step="7" onclick="goToStep(7)">
             <div class="step-circle">7</div>
             <span class="step-label">Pembayaran</span>
+        </div>
+    </div>
+
+    <!-- Mobile Step View (< 768px) -->
+    <div class="d-md-none px-3 py-1">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <span class="badge badge-primary px-2 py-1 font-weight-bold" style="font-size: 0.8rem; border-radius: 6px;">
+                    Langkah <span id="mobileStepNum">1</span>/7
+                </span>
+                <span class="font-weight-bold text-dark ml-1" id="mobileStepName" style="font-size: 0.92rem;">
+                    Jalur & Jurusan
+                </span>
+            </div>
+            <div class="text-muted small font-weight-bold" id="mobileStepPercent">14%</div>
+        </div>
+        <div class="progress" style="height: 6px; border-radius: 9999px; background: #E2E8F0;">
+            <div id="mobileProgressBar" class="progress-bar bg-primary" role="progressbar" style="width: 14.3%; transition: width 0.3s ease;"></div>
+        </div>
+        <!-- Compact Step Pills for Mobile Navigation -->
+        <div class="d-flex justify-content-between mt-2 pt-1" style="gap: 4px;">
+            @for ($i = 1; $i <= 7; $i++)
+                <button type="button" class="btn btn-xs mobile-step-pill flex-fill {{ $i === 1 ? 'active' : '' }}" 
+                    data-step="{{ $i }}" onclick="goToStep({{ $i }})"
+                    style="border-radius: 6px; font-size: 11px; font-weight: 700; height: 26px; padding: 0;">
+                    {{ $i }}
+                </button>
+            @endfor
         </div>
     </div>
 </div>
@@ -1011,6 +1042,40 @@
     const STORAGE_KEY = 'spmb_form_draft_v1';
     const STORAGE_STEP_KEY = 'spmb_form_step_v1';
 
+    const STEP_NAMES = [
+        '',
+        'Jalur & Jurusan',
+        'Data Pribadi Siswa',
+        'Alamat Domisili',
+        'Kontak Calon Siswa',
+        'Asal Sekolah & NISN',
+        'Data Orang Tua / Wali',
+        'Pembayaran & Berkas'
+    ];
+
+    function updateMobileProgress(step) {
+        const numEl = document.getElementById('mobileStepNum');
+        const nameEl = document.getElementById('mobileStepName');
+        const pctEl = document.getElementById('mobileStepPercent');
+        const barEl = document.getElementById('mobileProgressBar');
+
+        const pct = Math.round((step / TOTAL_STEPS) * 100);
+        if (numEl) numEl.textContent = step;
+        if (nameEl) nameEl.textContent = STEP_NAMES[step] || '';
+        if (pctEl) pctEl.textContent = pct + '%';
+        if (barEl) barEl.style.width = pct + '%';
+
+        document.querySelectorAll('.mobile-step-pill').forEach(pill => {
+            const s = parseInt(pill.getAttribute('data-step'));
+            pill.classList.remove('active', 'completed');
+            if (s === step) {
+                pill.classList.add('active');
+            } else if (s < step) {
+                pill.classList.add('completed');
+            }
+        });
+    }
+
     function goToStep(step, bypassValidation = false) {
         if (step < 1 || step > TOTAL_STEPS) return;
 
@@ -1028,6 +1093,8 @@
         const targetStep = document.getElementById('step-' + step);
         if (targetStep) targetStep.classList.add('active');
         currentStep = step;
+
+        updateMobileProgress(currentStep);
 
         // Simpan posisi step ke browser
         localStorage.setItem(STORAGE_STEP_KEY, currentStep);

@@ -1,6 +1,59 @@
 @extends('layouts.app')
 
 @section('content')
+    <style>
+        /* Mobile-First CMS Navigation Tabs */
+        #cms-tabs {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            white-space: nowrap;
+            padding: 4px 6px 0 6px;
+            border-bottom: 2px solid #dee2e6;
+            scrollbar-width: thin;
+        }
+        #cms-tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+        #cms-tabs::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        #cms-tabs::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        #cms-tabs .nav-item {
+            flex: 0 0 auto;
+        }
+        #cms-tabs .nav-link {
+            padding: 10px 16px;
+            font-size: 0.92rem;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            border-radius: 8px 8px 0 0;
+        }
+        @media (max-width: 767.98px) {
+            .sticky-mobile-save {
+                position: sticky;
+                bottom: 0;
+                z-index: 1030;
+                background: #ffffff;
+                box-shadow: 0 -4px 16px rgba(0,0,0,0.1);
+                padding: 12px 16px !important;
+            }
+            .sticky-mobile-save .btn {
+                width: 100%;
+                min-height: 48px;
+                font-size: 1.05rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    </style>
     <!-- Content Header -->
     <div class="content-header">
         <div class="container-fluid">
@@ -529,7 +582,7 @@
 
                                 </div>
                             </div>
-                            <div class="card-footer bg-white text-right">
+                            <div class="card-footer bg-white text-right sticky-mobile-save">
                                 <button type="submit" class="btn btn-primary px-4 font-weight-bold shadow" id="btnSave">
                                     <i class="fas fa-save mr-1"></i> Simpan Semua Pengaturan
                                 </button>

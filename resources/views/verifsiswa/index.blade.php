@@ -1,6 +1,48 @@
 @extends('layouts.app')
 
 @section('content')
+    <style>
+        /* Mobile-first adjustments for verification page */
+        @media (max-width: 767.98px) {
+            .card-header .d-flex.flex-wrap {
+                width: 100%;
+            }
+            .card-header .d-flex.flex-wrap > * {
+                flex-grow: 1;
+                margin-bottom: 6px;
+            }
+            #filterStatus {
+                width: 100% !important;
+            }
+            .action-btn-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .action-btn-container .btn {
+                min-height: 38px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.85rem;
+            }
+            .modal-footer {
+                flex-direction: column-reverse;
+                align-items: stretch !important;
+            }
+            .modal-footer > div {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .modal-footer .btn {
+                width: 100%;
+                margin: 0 !important;
+                min-height: 44px;
+            }
+        }
+    </style>
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -89,7 +131,8 @@
                             </div>
                         </div>
                         <div class="card-body p-3">
-                            <table class="table table-bordered table-striped table-hover" id="usersTable">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover" id="usersTable">
                                 <thead class="thead-light">
                                     <tr>
                                         <th style="width: 4%">#</th>
@@ -173,7 +216,8 @@
                                         </tr>
                                     @endforeach
                                 </tbody>
-                            </table>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

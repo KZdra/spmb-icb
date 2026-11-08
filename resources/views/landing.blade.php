@@ -861,6 +861,42 @@
             }
         }
 
+        @media (max-width: 767px) {
+            body {
+                padding-bottom: 72px; /* Ruang untuk mobile sticky bottom bar */
+            }
+            .floating-action {
+                bottom: 84px !important;
+                right: 18px !important;
+            }
+        }
+
+        /* Mobile Sticky Bottom CTA Bar */
+        .mobile-sticky-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-top: 1px solid #CBD5E1;
+            padding: 10px 16px;
+            z-index: 1035;
+            box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.08);
+            gap: 10px;
+        }
+
+        .btn-mobile-action {
+            min-height: 48px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+
         @media (max-width: 575px) {
             .hero-title {
                 font-size: 1.75rem;
@@ -878,8 +914,6 @@
                 width: 48px;
                 height: 48px;
                 font-size: 1.4rem;
-                bottom: 20px;
-                right: 20px;
             }
         }
     </style>
@@ -994,9 +1028,9 @@
                         <form action="{{ route('pendaftaran.cekStatus.post') }}" method="POST">
                             @csrf
                             <div class="input-group">
-                                <input type="text" name="keyword" class="form-control border-primary" placeholder="Cek Status: Masukkan Kode Pendaftaran / NISN..." required style="border-radius: 8px 0 0 8px; font-size: 0.9rem;">
+                                <input type="text" name="keyword" class="form-control border-primary" placeholder="Cek Status: Kode Pendaftaran / NISN..." required style="border-radius: 8px 0 0 8px; font-size: 16px; min-height: 48px;">
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary font-weight-bold px-3" type="submit" style="border-radius: 0 8px 8px 0;">
+                                    <button class="btn btn-primary font-weight-bold px-3" type="submit" style="border-radius: 0 8px 8px 0; min-height: 48px;">
                                         <i class="fas fa-search mr-1"></i> Periksa
                                     </button>
                                 </div>
@@ -1937,6 +1971,16 @@
             });
         });
     </script>
+    <!-- Mobile Sticky Bottom CTA Bar -->
+    <div class="mobile-sticky-bottom d-flex d-md-none">
+        <a href="{{ route('pendaftaran.cekStatus') }}" class="btn btn-outline-primary btn-mobile-action">
+            <i class="fas fa-search mr-1"></i> Cek Status
+        </a>
+        <a href="{{ route('siswa.daftar') }}" class="btn btn-primary btn-mobile-action flex-grow-1 font-weight-bold shadow-sm">
+            <i class="fas fa-paper-plane mr-1"></i> Daftar SPMB Online
+        </a>
+    </div>
+
 </body>
 
 </html>

@@ -24,10 +24,10 @@
                         Sample table page
                     </div> --}}
 
-                    <div class="card">
-                        <div class="card-body p-2">
-
-                            <table class="table" id="usersTable">
+                    <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
+                        <div class="card-body p-3">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped" id="usersTable">
                                 <thead>
                                     <tr>
                                         <th>Nama Jurusan</th>
@@ -53,6 +53,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                         <!-- /.card-body -->
                     </div>
