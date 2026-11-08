@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -265,6 +267,85 @@ class SiswaController extends Controller
         $setting = DB::table('pengaturan_aplikasis')->first();
         $rekeningBanks = \App\Models\RekeningBank::where('is_active', true)->orderBy('urutan', 'asc')->get();
         return view('cek-status', compact('siswa', 'keyword', 'setting', 'rekeningBanks'));
+    }
+
+    /**
+     * Download / Stream Tanda Terima Pendaftaran dalam format PDF (DomPDF)
+     */
+    public function downloadTandaTerimaPdf(string $kode, Request $request)
+    {
+        $siswa = DB::table('siswas')
+            ->leftJoin('s_data_tambahans', 'siswas.id', '=', 's_data_tambahans.siswa_id')
+            ->leftJoin('m_jurusans', 'siswas.id_jurusan', '=', 'm_jurusans.id')
+            ->leftJoin('bukti_pembayarans', 'siswas.id', '=', 'bukti_pembayarans.siswa_id')
+            ->select(
+                'siswas.*',
+                'm_jurusans.nama_jurusan',
+                'bukti_pembayarans.status as status_bayar',
+                's_data_tambahans.tempat_lahir',
+                's_data_tambahans.tanggal_lahir',
+                's_data_tambahans.alamat',
+                's_data_tambahans.rt',
+                's_data_tambahans.rw',
+                's_data_tambahans.kelurahan',
+                's_data_tambahans.kecamatan',
+                's_data_tambahans.kota',
+                's_data_tambahans.provinsi',
+                's_data_tambahans.nama_ayah',
+                's_data_tambahans.telepon_ayah',
+                's_data_tambahans.nama_ibu',
+                's_data_tambahans.telepon_ibu',
+                's_data_tambahans.tinggi_badan',
+                's_data_tambahans.berat_badan'
+            )
+            ->where('siswas.kode_pendaftaran', $kode)
+            ->first();
+
+        if (!$siswa) {
+            abort(404, 'Data pendaftaran dengan kode ' . e($kode) . ' tidak ditemukan.');
+        }
+
+        $setting = DB::table('pengaturan_aplikasis')->first();
+
+        // 1. Logo Base64 (Aman untuk DomPDF tanpa network call)
+        $logoBase64 = null;
+        $logoPath = null;
+        if (!empty($setting?->logo_path) && file_exists(storage_path('app/public/' . $setting->logo_path))) {
+            $logoPath = storage_path('app/public/' . $setting->logo_path);
+        } elseif (file_exists(public_path('images/icb.png'))) {
+            $logoPath = public_path('images/icb.png');
+        }
+        if ($logoPath && file_exists($logoPath)) {
+            $mime = mime_content_type($logoPath) ?: 'image/png';
+            $logoBase64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($logoPath));
+        }
+
+        // 2. QR Code Base64 untuk verifikasi
+        $qrBase64 = null;
+        try {
+            $qrRes = Http::timeout(4)->get('https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' . urlencode($kode));
+            if ($qrRes->successful()) {
+                $qrBase64 = 'data:image/png;base64,' . base64_encode($qrRes->body());
+            }
+        } catch (\Throwable $e) {
+            // Silently fallback without QR code
+        }
+
+        $pdf = Pdf::loadView('pdf.tanda-terima', compact('siswa', 'setting', 'logoBase64', 'qrBase64'))
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled'      => true,
+                'defaultFont'          => 'sans-serif',
+            ]);
+
+        $filename = 'Tanda-Terima-' . Str::slug($siswa->kode_pendaftaran) . '.pdf';
+
+        if ($request->has('stream') || $request->get('action') === 'print') {
+            return $pdf->stream($filename);
+        }
+
+        return $pdf->download($filename);
     }
 
     /**

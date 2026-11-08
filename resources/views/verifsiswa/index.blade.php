@@ -355,7 +355,10 @@
                 <div class="modal-footer bg-white d-flex flex-wrap justify-content-between align-items-center" style="gap: 10px;">
                     <div>
                         <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">Tutup</button>
-                        <button type="button" class="btn btn-outline-success font-weight-bold px-3 ml-2" id="btnKirimWaLulus">
+                        <a href="#" target="_blank" class="btn btn-outline-primary font-weight-bold px-3 ml-1" id="btnModalCetakPdf">
+                            <i class="fas fa-print mr-1"></i> Tanda Terima PDF
+                        </a>
+                        <button type="button" class="btn btn-outline-success font-weight-bold px-3 ml-1" id="btnKirimWaLulus">
                             <i class="fab fa-whatsapp mr-1"></i> WA Kelulusan
                         </button>
                         <button type="button" class="btn btn-outline-warning text-dark font-weight-bold px-3 ml-1" id="btnKirimWaRevisi">
@@ -413,6 +416,12 @@
                         const s = res.siswa || {};
                         const d = res.data_tambahan || {};
                         const b = res.bukti || {};
+
+                        if (s.kode_pendaftaran) {
+                            $('#btnModalCetakPdf').attr('href', "{{ url('pendaftaran/tanda-terima/pdf') }}/" + s.kode_pendaftaran + "?stream=1").show();
+                        } else {
+                            $('#btnModalCetakPdf').hide();
+                        }
 
                         $('#detail-jalur').text(s.jalur_pendaftaran || '-');
                         $('#detail-jurusan').text(res.jurusan || '-');
@@ -862,9 +871,6 @@
                                 Swal.fire('Perhatian', msg, res.status === 422 ? 'info' : 'error');
                             }
                         });
-                    }
-                });
-            });
                     }
                 });
             });

@@ -28,6 +28,7 @@ Route::post('/cek-status', [SiswaController::class, 'cekStatusPost'])->name('pen
 
 // Public Pendaftaran Sukses / Tanda Terima
 Route::get('/pendaftaran/sukses', [SiswaController::class, 'pendaftaranSukses'])->name('pendaftaran.sukses');
+Route::get('/pendaftaran/tanda-terima/pdf/{kode}', [SiswaController::class, 'downloadTandaTerimaPdf'])->name('pendaftaran.tandaTerimaPdf');
 
 // Pendaftaran Siswa Baru (tanpa portal/login)
 Route::prefix('siswa')->group(function () {

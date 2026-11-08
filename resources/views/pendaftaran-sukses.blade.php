@@ -104,7 +104,7 @@
                     </div>
 
                     <!-- Rekening Bank Tujuan Transfer (Bisa Lebih Dari 1) -->
-                    @if (isset($rekeningBanks) && $rekeningBanks->count() > 0)
+                    <!-- @if (isset($rekeningBanks) && $rekeningBanks->count() > 0)
                         <div class="mb-4 p-3 rounded-lg border bg-white shadow-sm" style="border-radius: 12px;">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="font-weight-bold text-dark small"><i class="fas fa-university text-primary mr-1"></i> Rekening Resmi Penerimaan Biaya Pendaftaran:</span>
@@ -127,7 +127,7 @@
                                 @endforeach
                             </div>
                         </div>
-                    @endif
+                    @endif -->
 
                     <!-- Catatan Panitia & Tanda Tangan -->
                     <div class="bg-light p-3 rounded-lg mb-4" style="border-radius: 12px; font-size: 0.9rem;">
@@ -155,25 +155,30 @@
 
                     <!-- Actions Buttons (Hidden on Print) -->
                     <div class="d-print-none text-center pt-2">
+                        @php
+                            $pendaftarKode = $siswa->kode_pendaftaran ?? $kode;
+                            $waNumber = $setting->kontak_wa ?? '081222485558';
+                            $pendaftarNama = $siswa->nama ?? '';
+                            $schoolName = $setting->app_name ?? 'SMK ICB';
+                            $waMsg = "Halo Panitia SPMB {$schoolName}, saya sudah mendaftar secara online dengan Kode Pendaftaran: {$pendaftarKode} atas nama {$pendaftarNama}. Mohon konfirmasinya. Terima kasih.";
+                        @endphp
                         <div class="row g-2 justify-content-center">
-                            <div class="col-md-4 mb-2">
-                                <button type="button" class="btn btn-outline-primary btn-block py-2 font-weight-bold shadow-sm" onclick="window.print()">
-                                    <i class="fas fa-print mr-2"></i> Cetak Tanda Terima
-                                </button>
-                            </div>
-                            @php
-                                $waNumber = $setting->kontak_wa ?? '081222485558';
-                                $pendaftarKode = $siswa->kode_pendaftaran ?? $kode;
-                                $pendaftarNama = $siswa->nama ?? '';
-                                $schoolName = $setting->app_name ?? 'SMK ICB';
-                                $waMsg = "Halo Panitia SPMB {$schoolName}, saya sudah mendaftar secara online dengan Kode Pendaftaran: {$pendaftarKode} atas nama {$pendaftarNama}. Mohon konfirmasinya. Terima kasih.";
-                            @endphp
-                            <div class="col-md-5 mb-2">
-                                <a href="{{ wa_link($waNumber, $waMsg) }}" target="_blank" class="btn btn-success btn-block py-2 font-weight-bold shadow-sm">
-                                    <i class="fab fa-whatsapp mr-2"></i> Konfirmasi ke Panitia WA
+                            <div class="col-md-3 mb-2">
+                                <a href="{{ route('pendaftaran.tandaTerimaPdf', ['kode' => $pendaftarKode, 'stream' => 1]) }}" target="_blank" class="btn btn-outline-primary btn-block py-2 font-weight-bold shadow-sm">
+                                    <i class="fas fa-print mr-1"></i> Cetak / Buka PDF
                                 </a>
                             </div>
                             <div class="col-md-3 mb-2">
+                                <a href="{{ route('pendaftaran.tandaTerimaPdf', ['kode' => $pendaftarKode]) }}" class="btn btn-primary btn-block py-2 font-weight-bold shadow-sm">
+                                    <i class="fas fa-file-pdf mr-1"></i> Unduh PDF Resmi
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <a href="{{ wa_link($waNumber, $waMsg) }}" target="_blank" class="btn btn-success btn-block py-2 font-weight-bold shadow-sm">
+                                    <i class="fab fa-whatsapp mr-1"></i> Konfirmasi Panitia WA
+                                </a>
+                            </div>
+                            <div class="col-md-2 mb-2">
                                 <a href="{{ url('/') }}" class="btn btn-light btn-block py-2 font-weight-bold text-muted border shadow-sm">
                                     <i class="fas fa-home mr-1"></i> Beranda
                                 </a>

@@ -135,6 +135,20 @@
                                                 </div>
                                             </div>
                                         @endif
+
+                                        <div class="mt-4 pt-3 border-top d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                                            <span class="text-muted small font-weight-bold">
+                                                <i class="fas fa-file-invoice text-primary mr-1"></i> Dokumen Tanda Terima:
+                                            </span>
+                                            <div>
+                                                <a href="{{ route('pendaftaran.tandaTerimaPdf', ['kode' => $siswa->kode_pendaftaran, 'stream' => 1]) }}" target="_blank" class="btn btn-sm btn-outline-primary font-weight-bold mr-1">
+                                                    <i class="fas fa-print mr-1"></i> Cetak / Buka PDF
+                                                </a>
+                                                <a href="{{ route('pendaftaran.tandaTerimaPdf', ['kode' => $siswa->kode_pendaftaran]) }}" class="btn btn-sm btn-primary font-weight-bold">
+                                                    <i class="fas fa-download mr-1"></i> Unduh PDF
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
