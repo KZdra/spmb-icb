@@ -1567,8 +1567,9 @@ $(document).ready(function () {
 
         /* ==========================================================
            WILAYAH: Cascading Provinsi → Kota → Kecamatan → Kelurahan
-           1. Primary: Internal Proxy /api/wilayah/* (Laravel cache 30 hari, bebas Mixed Content & CORS)
-           2. Fallback: GitHub Pages CDN (kanglerian.github.io/api-wilayah-indonesia)
+           API: https://www.emsifa.com/api-wilayah-indonesia/v2
+           1. Primary: Internal Proxy /api/wilayah/* (Laravel cache 30 hari via emsifa v2)
+           2. Fallback: Direct emsifa v2 API (https://www.emsifa.com/api-wilayah-indonesia/v2)
            3. Fail-safe: Toggle Ketik Manual jika koneksi siswa offline/terblokir DNS
         ========================================================== */
         const WILAYAH_API = {
@@ -1578,11 +1579,11 @@ $(document).ready(function () {
             kel:  id => `{{ url('api/wilayah/kelurahan') }}/${id}`
         };
 
-        const WILAYAH_CDN = {
-            prov: "https://kanglerian.github.io/api-wilayah-indonesia/api/provinces.json",
-            kota: id => `https://kanglerian.github.io/api-wilayah-indonesia/api/regencies/${id}.json`,
-            kec:  id => `https://kanglerian.github.io/api-wilayah-indonesia/api/districts/${id}.json`,
-            kel:  id => `https://kanglerian.github.io/api-wilayah-indonesia/api/villages/${id}.json`
+        const WILAYAH_DIRECT_V2 = {
+            prov: "https://www.emsifa.com/api-wilayah-indonesia/v2/provinces.json",
+            kota: id => `https://www.emsifa.com/api-wilayah-indonesia/v2/regencies/${id}.json`,
+            kec:  id => `https://www.emsifa.com/api-wilayah-indonesia/v2/districts/${id}.json`,
+            kel:  id => `https://www.emsifa.com/api-wilayah-indonesia/v2/villages/${id}.json`
         };
 
         async function fetchWilayahData(primaryUrl, fallbackUrl) {
@@ -1591,21 +1592,23 @@ $(document).ready(function () {
                     headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
                 });
                 if (res.ok) {
-                    const data = await res.json();
-                    if (Array.isArray(data) && data.length > 0) return data;
+                    const json = await res.json();
+                    const list = Array.isArray(json) ? json : (Array.isArray(json?.data) ? json.data : []);
+                    if (list.length > 0) return list;
                 }
             } catch (e) {
-                console.warn('Proxy wilayah fetch gagal, mencoba CDN fallback...', e);
+                console.warn('Proxy wilayah fetch gagal, mencoba direct emsifa v2 fallback...', e);
             }
 
             try {
                 const resFallback = await fetch(fallbackUrl);
                 if (resFallback.ok) {
-                    const data = await resFallback.json();
-                    if (Array.isArray(data)) return data;
+                    const jsonFallback = await resFallback.json();
+                    const listFallback = Array.isArray(jsonFallback) ? jsonFallback : (Array.isArray(jsonFallback?.data) ? jsonFallback.data : []);
+                    if (listFallback.length > 0) return listFallback;
                 }
             } catch (e2) {
-                console.error('Semua sumber wilayah gagal dijangkau:', e2);
+                console.error('Semua sumber wilayah v2 gagal dijangkau:', e2);
             }
 
             return [];
@@ -1616,7 +1619,8 @@ $(document).ready(function () {
             const $el = $(selector);
             $el.empty().append(`<option value="">${placeholder}</option>`);
             data.forEach(item => {
-                $el.append(`<option value="${item.name}" data-id="${item.id}">${item.name}</option>`);
+                const label = item.postal_code ? `${item.name} (${item.postal_code})` : item.name;
+                $el.append(`<option value="${item.name}" data-id="${item.id}">${label}</option>`);
             });
             $el.prop('disabled', false).trigger('change.select2');
         }
@@ -1676,7 +1680,7 @@ $(document).ready(function () {
         });
 
         // Load Provinsi
-        fetchWilayahData(WILAYAH_API.prov, WILAYAH_CDN.prov).then(data => {
+        fetchWilayahData(WILAYAH_API.prov, WILAYAH_DIRECT_V2.prov).then(data => {
             if (data.length > 0) {
                 populateSelect('#provinsi_select', data, '-- Pilih Provinsi --');
                 const existingProv = $('#provinsi').val() || '{{ old("provinsi") }}';
@@ -1711,7 +1715,7 @@ $(document).ready(function () {
             if (!id) return;
             $('#kota_select').empty().append('<option value="">Memuat kota/kabupaten...</option>').prop('disabled', true);
 
-            const data = await fetchWilayahData(WILAYAH_API.kota(id), WILAYAH_CDN.kota(id));
+            const data = await fetchWilayahData(WILAYAH_API.kota(id), WILAYAH_DIRECT_V2.kota(id));
             populateSelect('#kota_select', data, '-- Pilih Kota/Kabupaten --');
 
             const existingKota = $('#kota').val() || '{{ old("kota") }}';
@@ -1741,7 +1745,7 @@ $(document).ready(function () {
             if (!id) return;
             $('#kecamatan_select').empty().append('<option value="">Memuat kecamatan...</option>').prop('disabled', true);
 
-            const data = await fetchWilayahData(WILAYAH_API.kec(id), WILAYAH_CDN.kec(id));
+            const data = await fetchWilayahData(WILAYAH_API.kec(id), WILAYAH_DIRECT_V2.kec(id));
             populateSelect('#kecamatan_select', data, '-- Pilih Kecamatan --');
 
             const existingKec = $('#kecamatan').val() || '{{ old("kecamatan") }}';
@@ -1768,8 +1772,19 @@ $(document).ready(function () {
 
             if (!id) return;
 
-            const data = await fetchWilayahData(WILAYAH_API.kel(id), WILAYAH_CDN.kel(id));
+            const data = await fetchWilayahData(WILAYAH_API.kel(id), WILAYAH_DIRECT_V2.kel(id));
             populateSelect('#kelurahan_select', data, '-- Pilih Kelurahan / Desa --');
+
+            const existingKel = $('#kelurahan').val() || '{{ old("kelurahan") }}';
+            if (existingKel) {
+                const opt = $('#kelurahan_select option').filter(function() {
+                    return $(this).val().toUpperCase() === existingKel.toUpperCase();
+                });
+                if (opt.length) {
+                    $('#kelurahan_select').val(opt.val()).trigger('change');
+                }
+            }
+        });
 
             const existingKel = $('#kelurahan').val() || '{{ old("kelurahan") }}';
             if (existingKel) {

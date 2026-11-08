@@ -9,34 +9,28 @@ use Illuminate\Support\Facades\Log;
 
 class WilayahController extends Controller
 {
-    private string $primaryBase = 'https://kanglerian.github.io/api-wilayah-indonesia/api';
-    private string $secondaryBase = 'https://www.emsifa.com/api-wilayah-indonesia/api';
+    private string $primaryBase = 'https://www.emsifa.com/api-wilayah-indonesia/v2';
 
     /**
-     * Helper untuk fetch data wilayah dengan fallback dan cache 30 hari
+     * Helper untuk fetch data wilayah v2 dengan cache 30 hari
      */
     private function fetchWilayah(string $path): array
     {
-        $cacheKey = 'wilayah_' . md5($path);
+        $cacheKey = 'wilayah_v2_' . md5($path);
         return Cache::remember($cacheKey, 86400 * 30, function () use ($path) {
-            // Coba server utama (GitHub CDN: cepat, SSL terjamin, no mixed content)
             try {
-                $res = Http::timeout(6)->get("{$this->primaryBase}/{$path}");
-                if ($res->successful() && is_array($res->json())) {
-                    return $res->json();
+                $res = Http::timeout(8)->get("{$this->primaryBase}/{$path}");
+                if ($res->successful()) {
+                    $json = $res->json();
+                    if (isset($json['data']) && is_array($json['data'])) {
+                        return $json['data'];
+                    }
+                    if (is_array($json)) {
+                        return $json;
+                    }
                 }
             } catch (\Throwable $e) {
-                Log::warning("Wilayah primary API fetch failed for {$path}: {$e->getMessage()}");
-            }
-
-            // Fallback ke server kedua
-            try {
-                $res = Http::timeout(6)->get("{$this->secondaryBase}/{$path}");
-                if ($res->successful() && is_array($res->json())) {
-                    return $res->json();
-                }
-            } catch (\Throwable $e) {
-                Log::warning("Wilayah secondary API fetch failed for {$path}: {$e->getMessage()}");
+                Log::warning("Wilayah v2 API fetch failed for {$path}: {$e->getMessage()}");
             }
 
             return [];
@@ -51,22 +45,23 @@ class WilayahController extends Controller
 
     public function regencies(string $provId): JsonResponse
     {
-        $cleanId = preg_replace('/[^0-9]/', '', $provId);
+        $cleanId = preg_replace('/[^0-9.]/', '', $provId);
         $data = $this->fetchWilayah("regencies/{$cleanId}.json");
         return response()->json($data);
     }
 
     public function districts(string $regId): JsonResponse
     {
-        $cleanId = preg_replace('/[^0-9]/', '', $regId);
+        $cleanId = preg_replace('/[^0-9.]/', '', $regId);
         $data = $this->fetchWilayah("districts/{$cleanId}.json");
         return response()->json($data);
     }
 
     public function villages(string $distId): JsonResponse
     {
-        $cleanId = preg_replace('/[^0-9]/', '', $distId);
+        $cleanId = preg_replace('/[^0-9.]/', '', $distId);
         $data = $this->fetchWilayah("villages/{$cleanId}.json");
         return response()->json($data);
     }
 }
+
