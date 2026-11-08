@@ -5,15 +5,15 @@
     <title>Tanda Terima Pendaftaran - {{ $siswa->kode_pendaftaran }}</title>
     <style>
         @page {
-            margin: 15mm 15mm 15mm 15mm;
+            margin: 8mm 12mm 6mm 12mm;
             size: a4 portrait;
         }
 
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-size: 11pt;
+            font-size: 8.5pt;
             color: #1a1a1a;
-            line-height: 1.4;
+            line-height: 1.3;
             margin: 0;
             padding: 0;
         }
@@ -22,28 +22,28 @@
         .kop-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .kop-logo {
-            width: 80px;
+            width: 65px;
             vertical-align: middle;
             text-align: center;
         }
 
         .kop-logo img {
-            max-width: 75px;
-            max-height: 75px;
+            max-width: 60px;
+            max-height: 60px;
         }
 
         .kop-text {
             text-align: center;
             vertical-align: middle;
-            padding: 0 10px;
+            padding: 0 8px;
         }
 
         .kop-yayasan {
-            font-size: 11pt;
+            font-size: 9pt;
             font-weight: normal;
             letter-spacing: 0.5px;
             text-transform: uppercase;
@@ -51,47 +51,47 @@
         }
 
         .kop-sekolah {
-            font-size: 15pt;
+            font-size: 13pt;
             font-weight: bold;
             color: #0b3b7b;
             letter-spacing: 0.8px;
-            margin: 2px 0;
+            margin: 1px 0;
             text-transform: uppercase;
         }
 
         .kop-alamat {
-            font-size: 8.5pt;
+            font-size: 7.5pt;
             color: #444;
             margin: 0;
-            line-height: 1.35;
+            line-height: 1.25;
         }
 
         .kop-kontak {
-            font-size: 8.5pt;
+            font-size: 7.5pt;
             color: #333;
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
         /* Garis Ganda Kop Surat */
         .kop-divider-thick {
-            border-top: 2.5px solid #000;
-            margin-top: 4px;
-            margin-bottom: 1.5px;
+            border-top: 2px solid #000;
+            margin-top: 3px;
+            margin-bottom: 1px;
         }
 
         .kop-divider-thin {
             border-top: 0.8px solid #000;
-            margin-bottom: 14px;
+            margin-bottom: 8px;
         }
 
         /* Judul Dokumen */
         .doc-title-box {
             text-align: center;
-            margin-bottom: 14px;
+            margin-bottom: 8px;
         }
 
         .doc-title {
-            font-size: 13pt;
+            font-size: 11pt;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -100,59 +100,60 @@
         }
 
         .doc-subtitle {
-            font-size: 10.5pt;
+            font-size: 9pt;
             font-weight: bold;
             color: #0b3b7b;
-            margin: 2px 0 0 0;
+            margin: 1px 0 0 0;
         }
 
         .reg-number-badge {
             display: inline-block;
             background: #f1f5f9;
             border: 1px dashed #64748b;
-            padding: 4px 14px;
+            padding: 2px 10px;
             border-radius: 4px;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 11pt;
+            font-size: 9.5pt;
             font-weight: bold;
             color: #0f172a;
-            margin-top: 6px;
+            margin-top: 3px;
         }
 
         /* Header Data Table with QR */
         .summary-header-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
         }
 
         .section-header {
             background-color: #0b3b7b;
             color: #ffffff;
-            font-size: 9.5pt;
+            font-size: 8pt;
             font-weight: bold;
-            padding: 5px 10px;
+            padding: 3px 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-radius: 3px 3px 0 0;
+            border-radius: 2px 2px 0 0;
+            margin-top: 4px;
         }
 
         /* Tabel Data Siswa */
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 12px;
-            font-size: 9.5pt;
+            margin-bottom: 6px;
+            font-size: 8pt;
         }
 
         .data-table th, .data-table td {
-            padding: 5px 8px;
+            padding: 2.5px 6px;
             vertical-align: top;
             border: 1px solid #cbd5e1;
         }
 
         .data-table th {
-            width: 32%;
+            width: 30%;
             background-color: #f8fafc;
             color: #334155;
             font-weight: 600;
@@ -165,8 +166,8 @@
 
         .badge-status {
             display: inline-block;
-            padding: 2px 8px;
-            font-size: 8.5pt;
+            padding: 1.5px 6px;
+            font-size: 7.5pt;
             font-weight: bold;
             border-radius: 3px;
         }
@@ -193,60 +194,66 @@
         .info-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-left: 4px solid #0b3b7b;
+            border-left: 3px solid #0b3b7b;
             border-radius: 4px;
-            padding: 8px 12px;
-            margin-bottom: 16px;
-            font-size: 8.5pt;
-            line-height: 1.45;
+            padding: 4px 8px;
+            margin-bottom: 8px;
+            font-size: 7.5pt;
+            line-height: 1.35;
         }
 
         .info-box h4 {
-            margin: 0 0 4px 0;
-            font-size: 9pt;
+            margin: 0 0 2px 0;
+            font-size: 8pt;
             color: #0b3b7b;
             font-weight: bold;
         }
 
         .info-box ol {
             margin: 0;
-            padding-left: 16px;
+            padding-left: 14px;
             color: #334155;
+        }
+
+        .info-box li {
+            margin-bottom: 1px;
         }
 
         /* Tanda Tangan */
         .ttd-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 8px;
-            font-size: 9.5pt;
+            margin-top: 4px;
+            font-size: 8pt;
         }
 
         .ttd-table td {
             width: 50%;
             text-align: center;
             vertical-align: top;
-            padding: 0 15px;
+            padding: 0 10px;
         }
 
         .ttd-space {
-            height: 55px;
+            height: 35px;
         }
 
         .ttd-name {
             font-weight: bold;
             text-decoration: underline;
             text-transform: uppercase;
+            font-size: 8pt;
         }
 
         /* Watermark Footer */
         .pdf-footer {
-            margin-top: 18px;
+            margin-top: 6px;
             border-top: 1px dashed #cbd5e1;
-            padding-top: 6px;
-            font-size: 7.5pt;
+            padding-top: 3px;
+            font-size: 6.8pt;
             color: #64748b;
             text-align: center;
+            line-height: 1.25;
         }
     </style>
 </head>
@@ -292,13 +299,13 @@
     <table class="summary-header-table">
         <tr>
             <td style="vertical-align: middle;">
-                <div style="font-size: 9pt; color: #475569;">
+                <div style="font-size: 8pt; color: #475569; line-height: 1.3;">
                     Dokumen ini adalah bukti resmi bahwa calon siswa berikut telah terdaftar dalam sistem SPMB Online <strong>{{ $setting->atas_nama ?? 'SMK ICB Cinta Teknika' }}</strong>.
                 </div>
             </td>
-            <td style="width: 80px; text-align: right; vertical-align: middle;">
+            <td style="width: 65px; text-align: right; vertical-align: middle;">
                 @if(!empty($qrBase64))
-                    <img src="{{ $qrBase64 }}" alt="QR Code" style="width: 70px; height: 70px; border: 1px solid #cbd5e1; padding: 2px;">
+                    <img src="{{ $qrBase64 }}" alt="QR Code" style="width: 55px; height: 55px; border: 1px solid #cbd5e1; padding: 2px;">
                 @endif
             </td>
         </tr>
@@ -374,9 +381,9 @@
             <th>Status Administrasi & Berkas</th>
             <td>
                 @if(strtolower($siswa->status_bayar ?? '') === 'valid' || strtolower($siswa->status ?? '') === 'diterima')
-                    <span class="badge-status badge-success">&#10003; Terverifikasi / Lunas</span>
+                    <span class="badge-status badge-success">Terverifikasi / Lunas</span>
                 @else
-                    <span class="badge-status badge-warning">&#9200; Menunggu Verifikasi Panitia</span>
+                    <span class="badge-status badge-warning">Menunggu Verifikasi Panitia</span>
                 @endif
                 <span style="color: #64748b; font-size: 8.5pt; margin-left: 6px;">(Biaya Formulir: Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }})</span>
             </td>
@@ -420,3 +427,4 @@
 
 </body>
 </html>
+

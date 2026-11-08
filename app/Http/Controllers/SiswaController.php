@@ -154,9 +154,10 @@ class SiswaController extends Controller
 
             // ── 3. Upload & Simpan Bukti Pembayaran ─────────────────
             $file         = $request->file('bukti_pembayaran');
-            $studentClean = preg_replace('/[^a-zA-Z0-9_-]/', '_', strtolower($validated['nama_siswa']));
-            $folder       = "pendaftar/{$studentClean}/bukti_bayar";
-            $fileName     = time() . '_' . $file->getClientOriginalName();
+            $studentClean = Str::slug($validated['nama_siswa'], '_');
+            $folder       = "pendaftar/{$studentClean}_{$kodePendaftaran}/bukti_bayar";
+            $extension    = strtolower($file->getClientOriginalExtension() ?: $file->extension() ?: 'jpg');
+            $fileName     = "{$studentClean}_bukti_pembayaran.{$extension}";
             $filePath     = $file->storeAs($folder, $fileName, 'public');
 
             $setting = DB::table('pengaturan_aplikasis')->first();
@@ -179,10 +180,12 @@ class SiswaController extends Controller
             foreach ($syaratBerkas as $sb) {
                 $fieldName = 'berkas_' . $sb->id;
                 if ($request->hasFile($fieldName)) {
-                    $bFile     = $request->file($fieldName);
-                    $bFolder   = "pendaftar/{$studentClean}/berkas";
-                    $bFileName = time() . '_' . $sb->id . '_' . preg_replace('/[^a-zA-Z0-9_.-]/', '_', $bFile->getClientOriginalName());
-                    $bFilePath = $bFile->storeAs($bFolder, $bFileName, 'public');
+                    $bFile       = $request->file($fieldName);
+                    $bFolder     = "pendaftar/{$studentClean}_{$kodePendaftaran}/berkas";
+                    $bExtension  = strtolower($bFile->getClientOriginalExtension() ?: $bFile->extension() ?: 'pdf');
+                    $berkasClean = Str::slug($sb->nama_berkas, '_');
+                    $bFileName   = "{$studentClean}_{$berkasClean}.{$bExtension}";
+                    $bFilePath   = $bFile->storeAs($bFolder, $bFileName, 'public');
 
                     DB::table('siswa_berkas')->insert([
                         'siswa_id'         => $s_id,
