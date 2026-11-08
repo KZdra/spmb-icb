@@ -811,17 +811,13 @@
                 <div class="section-card-body">
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="asal_sekolah_select">Nama Sekolah Asal (SMP/MTs) <span class="text-danger">*</span></label>
-                            <select id="asal_sekolah_select" class="form-control" style="width:100%">
-                                @if(old('asal_sekolah'))
-                                    <option value="{{ old('asal_sekolah') }}" selected>{{ old('asal_sekolah') }}</option>
-                                @else
-                                    <option value="">Ketik nama sekolah...</option>
-                                @endif
-                            </select>
-                            {{-- hidden input yang dikirim ke server --}}
-                            <input type="hidden" id="asal_sekolah" name="asal_sekolah" value="{{ old('asal_sekolah') }}" required>
-                            <p class="input-hint mt-1"><i class="fas fa-info-circle"></i> Ketik minimal 3 huruf untuk mencari. Jika tidak ditemukan, ketik nama manual lalu tekan Enter.</p>
+                            <label for="asal_sekolah">Nama Sekolah Asal (SMP/MTs) <span class="text-danger">*</span></label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-school input-icon"></i>
+                                <input type="text" class="form-control text-uppercase" id="asal_sekolah" name="asal_sekolah"
+                                    value="{{ old('asal_sekolah') }}" placeholder="Contoh: SMPN 1 BANDUNG" required>
+                            </div>
+                            <p class="input-hint mt-1"><i class="fas fa-info-circle"></i> Tuliskan nama lengkap SMP/MTs asal Anda.</p>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="nisn">NISN <span class="text-danger">*</span></label>
@@ -1170,11 +1166,6 @@
                 }
             }, 60);
         }
-        if (step === 5) {
-            setTimeout(function() {
-                $('#asal_sekolah_select').next('.select2-container').css('width', '100%');
-            }, 60);
-        }
 
         // Scroll halus ke atas form
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1238,19 +1229,7 @@
             }
         }
 
-        // 4. Validasi Step 5 (Asal Sekolah)
-        if (step === 5) {
-            const asalVal = (document.getElementById('asal_sekolah')?.value || '').trim();
-            if (!asalVal) {
-                valid = false;
-                $('#asal_sekolah_select').next('.select2-container').addClass('is-invalid-select2');
-                if (!firstInvalid) firstInvalid = document.getElementById('asal_sekolah_select');
-            } else {
-                $('#asal_sekolah_select').next('.select2-container').removeClass('is-invalid-select2');
-            }
-        }
-
-        // 5. Validasi Khusus Step 7 (Bukti Bayar & Persetujuan)
+        // 4. Validasi Khusus Step 7 (Bukti Bayar & Persetujuan)
         if (step === 7) {
             const buktiInput = document.getElementById('bukti_pembayaran');
             if (buktiInput && (!buktiInput.files || buktiInput.files.length === 0)) {
@@ -1475,12 +1454,6 @@
             if (draft['kecamatan']) document.getElementById('manual_kecamatan').value = draft['kecamatan'];
             if (draft['kelurahan']) document.getElementById('manual_kelurahan').value = draft['kelurahan'];
 
-            // Sinkronkan asal sekolah Select2
-            if (draft['asal_sekolah'] && typeof $ !== 'undefined' && $('#asal_sekolah_select').length) {
-                const opt = new Option(draft['asal_sekolah'], draft['asal_sekolah'], true, true);
-                $('#asal_sekolah_select').append(opt).trigger('change');
-            }
-
             // Tampilkan banner bahwa draft dipulihkan
             const stepNum = savedStep ? parseInt(savedStep) : 1;
             const draftAlert = document.getElementById('draftRestoredAlert');
@@ -1651,51 +1624,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
+    }
 
-        if ($('#asal_sekolah_select').length && !$('#asal_sekolah_select').data('select2')) {
-            $('#asal_sekolah_select').select2({
-                placeholder: 'Ketik nama sekolah... (min. 3 huruf)',
-                allowClear: true,
-                minimumInputLength: 3,
-                language: {
-                    inputTooShort: () => 'Ketik minimal 3 huruf untuk mencari',
-                    searching:     () => 'Mencari sekolah...',
-                    noResults:     () => 'Tidak ditemukan. Ketik nama lengkap lalu tekan Enter untuk input manual.'
-                },
-                tags: true,
-                ajax: {
-                    url: 'https://sekolah.devapi.id/sekolah',
-                    dataType: 'json',
-                    delay: 400,
-                    data: params => ({ nama: params.term }),
-                    processResults: data => {
-                        const list = data.data || [];
-                        const items = list.map(s => {
-                            const namaSekolah = s.nama || s;
-                            const kab = s.alamat ? (s.alamat.nama_kabupaten || '') : '';
-                            const prov = s.alamat ? (s.alamat.nama_provinsi || '') : '';
-                            const lokasi = [kab, prov].filter(Boolean).join(', ');
-                            return {
-                                id: namaSekolah,
-                                text: namaSekolah + (lokasi ? ` (${lokasi})` : '')
-                            };
-                        });
-                        return { results: items };
-                    },
-                    error: () => ({ results: [] })
-                }
-            });
+    // Normalisasi Nama Sekolah Asal (Uppercase, standarisasi singkatan, trim spasi berlebih)
+    function normalizeNamaSekolah(str) {
+        if (!str) return '';
+        let s = str.trim().toUpperCase().replace(/\s+/g, ' ');
+        s = s.replace(/^SMP\s+NEGERI\s+/i, 'SMPN ');
+        s = s.replace(/^SMP\s*N\s*([0-9]+)/i, 'SMPN $1');
+        s = s.replace(/^SMP\s*N\.\s*([0-9]+)/i, 'SMPN $1');
+        s = s.replace(/^MTS\s+NEGERI\s+/i, 'MTSN ');
+        s = s.replace(/^MTS\s*N\s*([0-9]+)/i, 'MTSN $1');
+        s = s.replace(/^MTS\s*N\.\s*([0-9]+)/i, 'MTSN $1');
+        s = s.replace(/^MTSN\s*([0-9]+)/i, 'MTSN $1');
+        return s;
+    }
 
-            $('#asal_sekolah_select').on('change', function () {
-                $('#asal_sekolah').val($(this).val());
-            });
-
-            const existingSekolah = '{{ old("asal_sekolah") }}';
-            if (existingSekolah) {
-                const opt = new Option(existingSekolah, existingSekolah, true, true);
-                $('#asal_sekolah_select').append(opt).trigger('change');
-            }
-        }
+    const asalSekolahInput = document.getElementById('asal_sekolah');
+    if (asalSekolahInput) {
+        asalSekolahInput.addEventListener('blur', function () {
+            this.value = normalizeNamaSekolah(this.value);
+            if (typeof saveDraft === 'function') saveDraft();
+        });
+        asalSekolahInput.addEventListener('input', function () {
+            this.classList.remove('is-invalid');
+        });
     }
 
     // Toggle Input Manual vs Dropdown

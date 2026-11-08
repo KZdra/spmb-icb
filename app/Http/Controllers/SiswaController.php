@@ -92,6 +92,9 @@ class SiswaController extends Controller
 
             $validated = $request->validate($rules);
 
+            // Normalisasi nama sekolah asal (trim spasi berlebih, uppercase, standarisasi singkatan)
+            $normalizedAsalSekolah = $this->normalizeAsalSekolah($validated['asal_sekolah']);
+
             // ── Generate Kode Pendaftaran Unik ──────────────────────
             $tahun = date('Y');
             $urutan = DB::table('siswas')->whereYear('created_at', $tahun)->count() + 1;
@@ -106,7 +109,7 @@ class SiswaController extends Controller
                 'password'           => Hash::make(Str::random(24)), // internal only, tidak untuk login
                 'jenis_kelamin'      => $validated['jenis_kelamin'],
                 'agama'              => $validated['agama'],
-                'asal_sekolah'       => $validated['asal_sekolah'],
+                'asal_sekolah'       => $normalizedAsalSekolah,
                 'nisn'               => $validated['nisn'],
                 'tahun_lulus'        => $validated['tahun_lulus'],
                 'jalur_pendaftaran'  => $validated['jalur_pendaftaran'],
@@ -200,7 +203,7 @@ class SiswaController extends Controller
                 'nisn'             => $validated['nisn'],
                 'email'            => $validated['email'],
                 'no_hp'            => $validated['no_hp'],
-                'asal_sekolah'     => $validated['asal_sekolah'],
+                'asal_sekolah'     => $normalizedAsalSekolah,
                 'jalur_pendaftaran'=> $validated['jalur_pendaftaran'],
                 'id_jurusan'       => $validated['id_jurusan'],
             ]);
@@ -262,5 +265,22 @@ class SiswaController extends Controller
         $setting = DB::table('pengaturan_aplikasis')->first();
         $rekeningBanks = \App\Models\RekeningBank::where('is_active', true)->orderBy('urutan', 'asc')->get();
         return view('cek-status', compact('siswa', 'keyword', 'setting', 'rekeningBanks'));
+    }
+
+    /**
+     * Normalisasi nama sekolah asal siswa (uppercase, standarisasi singkatan, trim spasi ganda)
+     */
+    private function normalizeAsalSekolah(?string $nama): ?string
+    {
+        if (!$nama) return null;
+        $s = trim(preg_replace('/\s+/', ' ', strtoupper($nama)));
+        $s = preg_replace('/^SMP\s+NEGERI\s+/i', 'SMPN ', $s);
+        $s = preg_replace('/^SMP\s*N\s*([0-9]+)/i', 'SMPN $1', $s);
+        $s = preg_replace('/^SMP\s*N\.\s*([0-9]+)/i', 'SMPN $1', $s);
+        $s = preg_replace('/^MTS\s+NEGERI\s+/i', 'MTSN ', $s);
+        $s = preg_replace('/^MTS\s*N\s*([0-9]+)/i', 'MTSN $1', $s);
+        $s = preg_replace('/^MTS\s*N\.\s*([0-9]+)/i', 'MTSN $1', $s);
+        $s = preg_replace('/^MTSN\s*([0-9]+)/i', 'MTSN $1', $s);
+        return $s;
     }
 }
