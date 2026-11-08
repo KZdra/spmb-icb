@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             JurusanSeeders::class,
             PengaturanAplikasiSeeder::class,
+            SyaratBerkasSeeder::class,
+            RekeningBankSeeder::class,
             ArticleSeeder::class,
             // SiswaSeeder::class,
         ]);

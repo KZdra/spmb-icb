@@ -23,14 +23,18 @@ class AppServiceProvider extends ServiceProvider
     }
     private function getConfig()
     {
-        // Cegah error saat tabel belum dimigrasi
+        // Cegah error saat database/tabel belum dimigrasi
         $setting = null;
 
-        if (Schema::hasTable('pengaturan_aplikasis')) {
-            // Ambil setting dari cache jika ada, jika tidak, ambil dari DB
-            $setting = Cache::rememberForever('PengaturanAplikasi', function () {
-                return PengaturanAplikasi::first();
-            });
+        try {
+            if (Schema::hasTable('pengaturan_aplikasis')) {
+                // Ambil setting dari cache jika ada, jika tidak, ambil dari DB
+                $setting = Cache::rememberForever('PengaturanAplikasi', function () {
+                    return PengaturanAplikasi::first();
+                });
+            }
+        } catch (\Throwable $e) {
+            $setting = null;
         }
 
         // Share ke seluruh view

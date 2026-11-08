@@ -19,30 +19,39 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $kont = $request->validate([
-
             'role_id' => 'required|integer',
             'nama' => 'required|string',
             'password' => 'required',
             'email' => 'required|email|unique:users,email',
         ]);
         try {
-            DB::table('users')->insert([
+            $role = DB::table('roles')->where('id', $kont['role_id'])->first();
+            $id = DB::table('users')->insertGetId([
                 'name' => $kont['nama'],
                 'role_id' => $kont['role_id'],
                 'email' => $kont['email'],
                 'password' => Hash::make($kont['password']),
                 'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
-            return response()->json(['message' => 'User berhasil ditambahkan!'], 201);
+            return response()->json([
+                'message' => 'User berhasil ditambahkan!',
+                'data' => [
+                    'id' => $id,
+                    'name' => $kont['nama'],
+                    'email' => $kont['email'],
+                    'role_id' => $kont['role_id'],
+                    'role_name' => ucwords($role->name ?? 'User')
+                ]
+            ], 201);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
-            // return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Ada Masalah Diantara Input/Server: ' . $e->getMessage()], 500);
         }
     }
+
     public function update(Request $request, $id)
     {
         try {
-
             $data = [
                 'role_id' => $request->role_id,
                 'name' => $request->nama,
@@ -50,24 +59,35 @@ class UserController extends Controller
                 'updated_at' => Carbon::now(),
             ];
 
-            if ($request->filled('password')) { // Gunakan filled() untuk mengecek apakah password dikirim
+            if ($request->filled('password')) {
                 $data['password'] = Hash::make($request->password);
             }
             DB::table('users')->where('id', $id)->update($data);
-            return response()->json(['message' => 'User berhasil diUpdate!'], 201);
+
+            $role = DB::table('roles')->where('id', $request->role_id)->first();
+
+            return response()->json([
+                'message' => 'User berhasil diupdate!',
+                'data' => [
+                    'id' => $id,
+                    'name' => $request->nama,
+                    'email' => $request->email,
+                    'role_id' => $request->role_id,
+                    'role_name' => ucwords($role->name ?? 'User')
+                ]
+            ], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
-            // return response()->json(['message' => $e->getMessages()], 500);
+            return response()->json(['message' => 'Ada Masalah Diantara Input/Server: ' . $e->getMessage()], 500);
         }
     }
+
     public function destroy($id)
     {
         try {
             DB::table('users')->where('id', $id)->delete();
-            return response()->json(['message' => 'User berhasil diUpdate!'], 201);
+            return response()->json(['message' => 'User berhasil dihapus!'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Ada Masalah Diantara Input/Server'], 500);
-            // return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Ada Masalah Diantara Input/Server: ' . $e->getMessage()], 500);
         }
     }
 }

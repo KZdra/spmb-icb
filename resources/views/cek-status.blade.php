@@ -1,6 +1,6 @@
 @extends('layouts.siswaLayout')
 
-@section('title', 'Cek Status Pendaftaran - SPMB SMK ICB Cinta Teknika')
+@section('title', 'Cek Status Pendaftaran - ' . ($setting->app_name ?? 'SPMB Online'))
 
 @section('content')
 <div class="container py-5">
@@ -8,7 +8,7 @@
         <div class="col-lg-8">
             <!-- Card Form Pencarian -->
             <div class="card border-0 shadow-sm rounded-xl mb-4" style="border-radius: 20px; overflow: hidden;">
-                <div class="card-header border-0 text-white p-4 text-center" style="background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%);">
+                <div class="card-header border-0 text-white p-4 text-center" style="background: linear-gradient(135deg, {{ $setting->secondary_color ?? '#0B3B7B' }} 0%, {{ $setting->primary_color ?? '#1A56DB' }} 100%);">
                     <div class="d-inline-flex align-items-center justify-content-center bg-white text-primary rounded-circle mb-3 shadow" style="width: 60px; height: 60px;">
                         <i class="fas fa-search fa-2x text-primary"></i>
                     </div>
@@ -95,6 +95,30 @@
                                                 @endif
                                             </div>
                                         </div>
+
+                                        @if($siswa->status_bayar != 'verified' && isset($rekeningBanks) && $rekeningBanks->count() > 0)
+                                            <div class="mt-3 p-3 rounded bg-light border">
+                                                <div class="font-weight-bold text-dark small mb-2">
+                                                    <i class="fas fa-university text-primary mr-1"></i> Rekening Resmi Pembayaran SPMB (Biaya: Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }}):
+                                                </div>
+                                                <div class="row">
+                                                    @foreach($rekeningBanks as $rb)
+                                                        <div class="{{ $rekeningBanks->count() === 1 ? 'col-12' : 'col-md-6' }} mb-2">
+                                                            <div class="p-2 bg-white rounded border small">
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <strong class="text-dark">{{ $rb->nama_bank }}</strong>
+                                                                    <button type="button" class="btn btn-xs btn-outline-success py-0 px-2" onclick="navigator.clipboard.writeText('{{ $rb->nomor_rekening }}'); alert('Nomor rekening disalin!')">
+                                                                        <i class="fas fa-copy mr-1"></i> Salin
+                                                                    </button>
+                                                                </div>
+                                                                <div class="font-weight-bold text-primary font-monospace mt-1" style="font-size: 1.05rem;">{{ $rb->nomor_rekening }}</div>
+                                                                <div class="text-muted">a.n. <strong>{{ $rb->atas_nama }}</strong></div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif
 
                                         @if($siswa->isAccepted == 1)
                                             <div class="mt-3 p-3 rounded" style="background: #F0FDF4; border: 1px solid #86EFAC;">

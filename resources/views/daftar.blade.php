@@ -52,9 +52,9 @@
     }
 
     :root {
-        --form-primary: #1A56DB;
-        --form-navy: #0B3B7B;
-        --form-success: #10B981;
+        --form-primary: {{ $setting->primary_color ?? '#1A56DB' }};
+        --form-navy: {{ $setting->secondary_color ?? '#0B3B7B' }};
+        --form-success: {{ $setting->accent_color ?? '#10B981' }};
         --form-light: #EBF5FF;
         --form-border: #E2E8F0;
         --form-muted: #64748B;
@@ -869,29 +869,67 @@
                     Pembayaran Biaya Pendaftaran
                 </div>
                 <div class="section-card-body">
-                    {{-- Payment Info --}}
-                    <div class="payment-box">
-                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                            <div>
-                                <span class="badge badge-success px-2 py-1 mb-2">
-                                    <i class="fas fa-university mr-1"></i> {{ $setting->bank_name ?? 'Bank BRI' }}
-                                </span>
-                                <div class="text-muted mb-1" style="font-size: 0.85rem;">No. Rekening</div>
-                                <div class="rek-number">{{ $setting->no_rekening ?? '210501000140303' }}</div>
-                                <div class="text-muted mt-1">a.n. <strong>{{ $setting->atas_nama ?? 'SMK ICB Cinta Teknika' }}</strong></div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-muted mb-1" style="font-size: 0.85rem;">Biaya Pendaftaran</div>
-                                <div style="font-size: 1.5rem; font-weight: 800; color: #065F46;">
-                                    Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }}
-                                </div>
-                                <button type="button" class="btn btn-sm btn-outline-success mt-2 font-weight-bold"
-                                    onclick="copyRekening('{{ $setting->no_rekening ?? '210501000140303' }}')">
-                                    <i class="fas fa-copy mr-1"></i> Salin No. Rek
-                                </button>
-                            </div>
+                    {{-- Biaya Pendaftaran Banner --}}
+                    <div class="d-flex justify-content-between align-items-center flex-wrap p-3 mb-3" style="background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border: 1.5px solid #86EFAC; border-radius: 14px;">
+                        <div>
+                            <span class="text-muted small d-block font-weight-bold text-uppercase" style="letter-spacing: 0.5px;">Biaya Pendaftaran SPMB</span>
+                            <span style="font-size: 1.6rem; font-weight: 800; color: #065F46;">
+                                Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }}
+                            </span>
+                        </div>
+                        <div class="text-muted small">
+                            <i class="fas fa-info-circle text-success mr-1"></i> Silakan transfer ke salah satu rekening resmi sekolah berikut:
                         </div>
                     </div>
+
+                    {{-- List Rekening Bank (Bisa Lebih Dari 1 Rekening) --}}
+                    @if (isset($rekeningBanks) && $rekeningBanks->count() > 0)
+                        <div class="row mb-3">
+                            @foreach ($rekeningBanks as $bank)
+                                <div class="{{ $rekeningBanks->count() === 1 ? 'col-12' : 'col-md-6' }} mb-3">
+                                    <div class="payment-box h-100 p-3" style="margin-bottom:0; background: #FFFFFF; border: 1.5px solid #CBD5E1; border-radius: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <span class="badge badge-success px-2 py-1 font-weight-bold" style="font-size: 0.85rem;">
+                                                <i class="fas fa-university mr-1"></i> {{ $bank->nama_bank }}
+                                            </span>
+                                            <button type="button" class="btn btn-sm btn-outline-success font-weight-bold"
+                                                onclick="copyRekening('{{ $bank->nomor_rekening }}')">
+                                                <i class="fas fa-copy mr-1"></i> Salin
+                                            </button>
+                                        </div>
+                                        <div class="text-muted small">No. Rekening:</div>
+                                        <div class="rek-number mb-1" style="font-size: 1.25rem;">{{ $bank->nomor_rekening }}</div>
+                                        <div class="small text-muted">a.n. <strong class="text-dark">{{ $bank->atas_nama }}</strong></div>
+                                        @if ($bank->petunjuk_transfer)
+                                            <div class="mt-2 text-muted" style="font-size: 0.78rem; border-top: 1px dashed #E2E8F0; padding-top: 6px;">
+                                                <i class="fas fa-info-circle text-muted mr-1"></i> {{ $bank->petunjuk_transfer }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        {{-- Fallback jika tabel rekening bank kosong --}}
+                        <div class="payment-box mb-3">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                <div>
+                                    <span class="badge badge-success px-2 py-1 mb-2">
+                                        <i class="fas fa-university mr-1"></i> {{ $setting->bank_name ?? 'Bank BRI' }}
+                                    </span>
+                                    <div class="text-muted mb-1" style="font-size: 0.85rem;">No. Rekening</div>
+                                    <div class="rek-number">{{ $setting->no_rekening ?? '210501000140303' }}</div>
+                                    <div class="text-muted mt-1">a.n. <strong>{{ $setting->atas_nama ?? 'SMK ICB Cinta Teknika' }}</strong></div>
+                                </div>
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-sm btn-outline-success mt-2 font-weight-bold"
+                                        onclick="copyRekening('{{ $setting->no_rekening ?? '210501000140303' }}')">
+                                        <i class="fas fa-copy mr-1"></i> Salin No. Rek
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
                     {{-- Upload --}}
                     <div class="form-group">
@@ -908,6 +946,35 @@
                         </div>
                         <div id="fileInfo" class="mt-2 text-success font-weight-bold" style="display:none;font-size:0.9rem;"></div>
                     </div>
+
+                    {{-- Dynamic Upload Berkas Tambahan (Jika Diaktifkan Admin) --}}
+                    @if (isset($syaratBerkas) && $syaratBerkas->count() > 0)
+                        <div class="mt-4 pt-3 border-top">
+                            <h6 class="font-weight-bold text-dark mb-3">
+                                <i class="fas fa-folder-open text-primary mr-1"></i> Upload Dokumen Persyaratan
+                            </h6>
+                            <div class="row">
+                                @foreach ($syaratBerkas as $sb)
+                                    <div class="col-md-6 mb-3">
+                                        <div class="p-3 border rounded bg-light h-100" style="border-radius: 10px;">
+                                            <label class="font-weight-bold mb-1 small text-dark d-block">
+                                                {{ $sb->nama_berkas }}
+                                                @if ($sb->is_required)
+                                                    <span class="text-danger">* (Wajib)</span>
+                                                @else
+                                                    <span class="text-muted">(Opsional)</span>
+                                                @endif
+                                            </label>
+                                            @if ($sb->deskripsi)
+                                                <small class="text-muted d-block mb-2" style="font-size: 0.8rem;">{{ $sb->deskripsi }}</small>
+                                            @endif
+                                            <input type="file" name="berkas_{{ $sb->id }}" class="form-control-file" accept="image/*,.pdf" {{ $sb->is_required ? 'required' : '' }}>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
 
                     {{-- Agreement --}}
                     <div class="mt-4 p-3" style="background:#F8FAFC; border-radius: 12px; border: 1px solid #E2E8F0;">

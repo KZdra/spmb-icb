@@ -38,7 +38,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($jurusans as $j)
-                                        <tr>
+                                        <tr id="row-jurusan-{{ $j->id }}">
                                             <td>{{ $j->nama_jurusan }}</td>
                                             <td>{{ rupiah($j->spp) }}</td>
                                             <td>{{ rupiah($j->dsp) }}</td>
@@ -133,6 +133,16 @@
                 let url = id ? `jurusan/${id}` : "{{ route('jurusan.store') }}";
                 let method = id ? "PUT" : "POST";
 
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true
+                });
+
+                const formatRupiah = (val) => 'Rp. ' + new Intl.NumberFormat('id-ID').format(Math.round(val));
+
                 $.ajax({
                     url: url,
                     method: method,
@@ -143,32 +153,61 @@
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        Swal.fire({
+                        $('#userModal').modal('hide');
+                        Toast.fire({
                             icon: 'success',
-                            title: response.message,
-                            showConfirmButton: false,
-                            timer: 1500
+                            title: response.message
                         });
-                        setTimeout(function() {
-                            $('#userModal').modal('hide');
-                            location.reload(); // Refresh halaman setelah berhasil
-                        }, 2000);
 
+                        const d = response.data || {
+                            id: id,
+                            nama_jurusan: $('#nama').val(),
+                            spp: $('#spp').val(),
+                            dsp: $('#dsp').val()
+                        };
+
+                        const actionBtn = `
+                            <button class="btn btn-primary editUserBtn" data-id="${d.id}"
+                                data-nama="${d.nama_jurusan}" data-spp="${d.spp}"
+                                data-dsp="${d.dsp}">Edit</button>
+                            <button class="btn btn-danger delUserBtn"
+                                data-id="${d.id}">Delete</button>
+                        `;
+
+                        if (id) {
+                            // Update existing row (NO RELOAD!)
+                            const rowEl = $(`#row-jurusan-${id}`);
+                            if (rowEl.length) {
+                                table.row(rowEl).data([
+                                    d.nama_jurusan,
+                                    formatRupiah(d.spp),
+                                    formatRupiah(d.dsp),
+                                    actionBtn
+                                ]).draw(false);
+                            }
+                        } else {
+                            // Add new row (NO RELOAD!)
+                            const newRowNode = table.row.add([
+                                d.nama_jurusan,
+                                formatRupiah(d.spp),
+                                formatRupiah(d.dsp),
+                                actionBtn
+                            ]).draw(false).node();
+                            $(newRowNode).attr('id', `row-jurusan-${d.id}`);
+                        }
                     },
                     error: function(res) {
-                        console.log(res)
-                        Swal.fire('Error', 'Terjadi kesalahan, coba lagi!', 'error');
+                        Swal.fire('Error', res.responseJSON?.message || 'Terjadi kesalahan, coba lagi!', 'error');
                     }
                 });
             });
-            //
-            // Tampilkan Modal Edit Kelas
+
+            // Tampilkan Modal Edit Jurusan
             $(document).on('click', '.editUserBtn', function() {
                 let id = $(this).data('id');
                 let nama = $(this).data('nama');
                 let spp = $(this).data('spp');
                 let dsp = $(this).data('dsp');
-
 
                 $('#user_id').val(id);
                 $('#nama').val(nama);
@@ -178,17 +217,26 @@
                 $('#userModal').modal('show');
             });
 
-            // Delete Action
+            // Delete Action (NO RELOAD!)
             $(document).on('click', '.delUserBtn', function() {
                 let id = $(this).data('id');
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true
+                });
+
                 Swal.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to revert this!",
+                    title: "Hapus Jurusan?",
+                    text: "Data jurusan ini akan dihapus permanen!",
                     icon: "warning",
                     showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Ya, Hapus!"
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Ya, Hapus!",
+                    cancelButtonText: "Batal"
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
@@ -198,28 +246,20 @@
                                 _token: "{{ csrf_token() }}"
                             },
                             success: function(response) {
-                                Swal.fire({
+                                Toast.fire({
                                     icon: 'success',
-                                    title: 'Berhasil!',
-                                    text: response.message,
-                                    showConfirmButton: false,
-                                    timer: 1500
+                                    title: response.message
                                 });
-
-                                setTimeout(function() {
-                                    location
-                                        .reload(); // Refresh halaman setelah berhasil
-                                }, 2000);
+                                // Remove row from DataTable immediately (NO RELOAD!)
+                                table.row($(`#row-jurusan-${id}`)).remove().draw(false);
                             },
                             error: function(r) {
-                                console.log(r)
-                                Swal.fire("Gagal!", "Terjadi kesalahan, coba lagi!",
-                                    "error");
+                                Swal.fire("Gagal!", r.responseJSON?.message || "Terjadi kesalahan, coba lagi!", "error");
                             }
                         });
                     }
                 });
-            })
+            });
         })
     </script>
 @endsection

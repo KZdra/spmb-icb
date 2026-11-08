@@ -13,15 +13,20 @@
     <link rel="stylesheet" href="{{ asset('css/fontawesome.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.min.css') }}">
-    @if ($setting?->logo_path)
-        <link rel="shortcut icon" href="{{ asset('storage/' . $setting->logo_path) }}" type="image/x-icon">
-    @else
-        <link rel="shortcut icon" href="{{ asset('images/icb.png') }}" type="image/x-icon">
-    @endif
+    <link rel="shortcut icon" href="{{ $setting?->favicon_url ?? asset('images/icb.png') }}" type="image/x-icon">
     @yield('styles')
     <style>
+        :root {
+            --primary-color: {{ $setting?->primary_color ?? '#1A56DB' }};
+            --secondary-color: {{ $setting?->secondary_color ?? '#102C57' }};
+            --accent-color: {{ $setting?->accent_color ?? '#10B981' }};
+        }
         .main-sidebar {
-            background-color: #102C57 !important
+            background-color: var(--secondary-color) !important;
+        }
+        .btn-primary, .bg-primary {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
         }
     </style>
 </head>

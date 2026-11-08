@@ -18,6 +18,6 @@ class MJurusan extends Model
 
     public function siswa()
     {
-        $this->hasMany(Siswa::class);
+        return $this->hasMany(Siswa::class, 'id_jurusan');
     }
 }

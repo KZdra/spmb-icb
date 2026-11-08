@@ -4,7 +4,6 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\MJurusanController;
 use App\Http\Controllers\PengaturanAplikasiController;
 use App\Http\Controllers\SiswaController;
-use App\Http\Controllers\VerifikasiPembayaranController;
 use App\Http\Controllers\VerifikasiSiswaController;
 use App\Models\Article;
 use App\Models\MJurusan;
@@ -53,12 +52,8 @@ Route::prefix('admin')->middleware('auth:web')->group(function () {
         Route::post('jurusan', [MJurusanController::class, 'store'])->name('jurusan.store');
         Route::put('jurusan/{id}', [MJurusanController::class, 'update'])->name('jurusan.update');
         Route::delete('jurusan/{id}', [MJurusanController::class, 'destroy'])->name('jurusan.destroy');
-        //Verif Pembayaran (Legacy / Direct Route)
+        //Verif Pembayaran (Redirect ke Verifikasi Satu Pintu)
         Route::get('verifbayar', fn() => redirect()->route('verifSiswa.index'))->name('verifPembayaran.index');
-        Route::post('verifbayar/upload', [VerifikasiPembayaranController::class, 'inputBukti'])->name('verifPembayaran.inputBukti');
-        Route::post('verifbayar/accept', [VerifikasiPembayaranController::class, 'approveStatus'])->name('verifPembayaran.approveStatus');
-        Route::post('verifbayar/reject', [VerifikasiPembayaranController::class, 'notApproveStatus'])->name('verifPembayaran.notApproveStatus');
-        Route::delete('verifbayar/{id}', [VerifikasiPembayaranController::class, 'inputUlang'])->name('verifPembayaran.inputUlang');
 
         //Verifikasi Terpadu (1 Pintu)
         Route::get('verifsiswa', [VerifikasiSiswaController::class, 'index'])->name('verifSiswa.index');
@@ -75,6 +70,15 @@ Route::prefix('admin')->middleware('auth:web')->group(function () {
         // Settings
         Route::get('settings', [PengaturanAplikasiController::class, 'index'])->name('appconfig.index');
         Route::post('settings', [PengaturanAplikasiController::class, 'store'])->name('appconfig.store');
+        Route::post('settings/syarat-berkas', [PengaturanAplikasiController::class, 'storeSyaratBerkas'])->name('appconfig.syaratBerkas.store');
+        Route::put('settings/syarat-berkas/{id}', [PengaturanAplikasiController::class, 'updateSyaratBerkas'])->name('appconfig.syaratBerkas.update');
+        Route::post('settings/syarat-berkas/{id}/toggle', [PengaturanAplikasiController::class, 'toggleSyaratBerkas'])->name('appconfig.syaratBerkas.toggle');
+        Route::delete('settings/syarat-berkas/{id}', [PengaturanAplikasiController::class, 'destroySyaratBerkas'])->name('appconfig.syaratBerkas.destroy');
+        // Multi Rekening Bank
+        Route::post('settings/rekening', [PengaturanAplikasiController::class, 'storeRekening'])->name('appconfig.rekening.store');
+        Route::put('settings/rekening/{id}', [PengaturanAplikasiController::class, 'updateRekening'])->name('appconfig.rekening.update');
+        Route::post('settings/rekening/{id}/toggle', [PengaturanAplikasiController::class, 'toggleRekening'])->name('appconfig.rekening.toggle');
+        Route::delete('settings/rekening/{id}', [PengaturanAplikasiController::class, 'destroyRekening'])->name('appconfig.rekening.destroy');
         // CMS Artikel
         Route::resource('articles', ArticleController::class);
     });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -49,7 +50,7 @@ class ArticleController extends Controller
 
         $gambarPath = null;
         if ($request->hasFile('gambar')) {
-            $gambarPath = $request->file('gambar')->store('articles', 'public');
+            $gambarPath = ImageService::uploadAsWebp($request->file('gambar'), 'articles', 82);
         }
 
         Article::create([
@@ -97,7 +98,7 @@ class ArticleController extends Controller
             if ($article->gambar && Storage::disk('public')->exists($article->gambar)) {
                 Storage::disk('public')->delete($article->gambar);
             }
-            $article->gambar = $request->file('gambar')->store('articles', 'public');
+            $article->gambar = ImageService::uploadAsWebp($request->file('gambar'), 'articles', 82);
         }
 
         $article->judul = $validated['judul'];

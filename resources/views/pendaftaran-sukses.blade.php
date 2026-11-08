@@ -9,13 +9,13 @@
             <!-- Print Area -->
             <div id="print-area" class="card border-0 shadow-lg rounded-xl overflow-hidden mb-4" style="border-radius: 20px;">
                 <!-- Header Card -->
-                <div class="card-header border-0 text-white p-4 p-md-5 text-center" style="background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%);">
+                <div class="card-header border-0 text-white p-4 p-md-5 text-center" style="background: linear-gradient(135deg, {{ $setting->secondary_color ?? '#0B3B7B' }} 0%, {{ $setting->primary_color ?? '#1A56DB' }} 100%);">
                     <div class="d-inline-flex align-items-center justify-content-center bg-white text-primary rounded-circle mb-3 shadow" style="width: 70px; height: 70px;">
                         <i class="fas fa-check-circle fa-3x text-success"></i>
                     </div>
                     <h2 class="font-weight-bold mb-1">Pendaftaran Berhasil Dikirim!</h2>
                     <p class="mb-0 text-white-50" style="font-size: 1.1rem;">
-                        Tanda Terima Pendaftaran Calon Siswa Baru {{ $setting->tahun_ajaran ?? '2026/2027' }}
+                        Tanda Terima Pendaftaran Calon Siswa Baru {{ $setting->app_name ?? 'SMK ICB' }} &bull; TA {{ $setting->tahun_ajaran ?? '2027/2028' }}
                     </p>
                     <div class="mt-3">
                         <span class="badge badge-light px-3 py-2 text-primary font-weight-bold" style="font-size: 1.05rem; letter-spacing: 1px; border-radius: 8px;">
@@ -26,26 +26,35 @@
 
                 <div class="card-body p-4 p-md-5">
                     <!-- Status Alert -->
-                    <div class="alert alert-info border-0 rounded-lg p-3 p-md-4 mb-4" style="background-color: #EFF6FF; border-left: 5px solid #3B82F6 !important; border-radius: 12px;">
+                    <div class="alert alert-info border-0 rounded-lg p-3 p-md-4 mb-4" style="background-color: #EFF6FF; border-left: 5px solid {{ $setting->primary_color ?? '#1A56DB' }} !important; border-radius: 12px;">
                         <div class="d-flex">
                             <div class="mr-3">
-                                <i class="fas fa-info-circle fa-2x text-primary"></i>
+                                <i class="fas fa-info-circle fa-2x" style="color: {{ $setting->primary_color ?? '#1A56DB' }};"></i>
                             </div>
                             <div>
-                                <h5 class="font-weight-bold text-primary mb-1">Informasi Verifikasi & Pengumuman:</h5>
+                                <h5 class="font-weight-bold mb-1" style="color: {{ $setting->primary_color ?? '#1A56DB' }};">Informasi Verifikasi & Pengumuman:</h5>
                                 <p class="mb-0 text-dark" style="font-size: 0.95rem; line-height: 1.6;">
-                                    Terima kasih telah mendaftar di <strong>SMK ICB Cinta Teknika</strong>. Formulir dan bukti pembayaran Anda sedang diproses oleh Panitia PPDB.
-                                    Pengumuman hasil seleksi kelulusan dan pemberian <strong>Nomor Induk Siswa (NIS)</strong> resmi akan dikirimkan secara langsung ke alamat email Anda: 
-                                    <strong class="text-primary">{{ $siswa->email ?? 'email Anda' }}</strong>. Anda tidak perlu membuat akun login portal siswa.
+                                    Terima kasih telah mendaftar di <strong>{{ $setting->app_name ?? 'SMK ICB' }}</strong>. Formulir dan berkas Anda sedang diproses oleh Panitia SPMB.
+                                    Pengumuman hasil seleksi kelulusan dan pemberian <strong>Nomor Induk Siswa (NIS)</strong> resmi akan dikirimkan langsung ke alamat email: 
+                                    <strong style="color: {{ $setting->primary_color ?? '#1A56DB' }};">{{ $siswa->email ?? 'email Anda' }}</strong>.
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Ringkasan Data Pendaftar -->
-                    <h5 class="font-weight-bold text-dark border-bottom pb-2 mb-3">
-                        <i class="fas fa-id-card text-primary mr-2"></i> Ringkasan Data Calon Siswa
-                    </h5>
+                    <!-- Ringkasan Data Pendaftar + QR Code -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                        <h5 class="font-weight-bold text-dark mb-0">
+                            <i class="fas fa-id-card mr-2" style="color: {{ $setting->primary_color ?? '#1A56DB' }};"></i> Ringkasan Data Calon Siswa
+                        </h5>
+                        <div class="text-right">
+                            @php
+                                $kodePendaftaranSiswa = $siswa->kode_pendaftaran ?? ($kode ?? 'ICB');
+                                $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=' . urlencode($kodePendaftaranSiswa);
+                            @endphp
+                            <img src="{{ $qrUrl }}" alt="QR Code" class="rounded border p-1" style="width: 70px; height: 70px;">
+                        </div>
+                    </div>
 
                     <div class="table-responsive mb-4">
                         <table class="table table-bordered mb-0">
@@ -94,15 +103,54 @@
                         </table>
                     </div>
 
-                    <!-- Catatan Panitia -->
+                    <!-- Rekening Bank Tujuan Transfer (Bisa Lebih Dari 1) -->
+                    @if (isset($rekeningBanks) && $rekeningBanks->count() > 0)
+                        <div class="mb-4 p-3 rounded-lg border bg-white shadow-sm" style="border-radius: 12px;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="font-weight-bold text-dark small"><i class="fas fa-university text-primary mr-1"></i> Rekening Resmi Penerimaan Biaya Pendaftaran:</span>
+                                <span class="badge badge-success px-2 py-1">Biaya: Rp {{ number_format($setting->biaya_pendaftaran ?? 200000, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="row">
+                                @foreach ($rekeningBanks as $rb)
+                                    <div class="{{ $rekeningBanks->count() === 1 ? 'col-12' : 'col-md-6' }} mb-2">
+                                        <div class="p-2 bg-light rounded border text-muted small">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <strong class="text-dark"><i class="fas fa-money-check-alt text-success mr-1"></i> {{ $rb->nama_bank }}</strong>
+                                                <button type="button" class="btn btn-xs btn-outline-success d-print-none py-0 px-2" onclick="navigator.clipboard.writeText('{{ $rb->nomor_rekening }}'); alert('Nomor rekening tersalin!')">
+                                                    <i class="fas fa-copy mr-1"></i> Salin
+                                                </button>
+                                            </div>
+                                            <div class="font-weight-bold text-primary font-monospace mt-1" style="font-size: 1.1rem; letter-spacing: 0.5px;">{{ $rb->nomor_rekening }}</div>
+                                            <div>a.n. <strong>{{ $rb->atas_nama }}</strong></div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Catatan Panitia & Tanda Tangan -->
                     <div class="bg-light p-3 rounded-lg mb-4" style="border-radius: 12px; font-size: 0.9rem;">
-                        <h6 class="font-weight-bold text-dark mb-2">Langkah Selanjutnya:</h6>
-                        <ol class="pl-3 mb-0 text-muted">
-                            <li>Simpan atau cetak bukti tanda terima pendaftaran ini sebagai bukti pendaftaran yang sah.</li>
-                            <li>Pastikan nomor WhatsApp dan email yang Anda daftarkan aktif dan dapat dihubungi.</li>
-                            <li>Panitia akan melakukan verifikasi berkas dan bukti pembayaran dalam waktu 1x24 jam kerja.</li>
-                            <li>Setelah terverifikasi, Anda akan menerima surat keputusan penerimaan & nomor NIS resmi melalui Email.</li>
+                        <h6 class="font-weight-bold text-dark mb-2">Petunjuk & Langkah Selanjutnya:</h6>
+                        <p class="text-muted mb-2">
+                            {{ $setting->pdf_catatan_kaki ?? 'Bawalah lembar tanda terima ini beserta berkas fotokopi saat pelaksanaan wawancara atau daftar ulang di kampus sekolah.' }}
+                        </p>
+                        <ol class="pl-3 mb-0 text-muted small">
+                            <li>Simpan atau cetak bukti tanda terima pendaftaran ini sebagai bukti pendaftaran resmi.</li>
+                            <li>Pastikan nomor WhatsApp dan email aktif untuk menerima nomor NIS dan surat keputusan kelulusan.</li>
                         </ol>
+                        <div class="row pt-4 d-none d-print-flex justify-content-between text-center">
+                            <div class="col-6">
+                                <div class="text-muted small">Calon Siswa / Orang Tua,</div>
+                                <div style="height: 60px;"></div>
+                                <div class="font-weight-bold text-uppercase">( {{ $siswa->nama ?? 'Calon Siswa' }} )</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-muted small">Panitia Penerimaan Murid Baru,</div>
+                                <div style="height: 60px;"></div>
+                                <div class="font-weight-bold text-uppercase">( {{ $setting->pdf_penandatangan ?? 'Panitia SPMB' }} )</div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Actions Buttons (Hidden on Print) -->
@@ -117,7 +165,8 @@
                                 $waNumber = $setting->kontak_wa ?? '081222485558';
                                 $pendaftarKode = $siswa->kode_pendaftaran ?? $kode;
                                 $pendaftarNama = $siswa->nama ?? '';
-                                $waMsg = "Halo Panitia SPMB SMK ICB Cinta Teknika, saya sudah mendaftar secara online dengan Kode Pendaftaran: {$pendaftarKode} atas nama {$pendaftarNama}. Mohon konfirmasinya. Terima kasih.";
+                                $schoolName = $setting->app_name ?? 'SMK ICB';
+                                $waMsg = "Halo Panitia SPMB {$schoolName}, saya sudah mendaftar secara online dengan Kode Pendaftaran: {$pendaftarKode} atas nama {$pendaftarNama}. Mohon konfirmasinya. Terima kasih.";
                             @endphp
                             <div class="col-md-5 mb-2">
                                 <a href="{{ wa_link($waNumber, $waMsg) }}" target="_blank" class="btn btn-success btn-block py-2 font-weight-bold shadow-sm">

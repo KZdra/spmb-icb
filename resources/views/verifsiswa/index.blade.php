@@ -37,7 +37,7 @@
                         <span class="info-box-icon bg-success text-white"><i class="fas fa-user-check"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Diterima / Lulus</span>
-                            <span class="info-box-number text-success font-weight-bold">{{ $diterima }} Siswa</span>
+                            <span class="info-box-number text-success font-weight-bold" id="stat-diterima">{{ $diterima }} Siswa</span>
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                         <span class="info-box-icon bg-warning text-white"><i class="fas fa-clock"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Menunggu (Pending)</span>
-                            <span class="info-box-number text-warning font-weight-bold">{{ $pending }} Siswa</span>
+                            <span class="info-box-number text-warning font-weight-bold" id="stat-pending">{{ $pending }} Siswa</span>
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                         <span class="info-box-icon bg-danger text-white"><i class="fas fa-user-times"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Ditolak</span>
-                            <span class="info-box-number text-danger font-weight-bold">{{ $ditolak }} Siswa</span>
+                            <span class="info-box-number text-danger font-weight-bold" id="stat-ditolak">{{ $ditolak }} Siswa</span>
                         </div>
                     </div>
                 </div>
@@ -108,15 +108,17 @@
                                             $bp = $user->buktiPembayaran;
                                             $bpStatus = strtolower($bp?->status ?? 'belum_upload');
                                         @endphp
-                                        <tr>
+                                        <tr id="row-siswa-{{ $user->id }}">
                                             <td>{{ $loop->iteration }}</td>
                                             <td>
                                                 <div class="font-weight-bold text-primary">{{ $user->kode_pendaftaran ?? 'ICB-'.date('Y').'-'.str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</div>
-                                                @if($user->nis)
-                                                    <span class="badge bg-success"><i class="fas fa-id-badge mr-1"></i> NIS: {{ $user->nis }}</span>
-                                                @else
-                                                    <span class="badge bg-light text-muted border">NIS: Belum Terbit</span>
-                                                @endif
+                                                <div class="nis-badge-container">
+                                                    @if($user->nis)
+                                                        <span class="badge bg-success"><i class="fas fa-id-badge mr-1"></i> NIS: {{ $user->nis }}</span>
+                                                    @else
+                                                        <span class="badge bg-light text-muted border">NIS: Belum Terbit</span>
+                                                    @endif
+                                                </div>
                                             </td>
                                             <td>
                                                 <strong class="text-dark">{{ $user->nama }}</strong>
@@ -126,7 +128,7 @@
                                                 <div class="font-weight-bold text-navy">{{ $user->jurusan?->nama_jurusan ?? '-' }}</div>
                                                 <small class="text-muted"><i class="fas fa-school mr-1"></i> {{ $user->asal_sekolah }} ({{ $user->jalur_pendaftaran }})</small>
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center status-bayar-cell">
                                                 @if($bpStatus === 'verified' || $bpStatus === 'diverifikasi')
                                                     <span class="badge bg-success p-2"><i class="fas fa-check-circle mr-1"></i> Lunas / Valid</span>
                                                 @elseif($bpStatus === 'rejected' || $bpStatus === 'ditolak')
@@ -137,7 +139,7 @@
                                                     <span class="badge bg-secondary p-2"><i class="fas fa-upload mr-1"></i> Belum Upload</span>
                                                 @endif
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center status-daftar-cell">
                                                 @switch(strtolower($user->status))
                                                     @case('diterima')
                                                         <span class="badge bg-success p-2"><i class="fas fa-user-check mr-1"></i> Diterima</span>
@@ -150,7 +152,7 @@
                                                 @endswitch
                                             </td>
                                             <td>{{ \Carbon\Carbon::parse($user->created_at)->locale('id')->translatedFormat('d M Y') }}</td>
-                                            <td>
+                                            <td class="action-btn-container">
                                                 <button class="btn btn-info btn-sm seeDetailBtn mr-1 mb-1" data-id="{{ $user->id }}" title="Lihat Berkas & Bukti Pembayaran">
                                                     <i class="fas fa-folder-open mr-1"></i> Berkas
                                                 </button>
@@ -289,10 +291,33 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Baris Penuh: Berkas Persyaratan Siswa Terunggah -->
+                        <div class="col-12 mt-2">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-white font-weight-bold py-2 border-bottom d-flex justify-content-between align-items-center">
+                                    <span class="text-dark"><i class="fas fa-folder-open text-primary mr-2"></i> Dokumen & Berkas Persyaratan Siswa</span>
+                                    <span class="badge badge-light border" id="detail-berkas-count">0 Berkas</span>
+                                </div>
+                                <div class="card-body p-3">
+                                    <div id="detail-berkas-container" class="row">
+                                        <!-- Injected by JS -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-white d-flex justify-content-between">
-                    <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Tutup</button>
+                <div class="modal-footer bg-white d-flex flex-wrap justify-content-between align-items-center" style="gap: 10px;">
+                    <div>
+                        <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">Tutup</button>
+                        <button type="button" class="btn btn-outline-success font-weight-bold px-3 ml-2" id="btnKirimWaLulus">
+                            <i class="fab fa-whatsapp mr-1"></i> WA Kelulusan
+                        </button>
+                        <button type="button" class="btn btn-outline-warning text-dark font-weight-bold px-3 ml-1" id="btnKirimWaRevisi">
+                            <i class="fab fa-whatsapp mr-1"></i> WA Revisi / Bukti
+                        </button>
+                    </div>
                     <div id="modal-quick-actions">
                         <!-- Quick Accept or Reject -->
                     </div>
@@ -312,6 +337,10 @@
 
             // Current active siswa ID in modal
             let currentSiswaId = null;
+            let currentSiswaData = null;
+            const WA_TEMPLATE_LULUS = {!! json_encode($setting?->wa_template_lulus ?? 'Halo Ananda {nama}, selamat! Anda dinyatakan DITERIMA di {sekolah} pada Jurusan {jurusan} dengan Nomor Induk Siswa (NIS) Resmi: {nis}. Silakan cek email Anda untuk surat kelulusan resmi dan petunjuk daftar ulang.') !!};
+            const WA_TEMPLATE_REVISI = {!! json_encode($setting?->wa_template_revisi ?? 'Halo Ananda {nama}, terima kasih telah mendaftar di {sekolah}. Mohon maaf bukti transfer atau berkas Anda belum dapat kami validasi dengan catatan: "{alasan}". Mohon konfirmasi atau kirimkan ulang bukti yang jelas.') !!};
+            const APP_NAME = {!! json_encode($setting?->app_name ?? 'SMK ICB') !!};
 
             // Filter Status Pendaftaran
             $('#filterStatus').on('change', function() {
@@ -406,6 +435,45 @@
                             $('#bukti-actions-container').hide();
                         }
 
+                        currentSiswaData = res;
+
+                        // Render Dokumen Berkas Persyaratan Siswa
+                        const berkas = res.berkas || [];
+                        $('#detail-berkas-count').text(berkas.length + ' Berkas');
+                        if (berkas.length > 0) {
+                            let berkasHtml = '';
+                            berkas.forEach((bk) => {
+                                const fileUrl = '/storage/' + bk.file_path;
+                                const isPdf = bk.file_path.toLowerCase().endsWith('.pdf');
+                                const iconClass = isPdf ? 'fa-file-pdf text-danger' : 'fa-file-image text-primary';
+                                const namaSyarat = bk.syarat_berkas ? bk.syarat_berkas.nama_berkas : 'Berkas Pendukung';
+
+                                berkasHtml += `
+                                    <div class="col-md-6 mb-2">
+                                        <div class="p-2 border rounded bg-light d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center text-truncate mr-2">
+                                                <i class="fas ${iconClass} fa-2x mr-2"></i>
+                                                <div class="text-truncate">
+                                                    <div class="font-weight-bold text-dark small text-truncate">${namaSyarat}</div>
+                                                    <div class="text-muted" style="font-size: 11px;">${bk.file_name}</div>
+                                                </div>
+                                            </div>
+                                            <a href="${fileUrl}" target="_blank" class="btn btn-xs btn-outline-primary px-2 font-weight-bold">
+                                                <i class="fas fa-external-link-alt"></i> Buka
+                                            </a>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            $('#detail-berkas-container').html(berkasHtml);
+                        } else {
+                            $('#detail-berkas-container').html(`
+                                <div class="col-12 text-center text-muted py-2 small">
+                                    <i class="fas fa-info-circle mr-1"></i> Tidak ada berkas tambahan yang diunggah atau persyaratan dinonaktifkan.
+                                </div>
+                            `);
+                        }
+
                         // Modal Quick Actions
                         let quickActionsHtml = '';
                         if (String(s.status).toLowerCase() !== 'diterima') {
@@ -430,7 +498,24 @@
                 });
             });
 
-            // Action: Validasi Pembayaran Langsung dari Modal
+            // Toast helper
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+
+            function updateCounter(id, delta) {
+                const el = $(`#${id}`);
+                if (el.length) {
+                    const current = parseInt(el.text()) || 0;
+                    el.text(`${Math.max(0, current + delta)} Siswa`);
+                }
+            }
+
+            // Action: Validasi Pembayaran Langsung dari Modal (NO RELOAD!)
             $('#btnValidasiBayar').on('click', function() {
                 if (!currentSiswaId) return;
                 Swal.fire({
@@ -451,14 +536,12 @@
                                 _token: "{{ csrf_token() }}"
                             },
                             success: function(resp) {
-                                Swal.fire({
+                                Toast.fire({
                                     icon: 'success',
-                                    title: resp.message || 'Pembayaran Berhasil Divalidasi!',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                }).then(() => {
-                                    location.reload();
+                                    title: resp.message || 'Pembayaran Berhasil Divalidasi!'
                                 });
+                                $('#detail-bukti-badge').html('<span class="badge badge-success px-2 py-1"><i class="fas fa-check-circle mr-1"></i> Lunas / Valid</span>');
+                                $(`#row-siswa-${currentSiswaId}`).find('.status-bayar-cell').html('<span class="badge bg-success p-2"><i class="fas fa-check-circle mr-1"></i> Lunas / Valid</span>');
                             },
                             error: function(err) {
                                 Swal.fire('Error', 'Gagal memverifikasi pembayaran.', 'error');
@@ -468,7 +551,7 @@
                 });
             });
 
-            // Action: Tolak Pembayaran dari Modal
+            // Action: Tolak Pembayaran dari Modal (NO RELOAD!)
             $('#btnTolakBayar').on('click', function() {
                 if (!currentSiswaId) return;
                 Swal.fire({
@@ -494,14 +577,12 @@
                                 _token: "{{ csrf_token() }}"
                             },
                             success: function(resp) {
-                                Swal.fire({
+                                Toast.fire({
                                     icon: 'success',
-                                    title: resp.message || 'Bukti bayar ditolak!',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                }).then(() => {
-                                    location.reload();
+                                    title: resp.message || 'Bukti bayar ditolak!'
                                 });
+                                $('#detail-bukti-badge').html('<span class="badge badge-danger px-2 py-1"><i class="fas fa-times-circle mr-1"></i> Ditolak</span>');
+                                $(`#row-siswa-${currentSiswaId}`).find('.status-bayar-cell').html('<span class="badge bg-danger p-2"><i class="fas fa-times-circle mr-1"></i> Ditolak</span>');
                             },
                             error: function(err) {
                                 Swal.fire('Error', 'Gagal menolak bukti pembayaran.', 'error');
@@ -511,7 +592,65 @@
                 });
             });
 
-            // Action Helper: Approve Siswa
+            // Helper Format Nomor WhatsApp
+            function formatWhatsAppNumber(phone) {
+                if (!phone) return null;
+                let clean = phone.replace(/[^0-9]/g, '');
+                if (clean.startsWith('0')) {
+                    clean = '62' + clean.substring(1);
+                }
+                return clean;
+            }
+
+            $('#btnKirimWaLulus').on('click', function() {
+                if (!currentSiswaData || !currentSiswaData.siswa) return;
+                const s = currentSiswaData.siswa;
+                const phone = formatWhatsAppNumber(s.no_hp);
+                if (!phone) {
+                    Swal.fire('Nomor Tidak Valid', 'Nomor handphone / WhatsApp calon siswa tidak tersedia.', 'warning');
+                    return;
+                }
+
+                let text = WA_TEMPLATE_LULUS
+                    .replace(/{nama}/g, s.nama || '')
+                    .replace(/{sekolah}/g, APP_NAME)
+                    .replace(/{jurusan}/g, currentSiswaData.jurusan || '-')
+                    .replace(/{nis}/g, s.nis || '-');
+
+                window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(text)}`, '_blank');
+            });
+
+            $('#btnKirimWaRevisi').on('click', function() {
+                if (!currentSiswaData || !currentSiswaData.siswa) return;
+                const s = currentSiswaData.siswa;
+                const phone = formatWhatsAppNumber(s.no_hp);
+                if (!phone) {
+                    Swal.fire('Nomor Tidak Valid', 'Nomor handphone / WhatsApp calon siswa tidak tersedia.', 'warning');
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Kirim Notifikasi Revisi / Bukti via WA',
+                    input: 'textarea',
+                    inputLabel: 'Catatan untuk pendaftar:',
+                    inputValue: 'Foto bukti transfer buram atau belum terbaca. Mohon konfirmasi atau kirimkan ulang foto struk transfer yang jelas.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Kirim ke WhatsApp',
+                    cancelButtonText: 'Batal',
+                }).then((res) => {
+                    if (res.isConfirmed && res.value) {
+                        const alasan = res.value;
+                        let text = WA_TEMPLATE_REVISI
+                            .replace(/{nama}/g, s.nama || '')
+                            .replace(/{sekolah}/g, APP_NAME)
+                            .replace(/{alasan}/g, alasan);
+
+                        window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(text)}`, '_blank');
+                    }
+                });
+            });
+
+            // Action Helper: Approve Siswa (NO RELOAD!)
             function approveSiswa(id) {
                 Swal.fire({
                     title: 'Terima & Meluluskan Siswa?',
@@ -531,13 +670,26 @@
                                 _token: "{{ csrf_token() }}"
                             },
                             success: function(response) {
-                                Swal.fire({
+                                $('#detailSiswaModal').modal('hide');
+                                Toast.fire({
                                     icon: 'success',
-                                    title: response.message || 'Siswa Berhasil Diterima!',
-                                    showConfirmButton: true
-                                }).then(() => {
-                                    location.reload();
+                                    title: response.message || 'Siswa Berhasil Diterima!'
                                 });
+
+                                const row = $(`#row-siswa-${id}`);
+                                if (row.length) {
+                                    row.find('.nis-badge-container').html(`<span class="badge bg-success"><i class="fas fa-id-badge mr-1"></i> NIS: ${response.nis}</span>`);
+                                    row.find('.status-bayar-cell').html('<span class="badge bg-success p-2"><i class="fas fa-check-circle mr-1"></i> Lunas / Valid</span>');
+                                    row.find('.status-daftar-cell').html('<span class="badge bg-success p-2"><i class="fas fa-user-check mr-1"></i> Diterima</span>');
+                                    row.find('.action-btn-container').html(`
+                                        <button class="btn btn-info btn-sm seeDetailBtn mr-1 mb-1" data-id="${id}" title="Lihat Berkas & Bukti Pembayaran">
+                                            <i class="fas fa-folder-open mr-1"></i> Berkas
+                                        </button>
+                                        <span class="badge bg-light text-success font-weight-bold border border-success p-1"><i class="fas fa-check"></i> Sudah Lulus</span>
+                                    `);
+                                }
+                                updateCounter('stat-pending', -1);
+                                updateCounter('stat-diterima', 1);
                             },
                             error: function(res) {
                                 const msg = res.responseJSON ? res.responseJSON.message : 'Terjadi kesalahan!';
@@ -548,7 +700,7 @@
                 });
             }
 
-            // Action Helper: Reject Siswa
+            // Action Helper: Reject Siswa (NO RELOAD!)
             function rejectSiswa(id) {
                 Swal.fire({
                     title: 'Tolak Pendaftaran Siswa?',
@@ -568,13 +720,24 @@
                                 _token: "{{ csrf_token() }}"
                             },
                             success: function(response) {
-                                Swal.fire({
+                                $('#detailSiswaModal').modal('hide');
+                                Toast.fire({
                                     icon: 'success',
-                                    title: response.message || 'Pendaftaran Siswa Ditolak',
-                                    showConfirmButton: false,
-                                    timer: 1500
+                                    title: response.message || 'Pendaftaran Siswa Ditolak'
                                 });
-                                setTimeout(function() { location.reload(); }, 1500);
+
+                                const row = $(`#row-siswa-${id}`);
+                                if (row.length) {
+                                    row.find('.status-daftar-cell').html('<span class="badge bg-danger p-2"><i class="fas fa-user-times mr-1"></i> Ditolak</span>');
+                                    row.find('.action-btn-container').html(`
+                                        <button class="btn btn-info btn-sm seeDetailBtn mr-1 mb-1" data-id="${id}" title="Lihat Berkas & Bukti Pembayaran">
+                                            <i class="fas fa-folder-open mr-1"></i> Berkas
+                                        </button>
+                                        <span class="badge bg-light text-danger font-weight-bold border border-danger p-1"><i class="fas fa-times"></i> Ditolak</span>
+                                    `);
+                                }
+                                updateCounter('stat-pending', -1);
+                                updateCounter('stat-ditolak', 1);
                             },
                             error: function(res) {
                                 const msg = res.responseJSON ? res.responseJSON.message : 'Terjadi kesalahan!';
@@ -585,7 +748,7 @@
                 });
             }
 
-            // Action Helper: Terima Semua Siswa Pending
+            // Action Helper: Terima Semua Siswa Pending (NO RELOAD!)
             $('#btnTerimaSemua').on('click', function() {
                 Swal.fire({
                     title: 'Terima Semua Pendaftar Pending?',
@@ -630,15 +793,34 @@
                                     title: 'Berhasil!',
                                     text: response.message,
                                     confirmButtonText: 'OK'
-                                }).then(() => {
-                                    location.reload();
                                 });
+
+                                // Update all pending rows in DataTable
+                                $('tr[id^="row-siswa-"]').each(function() {
+                                    const statusCell = $(this).find('.status-daftar-cell');
+                                    if (statusCell.text().includes('Pending')) {
+                                        statusCell.html('<span class="badge bg-success p-2"><i class="fas fa-user-check mr-1"></i> Diterima</span>');
+                                        $(this).find('.status-bayar-cell').html('<span class="badge bg-success p-2"><i class="fas fa-check-circle mr-1"></i> Lunas / Valid</span>');
+                                        const id = $(this).attr('id').replace('row-siswa-', '');
+                                        $(this).find('.action-btn-container').html(`
+                                            <button class="btn btn-info btn-sm seeDetailBtn mr-1 mb-1" data-id="${id}" title="Lihat Berkas & Bukti Pembayaran">
+                                                <i class="fas fa-folder-open mr-1"></i> Berkas
+                                            </button>
+                                            <span class="badge bg-light text-success font-weight-bold border border-success p-1"><i class="fas fa-check"></i> Sudah Lulus</span>
+                                        `);
+                                    }
+                                });
+                                $('#stat-pending').text('0 Siswa');
+                                updateCounter('stat-diterima', response.total_accepted || 0);
                             },
                             error: function(res) {
                                 const msg = res.responseJSON ? res.responseJSON.message : 'Terjadi kesalahan saat memproses data.';
                                 Swal.fire('Perhatian', msg, res.status === 422 ? 'info' : 'error');
                             }
                         });
+                    }
+                });
+            });
                     }
                 });
             });

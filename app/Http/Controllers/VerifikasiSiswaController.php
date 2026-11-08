@@ -60,20 +60,22 @@ class VerifikasiSiswaController extends Controller
 
     public function index(Request $request)
     {
-        $datasis = Siswa::with(['dataTambahan', 'jurusan', 'buktiPembayaran'])
+        $datasis = Siswa::with(['dataTambahan', 'jurusan', 'buktiPembayaran', 'berkas.syaratBerkas'])
             ->orderBy('id', 'asc')
             ->get();
-        return view('verifsiswa.index', compact('datasis'));
+        $setting = PengaturanAplikasi::first();
+        return view('verifsiswa.index', compact('datasis', 'setting'));
     }
 
     public function getDataTambahan(Request $request, $id)
     {
-        $siswa = Siswa::with(['dataTambahan', 'jurusan', 'buktiPembayaran'])->findOrFail($id);
+        $siswa = Siswa::with(['dataTambahan', 'jurusan', 'buktiPembayaran', 'berkas.syaratBerkas'])->findOrFail($id);
         return response()->json([
             'nama' => $siswa->nama,
             'siswa' => $siswa,
             'data_tambahan' => $siswa->dataTambahan,
             'bukti' => $siswa->buktiPembayaran,
+            'berkas' => $siswa->berkas,
             'jurusan' => $siswa->jurusan?->nama_jurusan
         ], 200);
     }

@@ -22,7 +22,7 @@
             border: 1px solid #E2E8F0;
         }
         .header {
-            background: linear-gradient(135deg, #0B3B7B 0%, #1A56DB 100%);
+            background: linear-gradient(135deg, {{ $setting->secondary_color ?? '#0B3B7B' }} 0%, {{ $setting->primary_color ?? '#1A56DB' }} 100%);
             color: #FFFFFF;
             padding: 30px 24px;
             text-align: center;

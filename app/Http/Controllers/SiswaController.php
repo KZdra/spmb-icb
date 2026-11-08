@@ -16,12 +16,23 @@ class SiswaController extends Controller
      */
     public function registerPage(Request $request)
     {
+        $setting = DB::table('pengaturan_aplikasis')->first();
+
+        // Cek jika pendaftaran ditutup
+        if (($setting->status_pendaftaran ?? 'buka') === 'tutup') {
+            Alert::info('Pendaftaran Ditutup', $setting->pesan_penutupan ?? 'Pendaftaran saat ini sedang ditutup sementara.');
+            return redirect()->route('landing');
+        }
+
         $listJurusan = DB::table('m_jurusans')
             ->select('id', 'nama_jurusan')
             ->orderBy('nama_jurusan', 'ASC')
             ->get();
-        $setting = DB::table('pengaturan_aplikasis')->first();
-        return view('daftar', compact('listJurusan', 'setting'));
+
+        $syaratBerkas = \App\Models\SyaratBerkas::where('is_active', true)->orderBy('urutan', 'asc')->get();
+        $rekeningBanks = \App\Models\RekeningBank::where('is_active', true)->orderBy('urutan', 'asc')->get();
+
+        return view('daftar', compact('listJurusan', 'setting', 'syaratBerkas', 'rekeningBanks'));
     }
 
     /**
@@ -31,7 +42,22 @@ class SiswaController extends Controller
     {
         DB::beginTransaction();
         try {
-            $validated = $request->validate([
+            $setting = DB::table('pengaturan_aplikasis')->first();
+            if (($setting->status_pendaftaran ?? 'buka') === 'tutup') {
+                throw new \Exception($setting->pesan_penutupan ?? 'Pendaftaran saat ini sedang ditutup sementara.');
+            }
+
+            // Aturan validasi dinamis untuk berkas tambahan aktif
+            $syaratBerkas = \App\Models\SyaratBerkas::where('is_active', true)->get();
+            $berkasRules = [];
+            foreach ($syaratBerkas as $sb) {
+                $fieldName = 'berkas_' . $sb->id;
+                $berkasRules[$fieldName] = $sb->is_required
+                    ? 'required|file|mimes:jpeg,jpg,png,pdf|max:10240'
+                    : 'nullable|file|mimes:jpeg,jpg,png,pdf|max:10240';
+            }
+
+            $rules = array_merge([
                 'jalur_pendaftaran'   => 'required|string|max:255',
                 'id_jurusan'          => 'required|exists:m_jurusans,id',
                 'nama_siswa'          => 'required|string|max:255',
@@ -62,7 +88,9 @@ class SiswaController extends Controller
                 'mgm'                 => 'nullable|in:0,1',
                 'nama_mgm'            => 'nullable|string|max:100',
                 'asal_mgm'            => 'nullable|string|max:100',
-            ]);
+            ], $berkasRules);
+
+            $validated = $request->validate($rules);
 
             // ── Generate Kode Pendaftaran Unik ──────────────────────
             $tahun = date('Y');
@@ -142,6 +170,26 @@ class SiswaController extends Controller
                 'updated_at'   => Carbon::now(),
             ]);
 
+            // ── 4. Upload & Simpan Berkas Tambahan (Disimpan dalam format aslinya) ──
+            foreach ($syaratBerkas as $sb) {
+                $fieldName = 'berkas_' . $sb->id;
+                if ($request->hasFile($fieldName)) {
+                    $bFile     = $request->file($fieldName);
+                    $bFolder   = "pendaftar/{$studentClean}/berkas";
+                    $bFileName = time() . '_' . $sb->id . '_' . preg_replace('/[^a-zA-Z0-9_.-]/', '_', $bFile->getClientOriginalName());
+                    $bFilePath = $bFile->storeAs($bFolder, $bFileName, 'public');
+
+                    DB::table('siswa_berkas')->insert([
+                        'siswa_id'         => $s_id,
+                        'syarat_berkas_id' => $sb->id,
+                        'file_name'        => $bFileName,
+                        'file_path'        => $bFilePath,
+                        'created_at'       => Carbon::now(),
+                        'updated_at'       => Carbon::now(),
+                    ]);
+                }
+            }
+
             DB::commit();
 
             // Flash data untuk halaman sukses
@@ -183,7 +231,8 @@ class SiswaController extends Controller
         }
 
         $setting = DB::table('pengaturan_aplikasis')->first();
-        return view('pendaftaran-sukses', compact('siswa', 'setting', 'kode'));
+        $rekeningBanks = \App\Models\RekeningBank::where('is_active', true)->orderBy('urutan', 'asc')->get();
+        return view('pendaftaran-sukses', compact('siswa', 'setting', 'kode', 'rekeningBanks'));
     }
 
     /**
@@ -192,7 +241,8 @@ class SiswaController extends Controller
     public function cekStatusPage()
     {
         $setting = DB::table('pengaturan_aplikasis')->first();
-        return view('cek-status', compact('setting'));
+        $rekeningBanks = \App\Models\RekeningBank::where('is_active', true)->orderBy('urutan', 'asc')->get();
+        return view('cek-status', compact('setting', 'rekeningBanks'));
     }
 
     public function cekStatusPost(Request $request)
@@ -210,6 +260,7 @@ class SiswaController extends Controller
             ->first();
 
         $setting = DB::table('pengaturan_aplikasis')->first();
-        return view('cek-status', compact('siswa', 'keyword', 'setting'));
+        $rekeningBanks = \App\Models\RekeningBank::where('is_active', true)->orderBy('urutan', 'asc')->get();
+        return view('cek-status', compact('siswa', 'keyword', 'setting', 'rekeningBanks'));
     }
 }

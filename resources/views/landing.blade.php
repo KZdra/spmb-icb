@@ -59,21 +59,20 @@
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
-    @if ($setting?->logo_path)
-        <link rel="shortcut icon" href="{{ asset('storage/' . $setting->logo_path) }}" type="image/x-icon">
-    @else
-        <link rel="shortcut icon" href="{{ asset('images/icb.png') }}" type="image/x-icon">
-    @endif
+    <link rel="shortcut icon" href="{{ $setting?->favicon_url ?? asset('images/icb.png') }}" type="image/x-icon">
 
     <style>
         :root {
-            --primary-navy: #0B3B7B;
-            --primary-blue: #1A56DB;
+            --primary-navy: {{ $setting?->secondary_color ?? '#0B3B7B' }};
+            --primary-blue: {{ $setting?->primary_color ?? '#1A56DB' }};
+            --primary-color: {{ $setting?->primary_color ?? '#1A56DB' }};
+            --secondary-color: {{ $setting?->secondary_color ?? '#0B3B7B' }};
+            --accent-color: {{ $setting?->accent_color ?? '#10B981' }};
             --primary-light: #EBF5FF;
-            --accent-gold: #F59E0B;
+            --accent-gold: {{ $setting?->accent_color ?? '#F59E0B' }};
             --accent-gold-dark: #D97706;
             --accent-amber: #FEF3C7;
-            --success-green: #10B981;
+            --success-green: {{ $setting?->accent_color ?? '#10B981' }};
             --dark-slate: #0F172A;
             --muted-slate: #64748B;
             --border-color: #E2E8F0;
@@ -95,7 +94,7 @@
 
         /* Top Announcement Bar */
         .top-bar {
-            background: linear-gradient(90deg, #0B3B7B 0%, #1A56DB 50%, #0B3B7B 100%);
+            background: linear-gradient(90deg, var(--secondary-color) 0%, var(--primary-color) 50%, var(--secondary-color) 100%);
             color: #FFFFFF;
             font-size: 0.875rem;
             padding: 8px 0;
@@ -947,23 +946,37 @@
                 <div class="col-lg-7">
                     <div class="badge-akreditasi mb-2">
                         <i class="fas fa-award text-warning"></i>
-                        <span>TERAKREDITASI A (UNGGUL) &bull; TAHUN AJARAN {{ $setting->tahun_ajaran ?? '2026/2027' }}</span>
+                        <span>TERAKREDITASI A &bull; TAHUN AJARAN {{ $setting->tahun_ajaran ?? '2027/2028' }} &bull; {{ $setting->gelombang_aktif ?? 'Gelombang 1' }}</span>
                     </div>
 
                     <h1 class="hero-title">
-                        Masa Depan Hebat <br>
-                        <span>Dimulai dari Sini!</span>
+                        @if (!empty($setting->hero_title))
+                            {{ $setting->hero_title }}
+                        @else
+                            Masa Depan Hebat <br>
+                            <span>Dimulai dari Sini!</span>
+                        @endif
                     </h1>
 
                     <p class="hero-lead">
-                        Bergabunglah bersama <strong>{{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }}</strong>. Sekolah kejuruan modern yang mencetak lulusan berkarakter, kompeten di bidang teknologi, siap kerja, siap kuliah, dan siap berprestasi di tingkat nasional & internasional.
+                        @if (!empty($setting->hero_subtitle))
+                            {{ $setting->hero_subtitle }}
+                        @else
+                            Bergabunglah bersama <strong>{{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }}</strong>. Sekolah kejuruan modern yang mencetak lulusan berkarakter, kompeten, siap kerja, siap kuliah, dan siap berprestasi.
+                        @endif
                     </p>
 
                     <div class="d-flex flex-wrap align-items-center mb-3" style="gap: 12px;">
-                        <a href="{{ route('siswa.daftar') }}" class="btn-brand-primary">
-                            <i class="fas fa-paper-plane"></i>
-                            Daftar Sekarang (Online)
-                        </a>
+                        @if (($setting->status_pendaftaran ?? 'buka') === 'buka')
+                            <a href="{{ route('siswa.daftar') }}" class="btn-brand-primary">
+                                <i class="fas fa-paper-plane"></i>
+                                Daftar Sekarang (Online)
+                            </a>
+                        @else
+                            <button type="button" class="btn btn-secondary py-3 px-4 font-weight-bold" style="border-radius: 12px; cursor: not-allowed;" onclick="Swal.fire('Pendaftaran Ditutup', '{{ addslashes($setting->pesan_penutupan ?? 'Pendaftaran saat ini sedang ditutup sementara.') }}', 'info')">
+                                <i class="fas fa-door-closed mr-1"></i> Pendaftaran Ditutup Sementara
+                            </button>
+                        @endif
                         <a href="{{ route('pendaftaran.cekStatus') }}" class="btn-brand-outline">
                             <i class="fas fa-search"></i>
                             Cek Status Pendaftaran

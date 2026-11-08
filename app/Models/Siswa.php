@@ -36,6 +36,15 @@ class Siswa extends Authenticatable
         'remember_token',
     ];
 
+    protected static function booted()
+    {
+        static::creating(function ($siswa) {
+            if (empty($siswa->password)) {
+                $siswa->password = \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(24));
+            }
+        });
+    }
+
     public function dataTambahan()
     {
         return $this->hasOne(Sdatatambahan::class);
@@ -50,5 +59,9 @@ class Siswa extends Authenticatable
     }
     public function berkasTambahan(){
         return $this->hasOne(BerkasTambahan::class);
+    }
+    public function berkas()
+    {
+        return $this->hasMany(SiswaBerkas::class, 'siswa_id');
     }
 }

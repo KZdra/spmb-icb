@@ -57,19 +57,29 @@
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 
-    @if ($setting?->logo_path)
-        <link rel="shortcut icon" href="{{ asset('storage/' . $setting->logo_path) }}" type="image/x-icon">
-    @else
-        <link rel="shortcut icon" href="{{ asset('images/icb.png') }}" type="image/x-icon">
-    @endif
+    <link rel="shortcut icon" href="{{ $setting?->favicon_url ?? asset('images/icb.png') }}" type="image/x-icon">
 
     <style>
         :root {
-            --primary-navy: #0B3B7B;
-            --primary-blue: #1A56DB;
+            --primary-color: {{ $setting?->primary_color ?? '#1A56DB' }};
+            --secondary-color: {{ $setting?->secondary_color ?? '#0B3B7B' }};
+            --accent-color: {{ $setting?->accent_color ?? '#10B981' }};
+            --primary-navy: {{ $setting?->secondary_color ?? '#0B3B7B' }};
+            --primary-blue: {{ $setting?->primary_color ?? '#1A56DB' }};
             --primary-light: #EBF5FF;
             --dark-slate: #0F172A;
             --muted-slate: #64748B;
+        }
+
+        .btn-primary, .bg-primary {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+        .border-primary {
+            border-color: var(--primary-color) !important;
         }
 
         body {
@@ -215,14 +225,10 @@
     <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
-                @if ($setting?->logo_path)
-                    <img src="{{ asset('storage/' . $setting->logo_path) }}" alt="Logo" height="34">
-                @else
-                    <img src="{{ asset('images/icb.png') }}" alt="Logo SMK ICB" height="34">
-                @endif
+                <img src="{{ $setting?->logo_url ?? asset('images/icb.png') }}" alt="Logo" height="34">
                 <div>
                     <div>{{ $setting->app_name ?? 'SMK ICB Cinta Teknika' }}</div>
-                    <div class="brand-subtitle">Student Today Leader Tomorrow</div>
+                    <div class="brand-subtitle">{{ $setting->slogan ?? 'Student Today Leader Tomorrow' }}</div>
                 </div>
             </a>
 
