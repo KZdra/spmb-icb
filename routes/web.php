@@ -35,6 +35,14 @@ Route::prefix('siswa')->group(function () {
     Route::post('/register', [SiswaController::class, 'register'])->name('siswa.daftar.post');
 });
 
+// API Wilayah Indonesia (Internal Proxy & Caching)
+Route::prefix('api/wilayah')->group(function () {
+    Route::get('/provinsi', [\App\Http\Controllers\WilayahController::class, 'provinces'])->name('wilayah.provinsi');
+    Route::get('/kota/{provId}', [\App\Http\Controllers\WilayahController::class, 'regencies'])->name('wilayah.kota');
+    Route::get('/kecamatan/{regId}', [\App\Http\Controllers\WilayahController::class, 'districts'])->name('wilayah.kecamatan');
+    Route::get('/kelurahan/{distId}', [\App\Http\Controllers\WilayahController::class, 'villages'])->name('wilayah.kelurahan');
+});
+
 Auth::routes([
     'register' => false,
 ]);

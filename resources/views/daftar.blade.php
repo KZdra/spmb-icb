@@ -44,6 +44,11 @@
         padding: 6px 10px;
     }
     .select2-container { width: 100% !important; }
+    /* Invalid state for Select2 */
+    .is-invalid-select2 .select2-selection--single {
+        border-color: #EF4444 !important;
+        background-color: #FEF2F2 !important;
+    }
     /* Disabled state */
     .select2-container--default.select2-container--disabled .select2-selection--single {
         background: #F8FAFC;
@@ -661,39 +666,82 @@
                                 value="{{ old('rw') }}" placeholder="02" maxlength="4" required>
                         </div>
 
-                        {{-- Provinsi → Kota → Kecamatan → Kelurahan (cascading via API) --}}
-                        <div class="form-group col-md-8">
-                            <label for="provinsi_select">Provinsi <span class="text-danger">*</span></label>
-                            <select id="provinsi_select" class="form-control wilayah-select" required>
-                                <option value="">-- Pilih Provinsi --</option>
-                            </select>
-                            <input type="hidden" id="provinsi" name="provinsi" value="{{ old('provinsi') }}">
+                    </div>
+
+                    {{-- Baris Info & Toggle Manual Wilayah --}}
+                    <div class="mb-3">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center p-2 rounded" style="background: #F1F5F9; border: 1px dashed #CBD5E1; gap: 8px;">
+                            <span class="small text-muted font-weight-bold">
+                                <i class="fas fa-map-marked-alt text-primary mr-1"></i> Wilayah Domisili (Provinsi &bull; Kota/Kab &bull; Kecamatan &bull; Kelurahan)
+                            </span>
+                            <button type="button" class="btn btn-xs btn-outline-primary font-weight-bold shadow-sm" id="btnToggleManualWilayah" style="border-radius: 6px;">
+                                <i class="fas fa-keyboard mr-1"></i> Sulit memilih? Ketik Manual
+                            </button>
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="kota_select">Kota / Kabupaten <span class="text-danger">*</span></label>
-                            <select id="kota_select" class="form-control wilayah-select" disabled required>
-                                <option value="">-- Pilih Provinsi dulu --</option>
-                            </select>
-                            <input type="hidden" id="kota" name="kota" value="{{ old('kota') }}">
+                    {{-- CONTAINER 1: DROPDOWN OTOMATIS CASCADING --}}
+                    <div id="container-wilayah-select">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="provinsi_select">Provinsi <span class="text-danger">*</span></label>
+                                <select id="provinsi_select" class="form-control wilayah-select">
+                                    <option value="">-- Memuat daftar provinsi... --</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="kota_select">Kota / Kabupaten <span class="text-danger">*</span></label>
+                                <select id="kota_select" class="form-control wilayah-select" disabled>
+                                    <option value="">-- Pilih Provinsi dulu --</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label for="kecamatan_select">Kecamatan <span class="text-danger">*</span></label>
-                            <select id="kecamatan_select" class="form-control wilayah-select" disabled required>
-                                <option value="">-- Pilih Kota/Kab dulu --</option>
-                            </select>
-                            <input type="hidden" id="kecamatan" name="kecamatan" value="{{ old('kecamatan') }}">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="kelurahan_select">Kelurahan / Desa <span class="text-danger">*</span></label>
-                            <select id="kelurahan_select" class="form-control wilayah-select" disabled required>
-                                <option value="">-- Pilih Kecamatan dulu --</option>
-                            </select>
-                            <input type="hidden" id="kelurahan" name="kelurahan" value="{{ old('kelurahan') }}">
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="kecamatan_select">Kecamatan <span class="text-danger">*</span></label>
+                                <select id="kecamatan_select" class="form-control wilayah-select" disabled>
+                                    <option value="">-- Pilih Kota/Kab dulu --</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="kelurahan_select">Kelurahan / Desa <span class="text-danger">*</span></label>
+                                <select id="kelurahan_select" class="form-control wilayah-select" disabled>
+                                    <option value="">-- Pilih Kecamatan dulu --</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
+
+                    {{-- CONTAINER 2: INPUT MANUAL (TERSEDIA JIKA API GAGAL / KONEKSI SULIT) --}}
+                    <div id="container-wilayah-manual" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="manual_provinsi">Provinsi <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="manual_provinsi" placeholder="Contoh: JAWA BARAT">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="manual_kota">Kota / Kabupaten <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="manual_kota" placeholder="Contoh: KOTA BANDUNG">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="manual_kecamatan">Kecamatan <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="manual_kecamatan" placeholder="Contoh: KIARACONDONG">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="manual_kelurahan">Kelurahan / Desa <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="manual_kelurahan" placeholder="Contoh: BABAKAN SURABAYA">
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Hidden inputs yang dikirimkan ke server --}}
+                    <input type="hidden" id="provinsi" name="provinsi" value="{{ old('provinsi') }}">
+                    <input type="hidden" id="kota" name="kota" value="{{ old('kota') }}">
+                    <input type="hidden" id="kecamatan" name="kecamatan" value="{{ old('kecamatan') }}">
+                    <input type="hidden" id="kelurahan" name="kelurahan" value="{{ old('kelurahan') }}">
                 </div>
             </div>
             <div class="form-nav">
@@ -1105,6 +1153,23 @@
             step7Note.style.display = (currentStep === 7) ? 'inline' : 'none';
         }
 
+        // Refresh lebar Select2 saat pindah tab agar tidak mengecil (0px)
+        if (step === 3) {
+            setTimeout(function() {
+                $('#container-wilayah-select .select2-container').css('width', '100%');
+                $('.wilayah-select').each(function() {
+                    if ($(this).data('select2')) {
+                        $(this).select2({ width: '100%' });
+                    }
+                });
+            }, 60);
+        }
+        if (step === 5) {
+            setTimeout(function() {
+                $('#asal_sekolah_select').next('.select2-container').css('width', '100%');
+            }, 60);
+        }
+
         // Scroll halus ke atas form
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1116,8 +1181,8 @@
         let valid = true;
         let firstInvalid = null;
 
-        // 1. Validasi Input, Select, Textarea standar
-        const inputs = section.querySelectorAll('input[required]:not([type="radio"]):not([type="checkbox"]):not([type="file"]), select[required], textarea[required]');
+        // 1. Validasi Input, Select, Textarea standar (kecuali hidden & file)
+        const inputs = section.querySelectorAll('input[required]:not([type="radio"]):not([type="checkbox"]):not([type="file"]):not([type="hidden"]), select[required], textarea[required]');
         inputs.forEach(input => {
             if (!input.value || !input.value.trim()) {
                 input.classList.add('is-invalid');
@@ -1143,7 +1208,43 @@
             }
         });
 
-        // 3. Validasi Khusus Step 7 (Bukti Bayar & Persetujuan)
+        // 3. Validasi Step 3 (Alamat & Wilayah Domisili)
+        if (step === 3) {
+            const provVal = (document.getElementById('provinsi')?.value || '').trim();
+            const kotaVal = (document.getElementById('kota')?.value || '').trim();
+            const kecVal  = (document.getElementById('kecamatan')?.value || '').trim();
+            const kelVal  = (document.getElementById('kelurahan')?.value || '').trim();
+            const isManualActive = $('#container-wilayah-manual').is(':visible');
+
+            if (!provVal || !kotaVal || !kecVal || !kelVal) {
+                valid = false;
+                if (isManualActive) {
+                    if (!provVal) { $('#manual_provinsi').addClass('is-invalid'); if (!firstInvalid) firstInvalid = document.getElementById('manual_provinsi'); }
+                    if (!kotaVal) { $('#manual_kota').addClass('is-invalid'); if (!firstInvalid) firstInvalid = document.getElementById('manual_kota'); }
+                    if (!kecVal)  { $('#manual_kecamatan').addClass('is-invalid'); if (!firstInvalid) firstInvalid = document.getElementById('manual_kecamatan'); }
+                    if (!kelVal)  { $('#manual_kelurahan').addClass('is-invalid'); if (!firstInvalid) firstInvalid = document.getElementById('manual_kelurahan'); }
+                } else {
+                    if (!provVal) { $('#provinsi_select').next('.select2-container').addClass('is-invalid-select2'); if (!firstInvalid) firstInvalid = document.getElementById('provinsi_select'); }
+                    if (!kotaVal) { $('#kota_select').next('.select2-container').addClass('is-invalid-select2'); if (!firstInvalid) firstInvalid = document.getElementById('kota_select'); }
+                    if (!kecVal)  { $('#kecamatan_select').next('.select2-container').addClass('is-invalid-select2'); if (!firstInvalid) firstInvalid = document.getElementById('kecamatan_select'); }
+                    if (!kelVal)  { $('#kelurahan_select').next('.select2-container').addClass('is-invalid-select2'); if (!firstInvalid) firstInvalid = document.getElementById('kelurahan_select'); }
+                }
+            }
+        }
+
+        // 4. Validasi Step 5 (Asal Sekolah)
+        if (step === 5) {
+            const asalVal = (document.getElementById('asal_sekolah')?.value || '').trim();
+            if (!asalVal) {
+                valid = false;
+                $('#asal_sekolah_select').next('.select2-container').addClass('is-invalid-select2');
+                if (!firstInvalid) firstInvalid = document.getElementById('asal_sekolah_select');
+            } else {
+                $('#asal_sekolah_select').next('.select2-container').removeClass('is-invalid-select2');
+            }
+        }
+
+        // 5. Validasi Khusus Step 7 (Bukti Bayar & Persetujuan)
         if (step === 7) {
             const buktiInput = document.getElementById('bukti_pembayaran');
             if (buktiInput && (!buktiInput.files || buktiInput.files.length === 0)) {
@@ -1362,6 +1463,18 @@
                 }
             });
 
+            // Sinkronkan input manual wilayah jika ada
+            if (draft['provinsi']) document.getElementById('manual_provinsi').value = draft['provinsi'];
+            if (draft['kota']) document.getElementById('manual_kota').value = draft['kota'];
+            if (draft['kecamatan']) document.getElementById('manual_kecamatan').value = draft['kecamatan'];
+            if (draft['kelurahan']) document.getElementById('manual_kelurahan').value = draft['kelurahan'];
+
+            // Sinkronkan asal sekolah Select2
+            if (draft['asal_sekolah'] && typeof $ !== 'undefined' && $('#asal_sekolah_select').length) {
+                const opt = new Option(draft['asal_sekolah'], draft['asal_sekolah'], true, true);
+                $('#asal_sekolah_select').append(opt).trigger('change');
+            }
+
             // Tampilkan banner bahwa draft dipulihkan
             const stepNum = savedStep ? parseInt(savedStep) : 1;
             const draftAlert = document.getElementById('draftRestoredAlert');
@@ -1454,16 +1567,56 @@ $(document).ready(function () {
 
         /* ==========================================================
            WILAYAH: Cascading Provinsi → Kota → Kecamatan → Kelurahan
-           API: emsifa.com/api-wilayah-indonesia (free, no API key)
+           1. Primary: Internal Proxy /api/wilayah/* (Laravel cache 30 hari, bebas Mixed Content & CORS)
+           2. Fallback: GitHub Pages CDN (kanglerian.github.io/api-wilayah-indonesia)
+           3. Fail-safe: Toggle Ketik Manual jika koneksi siswa offline/terblokir DNS
         ========================================================== */
-        const BASE = 'https://www.emsifa.com/api-wilayah-indonesia/api';
+        const WILAYAH_API = {
+            prov: "{{ url('api/wilayah/provinsi') }}",
+            kota: id => `{{ url('api/wilayah/kota') }}/${id}`,
+            kec:  id => `{{ url('api/wilayah/kecamatan') }}/${id}`,
+            kel:  id => `{{ url('api/wilayah/kelurahan') }}/${id}`
+        };
+
+        const WILAYAH_CDN = {
+            prov: "https://kanglerian.github.io/api-wilayah-indonesia/api/provinces.json",
+            kota: id => `https://kanglerian.github.io/api-wilayah-indonesia/api/regencies/${id}.json`,
+            kec:  id => `https://kanglerian.github.io/api-wilayah-indonesia/api/districts/${id}.json`,
+            kel:  id => `https://kanglerian.github.io/api-wilayah-indonesia/api/villages/${id}.json`
+        };
+
+        async function fetchWilayahData(primaryUrl, fallbackUrl) {
+            try {
+                const res = await fetch(primaryUrl, {
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length > 0) return data;
+                }
+            } catch (e) {
+                console.warn('Proxy wilayah fetch gagal, mencoba CDN fallback...', e);
+            }
+
+            try {
+                const resFallback = await fetch(fallbackUrl);
+                if (resFallback.ok) {
+                    const data = await resFallback.json();
+                    if (Array.isArray(data)) return data;
+                }
+            } catch (e2) {
+                console.error('Semua sumber wilayah gagal dijangkau:', e2);
+            }
+
+            return [];
+        }
 
         // Helper: populate a Select2 dropdown
-        function populateSelect(selector, data, placeholder, nameKey = 'name') {
+        function populateSelect(selector, data, placeholder) {
             const $el = $(selector);
             $el.empty().append(`<option value="">${placeholder}</option>`);
             data.forEach(item => {
-                $el.append(`<option value="${item[nameKey]}" data-id="${item.id}">${item[nameKey]}</option>`);
+                $el.append(`<option value="${item.name}" data-id="${item.id}">${item.name}</option>`);
             });
             $el.prop('disabled', false).trigger('change.select2');
         }
@@ -1472,86 +1625,169 @@ $(document).ready(function () {
         $('.wilayah-select').select2({
             placeholder: 'Cari atau pilih...',
             allowClear: true,
+            width: '100%',
             language: { searching: () => 'Mencari...', noResults: () => 'Tidak ditemukan' }
         });
 
-    // Load Provinsi on page ready
-    fetch(`${BASE}/provinces.json`)
-        .then(r => r.json())
-        .then(data => {
-            populateSelect('#provinsi_select', data, '-- Pilih Provinsi --');
-            // Restore old value if any
-            const oldVal = '{{ old("provinsi") }}';
-            if (oldVal) { $('#provinsi_select').val(oldVal).trigger('change'); }
-        })
-        .catch(() => console.warn('Gagal load provinsi, gunakan input manual'));
+        // Toggle Manual vs Dropdown
+        $('#btnToggleManualWilayah').on('click', function () {
+            const $selectBox = $('#container-wilayah-select');
+            const $manualBox = $('#container-wilayah-manual');
+            const isCurrentlyManual = $manualBox.is(':visible');
 
-    // Provinsi → Kota
-    $('#provinsi_select').on('change', function () {
-        const name = $(this).val();
-        const id   = $(this).find(':selected').data('id');
-        $('#provinsi').val(name);
-
-        // Reset downstream
-        ['#kota_select','#kecamatan_select','#kelurahan_select'].forEach(s => {
-            $(s).empty().append('<option value="">-- Pilih dahulu --</option>').prop('disabled', true);
+            if (isCurrentlyManual) {
+                $manualBox.hide();
+                $selectBox.fadeIn(200);
+                $(this).html('<i class="fas fa-keyboard mr-1"></i> Sulit memilih? Ketik Manual');
+                $('.wilayah-select').each(function () {
+                    if ($(this).data('select2')) $(this).select2({ width: '100%' });
+                });
+            } else {
+                $selectBox.hide();
+                $manualBox.fadeIn(200);
+                $(this).html('<i class="fas fa-list-ul mr-1"></i> Gunakan Pilihan Otomatis (Dropdown)');
+                $('#manual_provinsi').val($('#provinsi').val());
+                $('#manual_kota').val($('#kota').val());
+                $('#manual_kecamatan').val($('#kecamatan').val());
+                $('#manual_kelurahan').val($('#kelurahan').val());
+            }
         });
-        ['#kota','#kecamatan','#kelurahan'].forEach(s => $(s).val(''));
 
-        if (!id) return;
-        fetch(`${BASE}/regencies/${id}.json`)
-            .then(r => r.json())
-            .then(data => {
-                populateSelect('#kota_select', data, '-- Pilih Kota/Kab --');
-                const oldKota = '{{ old("kota") }}';
-                if (oldKota) { $('#kota_select').val(oldKota).trigger('change'); }
-            });
-    });
-
-    // Kota → Kecamatan
-    $('#kota_select').on('change', function () {
-        const name = $(this).val();
-        const id   = $(this).find(':selected').data('id');
-        $('#kota').val(name);
-
-        ['#kecamatan_select','#kelurahan_select'].forEach(s => {
-            $(s).empty().append('<option value="">-- Pilih dahulu --</option>').prop('disabled', true);
+        // Sync manual inputs to hidden fields
+        $('#manual_provinsi').on('input', function() {
+            $('#provinsi').val($(this).val().toUpperCase());
+            $(this).removeClass('is-invalid');
+            if (typeof saveDraft === 'function') saveDraft();
         });
-        ['#kecamatan','#kelurahan'].forEach(s => $(s).val(''));
+        $('#manual_kota').on('input', function() {
+            $('#kota').val($(this).val().toUpperCase());
+            $(this).removeClass('is-invalid');
+            if (typeof saveDraft === 'function') saveDraft();
+        });
+        $('#manual_kecamatan').on('input', function() {
+            $('#kecamatan').val($(this).val().toUpperCase());
+            $(this).removeClass('is-invalid');
+            if (typeof saveDraft === 'function') saveDraft();
+        });
+        $('#manual_kelurahan').on('input', function() {
+            $('#kelurahan').val($(this).val().toUpperCase());
+            $(this).removeClass('is-invalid');
+            if (typeof saveDraft === 'function') saveDraft();
+        });
 
-        if (!id) return;
-        fetch(`${BASE}/districts/${id}.json`)
-            .then(r => r.json())
-            .then(data => {
-                populateSelect('#kecamatan_select', data, '-- Pilih Kecamatan --');
-                const oldKec = '{{ old("kecamatan") }}';
-                if (oldKec) { $('#kecamatan_select').val(oldKec).trigger('change'); }
+        // Load Provinsi
+        fetchWilayahData(WILAYAH_API.prov, WILAYAH_CDN.prov).then(data => {
+            if (data.length > 0) {
+                populateSelect('#provinsi_select', data, '-- Pilih Provinsi --');
+                const existingProv = $('#provinsi').val() || '{{ old("provinsi") }}';
+                if (existingProv) {
+                    const opt = $('#provinsi_select option').filter(function() {
+                        return $(this).val().toUpperCase() === existingProv.toUpperCase();
+                    });
+                    if (opt.length) {
+                        $('#provinsi_select').val(opt.val()).trigger('change');
+                    }
+                }
+            } else {
+                console.warn('Data provinsi tidak dapat dimuat otomatis. Membuka mode input manual.');
+                $('#btnToggleManualWilayah').trigger('click');
+            }
+        });
+
+        // 1. Provinsi → Kota
+        $('#provinsi_select').on('change', async function () {
+            $(this).next('.select2-container').removeClass('is-invalid-select2');
+            const name = $(this).val();
+            const id   = $(this).find(':selected').data('id');
+            $('#provinsi').val(name);
+            if (typeof saveDraft === 'function') saveDraft();
+
+            // Reset downstream
+            ['#kota_select','#kecamatan_select','#kelurahan_select'].forEach(s => {
+                $(s).empty().append('<option value="">-- Memuat / Pilih --</option>').prop('disabled', true);
             });
-    });
+            $('#kota, #kecamatan, #kelurahan').val('');
 
-    // Kecamatan → Kelurahan
-    $('#kecamatan_select').on('change', function () {
-        const name = $(this).val();
-        const id   = $(this).find(':selected').data('id');
-        $('#kecamatan').val(name);
+            if (!id) return;
+            $('#kota_select').empty().append('<option value="">Memuat kota/kabupaten...</option>').prop('disabled', true);
 
-        $('#kelurahan_select').empty().append('<option value="">-- Pilih dahulu --</option>').prop('disabled', true);
-        $('#kelurahan').val('');
+            const data = await fetchWilayahData(WILAYAH_API.kota(id), WILAYAH_CDN.kota(id));
+            populateSelect('#kota_select', data, '-- Pilih Kota/Kabupaten --');
 
-        if (!id) return;
-        fetch(`${BASE}/villages/${id}.json`)
-            .then(r => r.json())
-            .then(data => {
-                populateSelect('#kelurahan_select', data, '-- Pilih Kelurahan --');
-                const oldKel = '{{ old("kelurahan") }}';
-                if (oldKel) { $('#kelurahan_select').val(oldKel).trigger('change'); }
+            const existingKota = $('#kota').val() || '{{ old("kota") }}';
+            if (existingKota) {
+                const opt = $('#kota_select option').filter(function() {
+                    return $(this).val().toUpperCase() === existingKota.toUpperCase();
+                });
+                if (opt.length) {
+                    $('#kota_select').val(opt.val()).trigger('change');
+                }
+            }
+        });
+
+        // 2. Kota → Kecamatan
+        $('#kota_select').on('change', async function () {
+            $(this).next('.select2-container').removeClass('is-invalid-select2');
+            const name = $(this).val();
+            const id   = $(this).find(':selected').data('id');
+            $('#kota').val(name);
+            if (typeof saveDraft === 'function') saveDraft();
+
+            ['#kecamatan_select','#kelurahan_select'].forEach(s => {
+                $(s).empty().append('<option value="">-- Memuat / Pilih --</option>').prop('disabled', true);
             });
-    });
+            $('#kecamatan, #kelurahan').val('');
 
-    // Kelurahan change
-    $('#kelurahan_select').on('change', function () {
-        $('#kelurahan').val($(this).val());
-    });
+            if (!id) return;
+            $('#kecamatan_select').empty().append('<option value="">Memuat kecamatan...</option>').prop('disabled', true);
+
+            const data = await fetchWilayahData(WILAYAH_API.kec(id), WILAYAH_CDN.kec(id));
+            populateSelect('#kecamatan_select', data, '-- Pilih Kecamatan --');
+
+            const existingKec = $('#kecamatan').val() || '{{ old("kecamatan") }}';
+            if (existingKec) {
+                const opt = $('#kecamatan_select option').filter(function() {
+                    return $(this).val().toUpperCase() === existingKec.toUpperCase();
+                });
+                if (opt.length) {
+                    $('#kecamatan_select').val(opt.val()).trigger('change');
+                }
+            }
+        });
+
+        // 3. Kecamatan → Kelurahan
+        $('#kecamatan_select').on('change', async function () {
+            $(this).next('.select2-container').removeClass('is-invalid-select2');
+            const name = $(this).val();
+            const id   = $(this).find(':selected').data('id');
+            $('#kecamatan').val(name);
+            if (typeof saveDraft === 'function') saveDraft();
+
+            $('#kelurahan_select').empty().append('<option value="">Memuat kelurahan...</option>').prop('disabled', true);
+            $('#kelurahan').val('');
+
+            if (!id) return;
+
+            const data = await fetchWilayahData(WILAYAH_API.kel(id), WILAYAH_CDN.kel(id));
+            populateSelect('#kelurahan_select', data, '-- Pilih Kelurahan / Desa --');
+
+            const existingKel = $('#kelurahan').val() || '{{ old("kelurahan") }}';
+            if (existingKel) {
+                const opt = $('#kelurahan_select option').filter(function() {
+                    return $(this).val().toUpperCase() === existingKel.toUpperCase();
+                });
+                if (opt.length) {
+                    $('#kelurahan_select').val(opt.val()).trigger('change');
+                }
+            }
+        });
+
+        // 4. Kelurahan change
+        $('#kelurahan_select').on('change', function () {
+            $(this).next('.select2-container').removeClass('is-invalid-select2');
+            $('#kelurahan').val($(this).val());
+            if (typeof saveDraft === 'function') saveDraft();
+        });
 
     /* ==========================================================
        ASAL SEKOLAH: Select2 AJAX Autocomplete

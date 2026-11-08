@@ -272,9 +272,6 @@
     </footer>
 
     @vite('resources/js/app.js')
-    <!-- jQuery & Select2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <!-- Bootstrap Bundle & AdminLTE -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/adminlte.min.js') }}" defer></script>
