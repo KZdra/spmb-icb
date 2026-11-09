@@ -606,6 +606,16 @@
             border-color: #BFDBFE;
         }
 
+        /* Syarat Pendaftaran Cards */
+        .syarat-card {
+            transition: all 0.3s ease;
+        }
+        .syarat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08) !important;
+            border-color: #BFDBFE !important;
+        }
+
         .step-number {
             width: 52px;
             height: 52px;
@@ -1917,7 +1927,7 @@
 
             <div class="row">
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100 border-0 shadow-sm p-4 text-center" style="border-radius: 20px; background: #F8FAFC; border: 1px solid #E2E8F0 !important;">
+                    <div class="card syarat-card h-100 border-0 shadow-sm p-4 text-center" style="border-radius: 20px; background: #F8FAFC; border: 1px solid #E2E8F0 !important;">
                         <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: 800;">A</div>
                         <h4 class="font-weight-bold text-dark mb-2">Mengisi Formulir Online</h4>
                         <p class="text-muted" style="font-size: 0.95rem;">
@@ -1930,7 +1940,7 @@
                 </div>
 
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100 border-0 shadow-sm p-4" style="border-radius: 20px; background: #F8FAFC; border: 1px solid #E2E8F0 !important;">
+                    <div class="card syarat-card h-100 border-0 shadow-sm p-4" style="border-radius: 20px; background: #F8FAFC; border: 1px solid #E2E8F0 !important;">
                         <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: 800;">B</div>
                         <h4 class="font-weight-bold text-dark text-center mb-2">Melengkapi Dokumen</h4>
                         <p class="text-muted text-center mb-3" style="font-size: 0.9rem;">Siapkan fotokopi & file digital berkas berikut:</p>
@@ -1961,7 +1971,7 @@
                 </div>
 
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100 border-0 shadow-sm p-4 text-center" style="border-radius: 20px; background: #F8FAFC; border: 1px solid #E2E8F0 !important;">
+                    <div class="card syarat-card h-100 border-0 shadow-sm p-4 text-center" style="border-radius: 20px; background: #F8FAFC; border: 1px solid #E2E8F0 !important;">
                         <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: 800;">C</div>
                         <h4 class="font-weight-bold text-dark mb-2">Bukti Pembayaran</h4>
                         <p class="text-muted" style="font-size: 0.95rem;">
@@ -2591,17 +2601,18 @@
            Animate.css Scroll Reveal (IntersectionObserver)
         ========================================== */
         const animateSelectors = [
-            { sel: '.section-header',     anim: 'animate__fadeInDown', delay: 0  },
-            { sel: '.step-card',          anim: 'animate__fadeInUp',   delay: 80 },
-            { sel: '.alur-item',          anim: 'animate__fadeInLeft', delay: 60 },
-            { sel: '.jurusan-card',       anim: 'animate__fadeInUp',   delay: 80 },
-            { sel: '.brochure-card',      anim: 'animate__zoomIn',     delay: 80 },
-            { sel: '.article-grid-card',  anim: 'animate__fadeInUp',   delay: 80 },
-            { sel: '.milestone-card',     anim: 'animate__fadeInUp',   delay: 60 },
-            { sel: '.mitra-card',         anim: 'animate__fadeInUp',   delay: 40 },
-            { sel: '.testimoni-card',     anim: 'animate__fadeInUp',   delay: 80 },
-            { sel: '.faq-card',           anim: 'animate__fadeInUp',   delay: 60 },
-            { sel: '.cta-banner',         anim: 'animate__fadeInUp',   delay: 0  },
+            { sel: '.section-header',     anim: 'animate__fadeInDown', delay: 0   },
+            { sel: '.step-card',          anim: 'animate__fadeInUp',   delay: 80  },
+            { sel: '.syarat-card',        anim: 'animate__fadeInUp',   delay: 100 },
+            { sel: '.alur-item',          anim: 'animate__fadeInLeft', delay: 60  },
+            { sel: '.jurusan-card',       anim: 'animate__fadeInUp',   delay: 80  },
+            { sel: '.brochure-card',      anim: 'animate__zoomIn',     delay: 80  },
+            { sel: '.article-grid-card',  anim: 'animate__fadeInUp',   delay: 80  },
+            { sel: '.milestone-card',     anim: 'animate__fadeInUp',   delay: 60  },
+            { sel: '.mitra-card',         anim: 'animate__fadeInUp',   delay: 40  },
+            { sel: '.testimoni-card',     anim: 'animate__fadeInUp',   delay: 80  },
+            { sel: '.faq-card',           anim: 'animate__fadeInUp',   delay: 60  },
+            { sel: '.cta-banner',         anim: 'animate__fadeInUp',   delay: 0   },
         ];
 
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
