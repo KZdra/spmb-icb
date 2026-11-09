@@ -1222,10 +1222,205 @@
                 font-size: 1.4rem;
             }
         }
+        /* ==========================================
+           Cute & Charming Preloader ("Preloader Lucu")
+        ========================================== */
+        #spmbPreloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #FFFFFF 0%, #F1F5F9 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+        }
+
+        #spmbPreloader.preloader-hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .preloader-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: preloaderIn 0.5s ease;
+        }
+
+        .preloader-avatar-wrap {
+            position: relative;
+            width: 105px;
+            height: 105px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preloader-pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            opacity: 0.15;
+            animation: preloaderPulse 1.8s infinite ease-out;
+        }
+
+        .preloader-logo-badge {
+            position: relative;
+            z-index: 2;
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            padding: 12px;
+            box-shadow: 0 12px 28px rgba(26, 86, 219, 0.18);
+            border: 3px solid #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: cuteWiggleBounce 2.4s infinite ease-in-out;
+        }
+
+        .preloader-logo-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .preloader-badge-sparkle {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            font-size: 1.35rem;
+            animation: cuteSparkle 1.6s infinite ease-in-out alternate;
+            z-index: 3;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+        }
+
+        .preloader-text-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: var(--primary-navy);
+            letter-spacing: -0.2px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preloader-subtext {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #64748B;
+            margin-bottom: 16px;
+        }
+
+        .preloader-dots {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preloader-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            animation: cuteDotJump 1.2s infinite ease-in-out;
+        }
+
+        .preloader-dot:nth-child(2) {
+            animation-delay: 0.18s;
+            background: #F59E0B;
+        }
+
+        .preloader-dot:nth-child(3) {
+            animation-delay: 0.36s;
+            background: var(--accent-color);
+        }
+
+        @keyframes cuteWiggleBounce {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+            25% {
+                transform: translateY(-8px) rotate(-3deg) scale(1.04);
+            }
+            50% {
+                transform: translateY(0) rotate(0deg) scale(0.98);
+            }
+            75% {
+                transform: translateY(-6px) rotate(3deg) scale(1.02);
+            }
+        }
+
+        @keyframes preloaderPulse {
+            0% {
+                transform: scale(0.85);
+                opacity: 0.35;
+            }
+            100% {
+                transform: scale(1.45);
+                opacity: 0;
+            }
+        }
+
+        @keyframes cuteSparkle {
+            0% { transform: scale(0.8) rotate(-10deg); opacity: 0.7; }
+            100% { transform: scale(1.2) rotate(15deg); opacity: 1; }
+        }
+
+        @keyframes cuteDotJump {
+            0%, 80%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            40% {
+                transform: translateY(-8px) scale(1.2);
+            }
+        }
+
+        @keyframes preloaderIn {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- Preloader Lucu SPMB -->
+    <div id="spmbPreloader">
+        <div class="preloader-content">
+            <div class="preloader-avatar-wrap">
+                <div class="preloader-pulse-ring"></div>
+                <div class="preloader-logo-badge">
+                    <img src="{{ $setting?->logo_url ?? asset('images/icb.png') }}" alt="Logo {{ $setting->app_name ?? 'Sekolah' }}">
+                </div>
+                <span class="preloader-badge-sparkle">🎓</span>
+            </div>
+            <div class="preloader-text-title">
+                <span>Mempersiapkan Masa Depanmu</span>
+            </div>
+            <div class="preloader-subtext">
+                SPMB Online {{ $setting->atas_nama ?? ($setting->app_name ?? 'Sekolah') }}
+            </div>
+            <div class="preloader-dots">
+                <span class="preloader-dot"></span>
+                <span class="preloader-dot"></span>
+                <span class="preloader-dot"></span>
+            </div>
+        </div>
+    </div>
 
     <!-- Announcement Bar -->
     <div class="top-bar text-center">
@@ -2480,6 +2675,27 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        /* ==========================================
+           Cute Preloader Dismissal
+        ========================================== */
+        function dismissPreloader() {
+            const preloader = document.getElementById('spmbPreloader');
+            if (preloader && !preloader.classList.contains('preloader-hide')) {
+                preloader.classList.add('preloader-hide');
+                setTimeout(() => {
+                    if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
+                }, 600);
+            }
+        }
+
+        // Dismiss when page and assets are loaded
+        window.addEventListener('load', function() {
+            setTimeout(dismissPreloader, 400);
+        });
+
+        // Safety fallback: auto-dismiss after 1.8s max
+        setTimeout(dismissPreloader, 1800);
+
         /* ==========================================
            Countdown Timer Logic
         ========================================== */
