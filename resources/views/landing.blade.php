@@ -1349,6 +1349,29 @@
             background: var(--accent-color);
         }
 
+        .preloader-progress-track {
+            width: 130px;
+            height: 4px;
+            background: #E2E8F0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 14px;
+        }
+
+        .preloader-progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), #F59E0B, var(--accent-color));
+            border-radius: 4px;
+            animation: cuteProgress 1.4s infinite ease-in-out;
+        }
+
+        @keyframes cuteProgress {
+            0% { width: 0%; transform: translateX(-15%); }
+            50% { width: 75%; transform: translateX(15%); }
+            100% { width: 100%; transform: translateX(0%); }
+        }
+
         @keyframes cuteWiggleBounce {
             0%, 100% {
                 transform: translateY(0) rotate(0deg) scale(1);
@@ -1418,6 +1441,9 @@
                 <span class="preloader-dot"></span>
                 <span class="preloader-dot"></span>
                 <span class="preloader-dot"></span>
+            </div>
+            <div class="preloader-progress-track">
+                <div class="preloader-progress-bar"></div>
             </div>
         </div>
     </div>
@@ -2676,25 +2702,51 @@
 
     <script>
         /* ==========================================
-           Cute Preloader Dismissal
+           Cute Preloader Dismissal (With min-display time)
         ========================================== */
+        const preloaderStartTime = Date.now();
+        let preloaderDismissed = false;
+
         function dismissPreloader() {
+            if (preloaderDismissed) return;
             const preloader = document.getElementById('spmbPreloader');
-            if (preloader && !preloader.classList.contains('preloader-hide')) {
+            if (!preloader) return;
+
+            const elapsed = Date.now() - preloaderStartTime;
+            const minDisplayTime = 1300; // Minimal tampil 1.3 detik agar animasi jelas terlihat
+            const delay = Math.max(0, minDisplayTime - elapsed);
+
+            setTimeout(() => {
+                preloaderDismissed = true;
                 preloader.classList.add('preloader-hide');
                 setTimeout(() => {
-                    if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
-                }, 600);
-            }
+                    preloader.style.display = 'none'; // Tetap di DOM, tidak di-remove
+                }, 550);
+            }, delay);
         }
 
-        // Dismiss when page and assets are loaded
-        window.addEventListener('load', function() {
-            setTimeout(dismissPreloader, 400);
-        });
+        // Jalankan saat load selesai
+        if (document.readyState === 'complete') {
+            dismissPreloader();
+        } else {
+            window.addEventListener('load', dismissPreloader);
+        }
 
-        // Safety fallback: auto-dismiss after 1.8s max
-        setTimeout(dismissPreloader, 1800);
+        // Safety fallback maksimal 3.5 detik
+        setTimeout(dismissPreloader, 3500);
+
+        // Helper console / manual trigger
+        window.showPreloader = function(duration = 2000) {
+            const preloader = document.getElementById('spmbPreloader');
+            if (preloader) {
+                preloader.style.display = 'flex';
+                preloader.classList.remove('preloader-hide');
+                setTimeout(() => {
+                    preloader.classList.add('preloader-hide');
+                    setTimeout(() => { preloader.style.display = 'none'; }, 550);
+                }, duration);
+            }
+        };
 
         /* ==========================================
            Countdown Timer Logic
